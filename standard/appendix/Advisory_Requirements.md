@@ -1,0 +1,163 @@
+# Advisory Requirements
+
+**OWASP Autonomous Penetration Testing Standard (APTS) v0.1.0**
+
+Informative Appendix (non-normative)
+
+## Purpose
+
+Advisory requirements are practices that provide additional assurance for autonomous penetration testing platforms but are not required for conformance at any tier. These practices were identified during the standard's development as valuable for mature implementations, high-risk engagements, or organizations pursuing the highest levels of operational rigor. They are not required for Tier 1, Tier 2, or Tier 3 conformance.
+
+Advisory practices live exclusively in this appendix. They do not occupy slots in the domain requirement numbering. Platforms that implement advisory practices MAY document their adoption in vendor evaluation materials and customer-facing documentation. Advisory practices do not affect conformance scoring.
+
+Advisory practices use the identifier pattern `APTS-<DOMAIN>-A0x` (for example, `APTS-AR-A01`, `APTS-AL-A01`). This distinguishes them from tier-required requirements, which use the pattern `APTS-<DOMAIN>-0xx`.
+
+## When to Implement Advisory Practices
+
+Advisory practices are recommended when:
+
+- The platform operates in highly regulated industries (healthcare, finance, critical infrastructure).
+- Engagements involve Level 4 (full autonomy) operations.
+- Customer contracts explicitly require enhanced assurance controls.
+- The organization is building toward long-term maturity in autonomous testing.
+
+## Advisory Practice Registry
+
+### APTS-AR-A01: State Capture, Reproducibility Documentation, and Replay Support (Advisory)
+
+**Rationale:** Full state capture and replay support assumes deterministic system behavior that is at odds with LLM-based platforms relying on third-party inference APIs. Non-determinism in model outputs, timing, and external API responses makes strict replay infeasible as a mandatory requirement.
+
+**Value:** Organizations that implement state capture and replay gain the ability to investigate anomalous platform behavior, reproduce findings for customer validation, and support forensic analysis of decision chains. Partial replay (capturing inputs and comparing outputs) remains valuable even without full deterministic replay.
+
+**Practice Description:**
+
+Capture sufficient execution state to enable meaningful replay within documented variance bounds. Record platform-controlled configuration (OS, tool versions, model versions and parameters, seed values, proxy and DNS settings), test execution state (timestamps, environment variables, tool configuration, test parameters, and the decision inputs and outputs already logged under APTS-AR-004 and APTS-AR-006), the observed target baseline at engagement start, and network conditions where known. Document every source of non-determinism (cryptographic RNG, timing variance, concurrency effects, probabilistic algorithms, and model inference variance) together with the seed values and control parameters that govern each source. Where exact replay is not achievable, show that decision logic remains traceable from inputs to outputs and that expected variance bounds are documented.
+
+**Recommendation:** Implement state capture for critical decision points rather than full system state. Document known sources of non-determinism. Use replay as a diagnostic tool rather than a conformance gate.
+
+**Related normative requirements:** APTS-AR-004, APTS-AR-006.
+
+---
+
+### APTS-AR-A02: Replay Variance Analysis and Equivalence Criteria (Advisory)
+
+**Rationale:** Depends on APTS-AR-A01 (replay support). A strict finding-consistency threshold is not achievable for LLM-driven platforms where model inference variance, external API changes, and timing differences produce legitimate variance between runs.
+
+**Value:** Variance analysis helps platforms understand their own consistency and identify when model updates or infrastructure changes degrade finding quality. Aggregate variance tracking across many engagements provides useful trend data.
+
+**Practice Description:**
+
+When replay produces different outputs, define and document equivalence criteria that distinguish acceptable variance (different phrasing of the same finding, alternative evidence paths, equivalent proof-of-concept techniques, consistent severity) from material divergence (different vulnerability classifications, severity-boundary crossings, missing critical findings, false positives, or contradictory findings from the same scenario). Document finding-consistency thresholds, severity tolerance (for example, CVSS variance bounds), and semantic-similarity thresholds for phrasing comparison. Track variance sources, classify each variance event, and perform trend analysis across replay attempts.
+
+**Recommendation:** Track variance at the engagement level rather than mandating per-finding consistency thresholds. Use variance trends to detect regression after platform updates.
+
+**Related normative requirements:** APTS-AR-004, APTS-AR-006, APTS-AR-A01.
+
+---
+
+### APTS-AR-A03: Real-Time External Log Streaming (Advisory)
+
+**Rationale:** Real-time log streaming to an externally controlled aggregation system with an independently computed hash chain requires significant infrastructure investment. The core tamper-evidence need is already addressed by APTS-AR-012 (hash chains), APTS-AR-001 (structured logging), and APTS-AR-020 (audit trail isolation from the agent runtime).
+
+**Value:** External log streaming provides defense-in-depth against platform compromise scenarios where an attacker could tamper with local logs. For platforms handling highly sensitive engagements, external log verification provides an additional source of truth.
+
+**Practice Description:**
+
+Stream all platform action logs to an externally controlled aggregation system within a short latency window (for example, 5 seconds). The external system should sit outside the platform's trust boundary (different host, different credentials, different administrative domain) and compute its own hash chain. The platform's internally computed hash chain and the external system's hash chain should match under normal operation; divergence indicates tampering. Customers of the engagement should have read-only access to the external log store for their data so they can verify the record independently of the platform.
+
+**Recommendation:** Implement external log streaming for high-sensitivity engagements or when customer contracts require it. Batch upload (for example, every few minutes) is an acceptable alternative to true real-time streaming for most use cases.
+
+**Related normative requirements:** APTS-AR-001, APTS-AR-012, APTS-AR-020.
+
+---
+
+### APTS-AR-A04: Continuous Runtime Integrity Monitoring (Advisory)
+
+**Rationale:** Hashing every loaded executable section in memory on a short cadence is effectively asking every vendor to build runtime application self-protection. This is disproportionate to the threat model for most autonomous pentest platforms, which operate in controlled environments. Pre-flight binary attestation is already required by APTS-AR-016 (Platform Integrity and Supply Chain Attestation).
+
+**Value:** Runtime integrity monitoring detects supply chain compromise, unauthorized code modification, and process injection during active engagements. For platforms deployed in hostile network environments or running unattended for extended periods, this provides early warning of platform compromise.
+
+**Practice Description:**
+
+Verify platform code integrity continuously during engagement execution. Hash loaded executable code sections in memory on a documented cadence and compare against a published baseline; halt the engagement and alert the operator on mismatch. Require runtime-loaded modules (plugins, exploit modules, decision models) to be cryptographically signed and verify signatures before loading. Detect and alert on unauthorized filesystem modifications in the platform's working directory, unexpected process launches from the platform's service account, and configuration file changes during an engagement. For highly sensitive deployments, run from a read-only container image or a Secure Boot verified partition with configuration changes permitted only through signed update packages.
+
+**Recommendation:** Implement pre-flight integrity verification as the baseline (already required under APTS-AR-014). Reserve continuous runtime monitoring for high-sensitivity deployments or environments where the platform may run unattended in untrusted networks.
+
+**Related normative requirements:** APTS-AR-014.
+
+---
+
+### APTS-SC-A01: Platform Health Monitoring and Anomaly Detection (Advisory)
+
+**Rationale:** Core health monitoring is covered by APTS-SC-010. The advanced anomaly detection capabilities (behavioral baseline deviation, statistical confidence scoring, pattern analysis across testing, decision-making, and action dimensions) go beyond practical health monitoring into ML-based behavioral analysis territory.
+
+**Value:** Behavioral anomaly detection can identify prompt injection attacks, model drift, or platform compromise that simple health checks would miss. Confidence-scored anomaly routing reduces alert fatigue while preserving detection of high-severity events.
+
+**Recommendation:** Implement basic anomaly detection (probe rate spikes, unusual error rates) as part of SC-010 health monitoring. Reserve statistical baseline analysis and confidence scoring for platforms with dedicated security operations teams.
+
+---
+
+### APTS-HO-A01: Out-of-Band Kill Switch via Independent Network (Advisory)
+
+**Rationale:** Core kill switch functionality is covered by APTS-HO-008. The requirement for kill switch activation via physically independent communication channels (cellular, management network, physical button) assumes deployment scenarios where the primary network may be compromised or unavailable.
+
+**Value:** Out-of-band kill capability is critical for engagements against network infrastructure, ICS/SCADA systems, or environments where the testing platform could inadvertently disrupt its own control channel. For cloud-hosted platforms with reliable control plane connectivity, in-band kill switches (HO-008, SC-009) are sufficient.
+
+**Recommendation:** Implement out-of-band kill capability when testing network infrastructure, critical systems, or operating in environments with unreliable connectivity. Document the out-of-band channel in the Rules of Engagement for applicable engagements.
+
+---
+
+### APTS-AL-A01: Continuous Improvement and Maturity Roadmap (Advisory)
+
+**Rationale:** Multi-year maturity roadmaps, formal improvement frameworks, and annual strategic assessments are organizational process practices rather than technical governance for autonomous pentest platforms. APTS defines platform requirements, not organizational management practices.
+
+**Value:** Organizations pursuing Level 4 autonomy benefit from structured maturity progression. A maturity roadmap framework provides a planning tool for team development, process maturity, tool capability evolution, and governance structure.
+
+**Practice Description:**
+
+Establish a continuous improvement framework for autonomous pentesting operations that covers periodic capability assessments, documented lessons learned from engagements, and a multi-year maturity roadmap for advancing operational governance. Track metrics such as findings per hour, escalation rate, boundary violations, and decision accuracy to measure progression over time. Conduct periodic reviews of autonomy level appropriateness against those metrics and feed outcomes back into operational procedures and training.
+
+**Recommendation:** Use the maturity roadmap framework from the AL domain Implementation Guide as a planning tool. Track the metrics listed above to measure progression. Conduct annual reviews of autonomy level appropriateness.
+
+---
+
+### APTS-TP-A01: Breach Notification and Regulatory Reporting (Advisory)
+
+**Rationale:** Breach notification and regulatory reporting are general vendor obligations governed by applicable laws (GDPR, CCPA, HIPAA, and similar regimes) and existing organizational compliance programs. These obligations apply to any company handling sensitive data, not specifically to autonomous penetration testing platforms. Including jurisdiction-specific regulatory timelines as a mandatory pentest platform requirement conflates general corporate compliance with platform governance.
+
+**Value:** Platforms that formalize breach notification procedures specific to penetration testing engagements (where breach scope may involve multiple client environments) reduce response time and regulatory risk. Pre-built notification templates and severity classification aligned to regulatory timelines accelerate incident response.
+
+**Recommendation:** Establish breach notification procedures that cover penetration testing-specific scenarios (cross-tenant exposure, credential leakage during testing). Align notification timelines with applicable regulatory requirements. Reference APTS-TP-018 (Tenant Breach Notification) for cross-engagement breach scenarios.
+
+---
+
+### APTS-TP-A02: Privacy Regulation Compliance (Advisory)
+
+**Rationale:** Privacy regulation compliance (GDPR, CCPA, PIPEDA, HIPAA, and similar regimes) is a general legal obligation for any organization processing personal data. While autonomous pentest platforms do encounter personal data during testing, the compliance mechanisms (DPIAs, lawful basis documentation, data subject rights) are organizational responsibilities governed by existing privacy programs, not platform-specific technical controls.
+
+**Value:** Platforms that build privacy awareness into their testing workflows (automatic PII detection, data minimization, retention controls) reduce the compliance burden on operators. Privacy-by-design in the testing pipeline prevents accidental retention or exposure of personal data discovered during engagements.
+
+**Recommendation:** Integrate with APTS-TP-013 (sensitive data handling) for PII detection and isolation during testing. Document how the platform supports operators' privacy compliance obligations. Implement data minimization controls that limit personal data retention to what is necessary for finding documentation.
+
+---
+
+### APTS-TP-A03: Professional Liability and Engagement Agreements (Advisory)
+
+**Rationale:** Professional liability insurance, engagement agreements, and liability allocation are business and legal practices, not technical platform governance controls. These are organizational decisions influenced by jurisdiction, company size, client requirements, and risk appetite. A platform governance standard cannot prescribe specific contractual terms or insurance coverage levels.
+
+**Value:** Clear engagement agreements reduce disputes when autonomous testing causes unintended impact. Defined liability allocation, indemnification terms, and insurance requirements protect both platform operators and their clients. Standardized agreement templates accelerate client onboarding.
+
+**Recommendation:** Develop engagement agreement templates that address autonomous testing-specific risks (unintended system impact from autonomous actions, scope boundary failures). Maintain professional liability insurance appropriate to the scope and risk level of testing activities. Reference the Rules of Engagement framework in APTS-SE-001 for alignment between contractual scope and technical enforcement.
+
+---
+
+## Relationship to Conformance Tiers
+
+| Tier | Scope | Advisory Practices |
+|------|-------|--------------------|
+| Tier 1 (Foundation) | Core safety and scope controls | Not applicable |
+| Tier 2 (Verified) | Production-grade platform governance | Optional enhancement |
+| Tier 3 (Comprehensive) | Maximum assurance for high-risk operations | Recommended where operationally feasible |
+
+Advisory practices are independent of the tier system. A platform may claim Tier 3 conformance without implementing any advisory practices, and a Tier 2 platform may implement advisory practices that are relevant to its deployment context.
+
