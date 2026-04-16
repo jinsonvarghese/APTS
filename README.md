@@ -1,14 +1,3 @@
----
-
-layout: col-sidebar
-title: OWASP Autonomous Penetration Testing Standard (APTS)
-tags: apts, autonomous penetration testing standard
-level: 2
-type: documentation
-pitch: A governance standard for autonomous penetration testing platforms
-
----
-
 ![OWASP Logo](assets/images/OWASP_APTS_Logo.png)
 
 <p align="center">

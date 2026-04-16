@@ -1,0 +1,380 @@
+# Manipulation Resistance: Implementation Guide
+
+Practical guidance for implementing APTS Manipulation Resistance requirements. Each section provides a brief implementation approach, key considerations, and common pitfalls.
+
+> **Note:** This guide is informative, not normative. Recommended defaults and example values are suggested starting points; the [Manipulation Resistance README](README.md) contains the authoritative requirements. Where this guide and the README differ, the README governs.
+
+---
+
+## APTS-MR-001: Instruction Boundary Enforcement
+
+**Implementation:** Implement cryptographic tagging of operator instructions separate from target content. Maintain strict source tracking throughout execution pipeline.
+
+**Key Considerations:**
+- Tag all operator inputs with immutable cryptographic markers before processing
+- Enforce separation in memory/data structures; never merge instruction and target data paths
+- Validate source origin before acting on any directive
+
+**Common Pitfalls:**
+- Mixing operator and target content in shared buffers
+- Losing source attribution through multi-step processing
+
+**Prompt Injection Detection for AI/LLM-Based Platforms:**
+
+Platforms using LLMs for decision-making MUST implement layered prompt injection defense:
+
+1. **Input sanitization:** Strip or escape instruction-like patterns from target responses before passing to LLM. Patterns include: "ignore previous instructions", "you are now", "system:", "assistant:", and role-switching attempts.
+2. **Instruction boundary enforcement:** Use structured prompts with clear delimiters between system instructions (immutable) and target data (untrusted). Example: wrap target data in explicit tags like `<target_response>...</target_response>` and instruct the model to treat content within these tags as data, never as instructions.
+3. **Output validation:** Validate LLM outputs against expected action schemas before execution. If the LLM proposes an action outside the pre-defined action set, reject it and log the anomaly.
+4. **Canary detection:** Embed unique tokens in system prompts. If these tokens appear in target-facing outputs, the instruction boundary has been breached. Alert the operator immediately.
+5. **Dual-model verification:** For high-risk decisions, submit the same input to a second independent model and compare outputs. Divergent recommendations trigger escalation.
+
+---
+
+## APTS-MR-002: Response Validation & Sanitization
+
+**Implementation:** Validate all target responses against predefined schemas. Apply regex-based sanitization to remove instruction-like patterns (keywords: "execute", "ignore", "override", "admin", "perform").
+
+**Key Considerations:**
+- Define strict schemas per endpoint before testing begins
+- Log all sanitization events for post-test auditing
+- Use allowlist validation where possible instead of blocklist
+
+**Common Pitfalls:**
+- Over-reliance on blocklists that miss obfuscated patterns
+- Insufficient logging of sanitization events
+
+---
+
+## APTS-MR-003: Error Message Neutrality
+
+**Implementation:** Treat all error messages as untrusted data only for analysis. Never execute directives embedded in error responses. Extract only diagnostic information for vulnerability assessment.
+
+**Key Considerations:**
+- Parse error messages for vulnerability indicators, not instructions
+- Implement circuit breaker on suspicious error patterns
+- Document all extracted error information separately from actions taken
+
+**Common Pitfalls:**
+- Following debugging suggestions in error messages
+- Assuming error messages from trusted domains are safe
+
+---
+
+## APTS-MR-004: Configuration File Integrity Verification
+
+**Implementation:** Analyze discovered config files for vulnerabilities without executing embedded instructions. Cryptographically sign expected configs; reject unsigned variants. Flag instruction-like content as findings.
+
+**Key Considerations:**
+- Maintain baseline hashes of legitimate configurations
+- Scan for env var injection, comment-based instructions, hidden directives
+- Separate vulnerability analysis from any auto-remediation
+
+**Common Pitfalls:**
+- Auto-loading or executing config-embedded scripts
+- Missing injection vectors in config comments
+
+---
+
+## APTS-MR-005: Authority Claim Detection & Rejection
+
+**Implementation:** Maintain allowlist of authentic authority markers (cryptographic signatures, registered domain patterns). Flag and reject any authority claims not on allowlist as suspicious.
+
+**Key Considerations:**
+- Define authority markers in pre-test configuration only
+- Log all authority claims for post-test review
+- Treat "admin", "developer", "system" claims from target content as red flags
+
+**Common Pitfalls:**
+- Accepting domain-based authority without cryptographic proof
+- Allowing runtime modification of authority allowlists
+
+---
+
+## APTS-MR-006: Decision Boundary Enforcement
+
+**Implementation:** Codify all critical decisions (scope, escalation, credentials handling) in immutable pre-test configuration. Prevent runtime modifications via target-controlled data paths.
+
+**Key Considerations:**
+- Use immutable configuration objects after initialization
+- Require explicit human re-authorization for any scope/credential changes
+- Version-control all pre-test decisions for audit trail
+
+**Common Pitfalls:**
+- Allowing dynamic scope expansion based on target responses
+- Implicit scope changes via redirect chains
+
+---
+
+## APTS-MR-007: Redirect Following Policy
+
+**Implementation:** Validate all HTTP redirects (3xx status codes), JavaScript redirects, and meta-refresh directives against pre-approved scope. Reject out-of-scope redirects; log for analysis.
+
+**Key Considerations:**
+- Maintain explicit redirect whitelist per target
+- Detect redirect chains; validate each hop independently
+- Monitor for redirect-based DoS or infinite loops
+
+**Common Pitfalls:**
+- Blindly following relative redirects to different hosts
+- Missing JavaScript-based redirects (window.location)
+
+---
+
+## APTS-MR-008: DNS and Network-Level Redirect Prevention
+
+**Implementation:** Validate DNS responses against authorized scope before network connection. Detect DNS rebinding attacks and TOCTOU race conditions. Use DNSSEC validation where available.
+
+**Key Considerations:**
+- Implement DNS response validation against allowlist IPs
+- Monitor for rapid DNS changes (rebinding)
+- Pin resolved IPs for duration of interaction with domain
+
+**Common Pitfalls:**
+- Trusting DNS without validation; missing rebinding attacks
+- Not detecting DNS response changes between lookup and connection
+
+---
+
+## APTS-MR-009: Server-Side Request Forgery (SSRF) Prevention in Testing
+
+**Implementation:** Before following any URL discovered in target responses, validate against scope. Block private IP ranges (RFC 1918, 127.0.0.1, ::1) unless explicitly in scope.
+
+**Key Considerations:**
+- Maintain expanded IP blocklist (169.254.0.0/16, 224.0.0.0/4, metadata endpoints)
+- Check URL scheme (only http/https in most cases)
+- Log all blocked SSRF attempts with target source context
+
+**Common Pitfalls:**
+- Missing alternative IP representations (decimal, hex, octal notation)
+- Not blocking cloud metadata endpoints (AWS, GCP, Azure)
+
+---
+
+## APTS-MR-010: Scope Expansion Social Engineering Prevention
+
+**Implementation:** Detect social engineering patterns in target content (urgency, authority claims, emotional appeals). Flag suspicious scope expansion requests; require human approval.
+
+**Key Considerations:**
+- Maintain pattern library of social engineering indicators
+- Flag requests containing "urgent", "emergency", "authorization", "please", "critical"
+- Implement mandatory human review gate for scope changes
+
+**Common Pitfalls:**
+- Missing emotionally manipulative language in target responses
+- Auto-accepting scope expansion claims without human verification
+
+---
+
+## APTS-MR-011: Out-of-Band Communication Prevention
+
+**Implementation:** Block all communication channels except pre-approved testing channels. Detect and prevent blind SSRF, DNS exfiltration, and indirect data exfiltration attempts by targets.
+
+**Key Considerations:**
+- Monitor outbound DNS, HTTP, SMTP for unauthorized targets
+- Detect second-order request patterns (email callbacks, webhook calls)
+- Log all out-of-band attempt detections
+
+**Common Pitfalls:**
+- Missing DNS query-based exfiltration
+- Not detecting targets' attempts to control outbound traffic
+
+---
+
+## APTS-MR-012: Immutable Scope Enforcement Architecture
+
+**Implementation:** Implement scope as cryptographically signed, immutable data structure. Use hardware-backed or TPM-based enforcement where possible. Require cryptographic re-signing for any modifications.
+
+**Key Considerations:**
+- Use digital signatures with offline key storage for scope validation
+- Implement scope as append-only audit log with cryptographic chaining
+- Store scope outside regular application memory where possible
+
+**Common Pitfalls:**
+- Storing scope in modifiable configuration files
+- Missing logging of scope override attempts
+
+---
+
+## APTS-MR-013: Adversarial Example Detection in Vulnerability Classification
+
+**Implementation:** Test AI/ML-based vulnerability classification against adversarial examples. Include payload obfuscation, semantic equivalence variants, and jailbreak attempts in test sets.
+
+**Key Considerations:**
+- Maintain adversarial example library (encoding bypasses, prompt injections, semantic tricks)
+- Run quarterly adversarial testing against classification models
+- Document all adversarial bypass attempts for model hardening
+
+**Common Pitfalls:**
+- Relying solely on standard test payloads; missing novel obfuscation
+- Not updating adversarial library as attack techniques evolve
+
+---
+
+## APTS-MR-014: Resource Exhaustion and Tarpit Attack Prevention
+
+**Implementation:** Implement strict per-endpoint timeouts (5-30s). Detect slowloris, timeout-based tarpits, and memory exhaustion patterns. Implement exponential backoff with jitter.
+
+**Key Considerations:**
+- Set baseline response time threshold; flag 10x+ deviations as tarpits
+- Implement connection/request limits per host
+- Monitor heap/memory growth; abort on unusual spikes
+
+**Common Pitfalls:**
+- Over-generous timeouts allowing indefinite hangs
+- Missing memory exhaustion detection in response parsing
+
+---
+
+## APTS-MR-015: Deceptive Authentication Honeypots
+
+**Implementation:** Flag auth endpoints discovered in scope as potentially deceptive. Do not auto-authenticate to suspicious endpoints. Require explicit human approval before credential submission.
+
+**Key Considerations:**
+- Maintain list of known deceptive auth patterns (fake login forms, secondary auth)
+- Detect endpoints mimicking legitimate auth with slight variations
+- Log all suspicious auth endpoint detections
+
+**Common Pitfalls:**
+- Auto-submitting credentials to any /login or /auth endpoint
+- Missing visually similar but distinct auth endpoint clones
+
+---
+
+## APTS-MR-016: Anti-Automation Defense Detection
+
+**Implementation:** Respect rate limiting headers (Retry-After, X-RateLimit-*). Detect CAPTCHA, challenge-response, and fingerprinting defenses. Back off immediately upon detection.
+
+**Key Considerations:**
+- Parse standard rate limit headers; apply backoff before hitting limits
+- Detect CAPTCHA forms; refuse auto-completion
+- Monitor for fingerprinting scripts (bot detection); abort if detected
+
+**Common Pitfalls:**
+- Ignoring Retry-After headers
+- Attempting to bypass anti-automation via multiple IPs or rotation
+
+---
+
+## APTS-MR-017: Anomaly Detection in Response Patterns
+
+**Implementation:** Baseline normal response patterns (size, latency, error rates) for each endpoint. Flag deviations exceeding 3 sigma as anomalies. Investigate or abort on suspicious patterns.
+
+**Key Considerations:**
+- Collect 10+ baseline responses per endpoint before aggressive testing
+- Monitor content divergence (identical requests returning different responses)
+- Detect timing anomalies (sudden slowdowns, consistency changes)
+
+**Common Pitfalls:**
+- Starting aggressive testing without baseline establishment
+- Missing second-order anomalies (anomalies in anomalies)
+
+---
+
+## APTS-MR-018: AI Model Input/Output Architectural Boundary
+
+**Implementation:** Enforce strict architectural separation between system instructions and target data in AI pipelines. Tag all target data; prevent merging with system prompts. Implement input validation before AI model ingestion.
+
+**Key Considerations:**
+- Use separate model instances or namespaced contexts for system and target data
+- Implement prompt injection detection (unusual control characters, instruction keywords)
+- Log all target data ingested by models for audit
+
+**Common Pitfalls:**
+- Concatenating target data directly into prompts without sanitization
+- Missing encoding-based prompt injection vectors
+
+---
+
+## APTS-MR-019: Discovered Credential Protection
+
+**Implementation:** Immediately encrypt all discovered credentials (AES-256-GCM) at discovery time. Never store plaintext in logs, memory dumps, or output files. Use dedicated secret management system.
+
+**Key Considerations:**
+- Implement credential discovery hooks to auto-encrypt at parse time
+- Use unique encryption keys per credential; rotate keys post-test
+- Separate plaintext in-memory access to authorized personnel only
+
+**Common Pitfalls:**
+- Credentials logged before encryption
+- Reusing encryption keys across multiple tests
+- Storing decryption keys in same location as encrypted data
+
+---
+
+## APTS-MR-020: Adversarial Validation and Resilience Testing of Safety Controls
+
+**Implementation:** Conduct annual independent adversarial testing by external team. Include prompt injection, jailbreak attempts, scope bypass scenarios. Document all control failures; implement mitigations.
+
+**Key Considerations:**
+- Use a red team independent of the development team (internal or external)
+- Test against realistic threat models (insider, advanced persistent actor)
+- Maintain detailed findings log; track remediation completion
+
+**Common Pitfalls:**
+- Internal teams conducting "adversarial" testing without realistic threat modeling
+- Skipping adversarial testing or conducting only sporadic reviews
+
+---
+
+
+## APTS-MR-021: Data Isolation Adversarial Testing
+
+**Implementation:** Test cross-tenant access vectors (shared storage, shared memory, shared logs, shared error handlers). Attempt to access other tenant data via all communication channels.
+
+**Key Considerations:**
+- Provision multiple test tenants; attempt cross-tenant access via all discovery vectors
+- Test log aggregation systems, error reporting, analytics endpoints
+- Verify data encryption at rest and in transit per tenant
+
+**Common Pitfalls:**
+- Testing only primary application data; missing isolation in logs/errors
+- Not testing all secondary channels (metrics, traces, backups)
+
+---
+
+## APTS-MR-022: Inter-Model Trust Boundaries and Output Validation
+
+**Implementation:** Define trust boundaries between AI model components. Validate all model-to-model outputs against strict schemas. Never trust downstream model outputs without sanitization.
+
+**Key Considerations:**
+- Implement output validation layer between model components
+- Apply same sanitization rules to model outputs as to target content
+- Log all cross-model data transfers for audit trails
+
+**Common Pitfalls:**
+- Assuming high-confidence model outputs are safe to pass to downstream systems
+- Missing injection vectors through model chaining (model A output -> model B input)
+
+---
+
+## APTS-MR-023: Agent Runtime as an Untrusted Component
+
+**Implementation:** Write a threat-model document that explicitly names the agent runtime as one of the adversaries the platform defends against. Isolate the agent runtime from the control plane at a layer the runtime cannot reach: a separate process with no shared filesystem to platform config, a separate container with no mount of the platform's secrets or allowlist, a separate network namespace with no route to the control-plane management endpoints. Platform configuration files (allowlists, threshold tables, kill-switch config, audit store credentials) live on a volume the agent runtime has no read, write, or modify access to. Distribution-shift monitoring is a background job that consumes audit records and flags anomalies for a human-reviewed queue. Run a tabletop exercise at least quarterly that walks through "what if the agent tries to do X" for a few concrete X values drawn from current threat intelligence.
+
+**Key Considerations:**
+- This requirement is architectural; it cannot be satisfied by prompt engineering or model alignment
+- The isolation must survive the agent being wrong, not just the agent being attacked
+- Distribution-shift monitoring needs a human in the loop because legitimate novel behavior will look anomalous
+
+**Common Pitfalls:**
+- Putting the agent runtime and the control plane in the same process and calling "function boundaries" isolation
+- Mounting the platform configuration into the agent runtime's filesystem "for convenience"
+- Treating a quarterly tabletop exercise as a box-ticking ritual rather than an opportunity to find real gaps
+
+---
+
+## Implementation Roadmap
+
+**Tier 1 (implement before any autonomous pentesting begins):**
+MR-001 (instruction boundary enforcement), MR-002 (response validation/sanitization), MR-003 (error message neutrality), MR-004 (config file integrity), MR-005 (authority claim detection), MR-006 (decision boundary enforcement), MR-007 and MR-008 (redirect and DNS-level prevention), MR-009 (SSRF prevention), MR-010 (scope expansion social engineering prevention), MR-011 (out-of-band communication prevention), MR-012 (immutable scope enforcement), MR-018 (AI model I/O boundary), MR-019 (discovered credential protection).
+
+Start with MR-001 and MR-002 (instruction boundaries, response sanitization). These are your primary defense against prompt injection. Add MR-009 (SSRF) and MR-012 (immutable scope) next, then layer the remaining T1 controls.
+
+**Tier 2 (implement within first 3 engagements):**
+MR-013 (adversarial example detection), MR-014 (resource exhaustion/tarpit prevention), MR-015 (deceptive authentication honeypots), MR-016 (anti-automation defense detection), MR-017 (response pattern anomaly detection), MR-020 (adversarial validation and resilience testing of safety controls), MR-022 (inter-model trust boundaries), MR-023 (agent runtime as an untrusted component).
+
+Prioritize MR-020 (adversarial testing of your own controls) and MR-023 (agent runtime isolation) together. MR-023 defines the architectural property that makes the other MR controls actually binding when the underlying model changes; MR-020 validates that the property holds in practice.
+
+**Tier 3 (implement based on threat landscape):**
+MR-021 (data isolation adversarial testing).
