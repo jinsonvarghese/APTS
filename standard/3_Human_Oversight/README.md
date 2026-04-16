@@ -100,7 +100,7 @@ Approval gates MUST:
    - 100% of L2 exploitation actions >= CVSS 7.0 have approvals
    - All approvals include timestamp, approver identity, and rationale
 3. **Timeline verification**: Confirm approval grants show operator actually reviewed (not auto-generated)
-4. **Escape testing**: Attempt to execute gated action without approval; system must block and escalate
+4. **Escape testing**: Attempt to execute gated action without approval; verify the system blocks the action and escalates
 5. **Authority verification**: Confirm approver held delegation for approved action type
 
 > **See also:** APTS-HO-010 (mandatory gates before irreversible actions regardless of autonomy level), APTS-HO-005 (delegation chain-of-custody and decision audit trail).
@@ -254,10 +254,10 @@ Organizations MUST generate periodic reports from decision logs at a cadence app
 ### Verification
 
 1. **Log existence audit**: Verify decision logs exist and contain entries for all approvals made
-2. **Immutability test**: Attempt to modify historical log entry; system must prevent modification
+2. **Immutability test**: Attempt to modify historical log entry; verify the system prevents modification
 3. **Completeness test**: Random sample 10 recent approvals; verify all required fields present in logs
 4. **Traceability test**: Pick escalation scenario; verify full chain-of-custody from initial request through execution
-5. **Access control test**: Non-authorized user attempts to access/modify logs; system must deny
+5. **Access control test**: Non-authorized user attempts to access/modify logs; verify the system denies access
 6. **Search functionality test**: Search for approvals by operator, action type, timestamp; verify results accurate
 7. **Export test**: Generate monthly compliance report; verify data accuracy and format
 8. **Retention test**: Verify logs older than retention period are archived/secured appropriately
@@ -308,7 +308,7 @@ Autonomous penetration testing systems MUST implement a graceful pause mechanism
 2. **State preservation test**: Before pause, exploit a system; pause tool; examine checkpoint file to verify credentials/sessions preserved
 3. **Connection persistence test**: Pause with active SSH/RDP session; attempt to reconnect to same session after resumption
 4. **Memory dump test**: Verify paused state contains all variables, pending actions, configuration
-5. **Checkpoint integrity test**: Corrupt checkpoint file; system should detect and use backup
+5. **Checkpoint integrity test**: Corrupt checkpoint file; verify the system detects corruption and uses backup
 6. **Resumption test**: After pause, resume and verify tool uses preserved state (no re-exploitation needed)
 7. **Dashboard confirmation test**: Verify dashboard shows PAUSED status with preserved connection count
 8. **CPU/memory test**: Confirm paused tool has no active test threads, generates no outbound test traffic, and CPU/memory usage does not exceed the platform's documented idle-state baseline
@@ -413,7 +413,7 @@ Autonomous penetration testing systems MUST implement an immediate kill switch m
 1. **Kill activation test**: Click kill switch; observe immediate tool termination
 2. **State dump test**: Trigger kill switch; verify state dump file created and encrypted
 3. **Evidence preservation test**: Verify state dump moved to forensic storage and hashed
-4. **No grace period test**: Tool should stop immediately (verify TCP connections not in ESTABLISHED state after kill)
+4. **No grace period test**: Verify the tool stops immediately (TCP connections not in ESTABLISHED state after kill)
 5. **Log flush test**: Verify logs written to disk and finalized at kill time
 6. **Forensic recovery test**: From state dump, reconstruct tool state and verify accuracy
 7. **Automatic kill test**: Trigger automatic kill condition (for example, PII access outside scope); observe automatic termination
@@ -496,9 +496,9 @@ For each irreversible action category, system MUST:
 
 ### Verification
 
-1. **Irreversible action test**: Attempt to read sensitive file; system must halt and require approval
-2. **Persistence test**: Attempt to install reverse shell; system must halt and require approval
-3. **Lateral movement test**: Attempt to move to new system; system must halt and require approval
+1. **Irreversible action test**: Attempt to read sensitive file; verify the system halts and requires approval
+2. **Persistence test**: Attempt to install reverse shell; verify the system halts and requires approval
+3. **Lateral movement test**: Attempt to move to new system; verify the system halts and requires approval
 4. **Confidence gate test**: Lower confidence scores below 75%; verify system escalates to manager
 5. **Approval logging test**: Verify all decisions logged with operator identity and explicit rationale
 6. **Timeout behavior test**: Approval times out; verify action NOT auto-approved despite timeout
