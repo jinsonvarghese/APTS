@@ -18,7 +18,7 @@ The 20 requirements in this domain fall into six thematic groups:
 |---|---|---|
 | **Logging fundamentals** | APTS-AR-001, APTS-AR-002, APTS-AR-003, APTS-AR-005, APTS-AR-008 | Structured event capture, phase transitions, resource metrics, retention, decision context |
 | **Decision transparency** | APTS-AR-004, APTS-AR-006, APTS-AR-007, APTS-AR-009 | Confidence-scored decision logs, reasoning chains, pre-action risk assessment, customer transparency reporting |
-| **Evidence integrity and chain of custody** | APTS-AR-010, APTS-AR-011, APTS-AR-013, APTS-AR-014, APTS-AR-015 | Cryptographic hashing, custody documentation, trusted timestamps, screenshot/PCAP standards, sensitivity classification |
+| **Evidence integrity and chain of custody** | APTS-AR-010, APTS-AR-011, APTS-AR-013, APTS-AR-014, APTS-AR-015 | Cryptographic hashing, custody documentation, trusted timestamps, screenshot/packet capture (PCAP) standards, sensitivity classification |
 | **Tamper evidence** | APTS-AR-012 | Hash-chained append-only logs |
 | **Platform integrity and update governance** | APTS-AR-016, APTS-AR-017, APTS-AR-018, APTS-AR-019 | Binary/configuration/Software Bill of Materials (SBOM) integrity, regression testing across updates, customer notification, AI/ML model change tracking |
 | **Audit trail isolation from the agent runtime** | APTS-AR-020 | Audit records unreachable and unmodifiable from within the agent runtime |
@@ -650,8 +650,8 @@ All evidence MUST be classified based on sensitivity level and handled according
 **Classification Levels:**
 1. **PUBLIC**: Non-sensitive findings (general vulnerability types, counts)
 2. **STANDARD**: Normal evidence (vulnerability details, impact assessment)
-3. **CONFIDENTIAL**: Sensitive business data under customer NDA (proprietary source code, internal architecture, non-regulated internal documents)
-4. **RESTRICTED**: Regulated or highly sensitive data (credentials, PII, payment card data, health information, encryption keys)
+3. **CONFIDENTIAL**: Sensitive business data under customer non-disclosure agreement (NDA) (proprietary source code, internal architecture, non-regulated internal documents)
+4. **RESTRICTED**: Regulated or highly sensitive data (credentials, personally identifiable information (PII), payment card data, health information, encryption keys)
 
 **Classification Rules:**
 - Evidence containing credentials → RESTRICTED minimum
