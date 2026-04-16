@@ -1,4 +1,4 @@
 remote_theme: "owasp/www--site-theme@main"
 markdown: GFM
 plugins:
-  - jekyll-include-cache
+ - jekyll-include-cache-0.2.0
