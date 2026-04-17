@@ -29,7 +29,7 @@ The 20 requirements in this domain fall into seven thematic groups:
 |---|---|---|
 | APTS-SC-001 | Impact Classification and CIA Scoring | MUST \| Tier 1 |
 | APTS-SC-002 | Industry-Specific Impact Considerations | MUST \| Tier 2 |
-| APTS-SC-003 | Real-World Impact Classification Examples | SHOULD \| Tier 1 |
+| APTS-SC-003 | Real-World Impact Classification Examples | SHOULD \| Tier 2 |
 | APTS-SC-004 | Rate Limiting, Bandwidth, and Payload Constraints | MUST \| Tier 1 |
 | APTS-SC-005 | Cascading Failure Prevention in Interconnected Systems | SHOULD \| Tier 2 |
 | APTS-SC-006 | Threshold Escalation Workflow (Automated → Approval → Prohibited) | MUST \| Tier 2 |
@@ -104,7 +104,7 @@ Platforms MUST adjust impact classifications for industry-specific regulatory re
 
 ## APTS-SC-003: Real-World Impact Classification Examples
 
-**Classification:** SHOULD | Tier 1
+**Classification:** SHOULD | Tier 2
 
 ### Requirement
 
