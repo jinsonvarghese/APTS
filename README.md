@@ -28,8 +28,8 @@ APTS is not a testing methodology. It complements PTES, OWASP WSTG, and OSSTMM b
 
 ## Compliance Tiers
 
-- **Tier 1 (Foundation)**: 73 requirements. The platform will not test outside scope, can be stopped immediately, and provides an audit trail.
-- **Tier 2 (Verified)**: 84 additional (157 cumulative). Full transparency, tamper-proof audit trails, and independently verifiable findings.
+- **Tier 1 (Foundation)**: 72 requirements. The platform will not test outside scope, can be stopped immediately, and provides an audit trail.
+- **Tier 2 (Verified)**: 85 additional (157 cumulative). Full transparency, tamper-proof audit trails, and independently verifiable findings.
 - **Tier 3 (Comprehensive)**: 16 additional (173 cumulative). Highest assurance for critical infrastructure and L4 autonomous operations.
 
 Ten additional advisory practices live exclusively in the [Advisory Requirements appendix](./standard/appendix/Advisory_Requirements.md) under the `APTS-<DOMAIN>-A0x` identifier pattern. Advisory practices are not counted toward any tier and do not affect conformance.

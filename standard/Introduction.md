@@ -54,7 +54,7 @@ APTS defines three compliance tiers. A platform must meet 100% of requirements a
 
 **Verification model:** APTS follows a conformance assessment model, consistent with how other OWASP standards (WSTG, ASVS) are used by practitioners. Platform operators evaluate their platforms against the requirements using the [Checklists](appendix/Checklists.md) and document compliance. The [Conformance Claim Template](appendix/Conformance_Claim_Template.md) provides an optional format for publishing evidence of compliance. Customers MAY independently verify claims using the [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) or the [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) appendix for hands-on verification of behavioral requirements (kill switch response times, scope enforcement accuracy, manipulation resistance) that cannot be verified through documentation alone.
 
-### Tier 1: Foundation (73 requirements)
+### Tier 1: Foundation (72 requirements)
 
 **What it means for customers:** The platform will not test outside the agreed scope, can be stopped immediately if something goes wrong, will not store or leak discovered credentials in plaintext, and provides a basic audit trail of everything it did. A Tier 1 platform is safe to deploy for supervised autonomous testing against non-critical systems.
 
@@ -62,7 +62,7 @@ APTS defines three compliance tiers. A platform must meet 100% of requirements a
 
 All requirements marked `MUST | Tier 1` across all eight domains. Covers: scope boundary enforcement, impact classification, kill switch, approval gates, structured logging, basic manipulation resistance, provider vetting, credential protection.
 
-### Tier 2: Verified (84 additional, 157 cumulative)
+### Tier 2: Verified (85 additional, 157 cumulative)
 
 **What it means for customers:** The platform is transparent about what it did and why, protects your data with tamper-proof audit trails, handles incidents with formal response procedures, and provides findings you can independently verify. A Tier 2 platform is suitable for production environments, regulated industries, and engagements where you need full accountability.
 

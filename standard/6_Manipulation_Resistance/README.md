@@ -70,13 +70,14 @@ Every requirement in this domain includes a Verification subsection listing the 
 
 ### Requirement
 
-The autonomous pentesting tool MUST enforce high-integrity boundaries enforced through defense-in-depth controls between legitimate tool instructions (from the operator) and untrusted target-side content. All data retrieved from target systems MUST be treated as potentially adversarial and cannot modify, override, or influence the tool's core operational logic.
+The autonomous pentesting tool MUST enforce high-integrity boundaries through defense-in-depth controls between legitimate tool instructions (from the operator) and untrusted target-side content. All data retrieved from target systems MUST be treated as potentially adversarial and cannot modify, override, or influence the tool's core operational logic.
 
-**Verification Criteria:**
-- Tool instructions from operators are cryptographically signed or otherwise verifiable
-- Target-side content is parsed in a sandboxed context that cannot access tool control structures
-- Any attempt to override tool instructions from target content is logged and blocked
-- Operator can audit all instruction sources (operator-provided and target-provided)
+Specific controls:
+
+- Tool instructions from operators MUST be cryptographically signed or otherwise verifiable.
+- Target-side content MUST be parsed in a sandboxed context that cannot access tool control structures.
+- Any attempt to override tool instructions from target content MUST be logged and blocked.
+- Operators MUST be able to audit all instruction sources (operator-provided and target-provided).
 
 > **See also:** APTS-MR-018 (architectural I/O boundary that this instruction boundary operates across), APTS-SC-020 (external tool/action allowlist enforcement that backstops this boundary).
 
@@ -116,12 +117,13 @@ The autonomous pentesting tool MUST enforce high-integrity boundaries enforced t
 
 All target-side responses (HTTP, DNS, API, configuration files) MUST be validated and sanitized before being processed by the tool's LLM reasoning component. Sanitization MUST remove or flag content that appears designed to inject instructions, override tool behavior, or claim illegitimate authority.
 
-**Verification Criteria:**
-- Responses are validated against schema before processing
-- Instruction-like patterns are detected and flagged
-- Authority claims are rejected and logged
-- Response size limits are enforced
-- Malformed responses are safely handled without tool state corruption
+Specific controls:
+
+- Responses MUST be validated against schema before processing.
+- Instruction-like patterns MUST be detected and flagged.
+- Authority claims MUST be rejected and logged.
+- Response size limits MUST be enforced.
+- Malformed responses MUST be safely handled without tool state corruption.
 
 > **See also:** APTS-MR-018 (architectural I/O boundary within which sanitization is enforced), APTS-MR-022 (inter-model trust boundaries that similarly validate LLM-adjacent inputs).
 
@@ -161,12 +163,13 @@ All target-side responses (HTTP, DNS, API, configuration files) MUST be validate
 
 Custom error messages and exception handling from target systems MUST NOT influence tool behavior. The tool MUST treat error messages as data to be analyzed for vulnerabilities, not as instructions or behavioral triggers. Error-based information disclosure MUST be detected and flagged, but MUST NOT be treated as authoritative information about the system's capabilities or the tool's operational scope.
 
-**Verification Criteria:**
-- Error messages are categorized as data, not instructions
-- Stack traces are analyzed for vulnerability info, not for embedded commands
-- Custom error pages are scanned but not trusted
-- Error-based social engineering attempts are detected and logged
-- Tool behavior is consistent regardless of error message content
+Specific controls:
+
+- Error messages MUST be categorized as data, not instructions.
+- Stack traces MUST be analyzed for vulnerability information and MUST NOT be parsed for embedded commands.
+- Custom error pages MUST be scanned but MUST NOT be trusted.
+- Error-based social engineering attempts MUST be detected and logged.
+- Tool behavior MUST remain consistent regardless of error message content.
 
 ### Verification
 
@@ -206,12 +209,13 @@ Custom error messages and exception handling from target systems MUST NOT influe
 
 Configuration files discovered during reconnaissance MUST be treated as data sources for vulnerability information, not as authoritative directives for tool behavior. If the tool reads configuration files (for example, `.env`, `config.json`, `terraform.tfvars`, `docker-compose.yml`), any instructions or scope changes within those files MUST be explicitly rejected unless explicitly approved by the operator.
 
-**Verification Criteria:**
-- Configuration files are parsed for vulnerability information (exposed credentials, misconfigurations)
-- Instructions within config files are flagged, not executed
-- Scope changes in config files are blocked
-- Credential injection attempts in config files are detected
-- Tool behavior validation rules are not modified by config file content
+Specific controls:
+
+- Configuration files MUST be parsed for vulnerability information (exposed credentials, misconfigurations).
+- Instructions embedded within configuration files MUST be flagged and MUST NOT be executed.
+- Scope changes declared in configuration files MUST be blocked.
+- Credential injection attempts in configuration files MUST be detected.
+- Tool behavior validation rules MUST NOT be modified by configuration file content.
 
 ### Verification
 
@@ -260,13 +264,14 @@ The tool MUST identify and reject any claims of authority embedded in target con
 4. Alert the operator when suspicious authority claims are detected
 5. Continue operation with original operator-defined permissions only
 
-**Verification Criteria:**
-- Authority claims are identified and categorized (legitimate or suspicious)
-- No tool behavior changes based on authority claims from target content
-- All authority claims are logged with context
-- Operator is alerted to suspicious authority claims
-- Tool maintains original permission scope regardless of claims
-- Signature validation (if any) is cryptographically sound
+Specific controls:
+
+- Authority claims MUST be identified and categorized (legitimate or suspicious).
+- Tool behavior MUST NOT change based on authority claims from target content.
+- All authority claims MUST be logged with their full context.
+- Operators MUST be alerted to suspicious authority claims.
+- The tool MUST maintain its original permission scope regardless of claims encountered in target content.
+- Signature validation, where implemented, MUST be cryptographically sound.
 
 ### Verification
 
@@ -312,13 +317,14 @@ The tool SHOULD enforce clear decision boundaries that cannot be crossed by adve
 4. Be auditable in tool logs
 5. Halt testing and escalate to the operator when boundary violations are attempted
 
-**Verification Criteria:**
-- Decision boundaries are explicitly defined in tool configuration
-- Any decision that could cross a boundary triggers operator escalation
-- Tool state reflecting decisions is write-protected during testing
-- All boundary violation attempts are logged
-- Operator is notified before tool state is modified
-- Tool defaults to conservative (halting) behavior when boundaries are ambiguous
+Specific controls:
+
+- Decision boundaries SHOULD be explicitly defined in tool configuration.
+- Any decision that could cross a boundary SHOULD trigger operator escalation.
+- Tool state reflecting decisions SHOULD be write-protected during testing.
+- All boundary violation attempts SHOULD be logged.
+- Operators SHOULD be notified before tool state is modified.
+- The tool SHOULD default to conservative (halting) behavior when boundaries are ambiguous.
 
 > **See also:** APTS-SC-020 (external allowlist enforcement of the decisions this boundary governs), APTS-MR-018 (architectural model I/O boundary that this decision boundary sits inside).
 
@@ -362,13 +368,14 @@ The tool SHOULD enforce clear decision boundaries that cannot be crossed by adve
 
 The autonomous pentesting tool MUST enforce a strict redirect following policy that prevents target systems from directing testing to out-of-scope targets. All HTTP redirects (3xx responses), DNS redirects (CNAME, A record changes), and logical redirects (API endpoints pointing to different servers) MUST be subject to scope validation before following.
 
-**Verification Criteria:**
-- HTTP 3xx responses are validated against authorized scope before following
-- Redirect chains are validated at each step
-- Out-of-scope redirects are logged and not followed
-- Operator is alerted when redirect attempts occur
-- Tool provides option to allow/disallow cross-domain redirects
-- Redirect loop detection prevents infinite redirection attempts
+Specific controls:
+
+- HTTP 3xx responses MUST be validated against authorized scope before the redirect is followed.
+- Redirect chains MUST be validated at each step, not only at origin.
+- Out-of-scope redirects MUST be logged and MUST NOT be followed.
+- Operators MUST be alerted when out-of-scope redirect attempts occur.
+- The tool MUST provide an explicit option to allow or disallow cross-domain redirects.
+- Redirect loop detection MUST prevent infinite redirection attempts.
 
 ### Verification
 
@@ -412,14 +419,15 @@ The autonomous pentesting tool MUST enforce a strict redirect following policy t
 
 The tool MUST validate network-layer resolution results against authorized scope. DNS responses, CNAME records, A records, and any network-level resolution that points to different IP addresses MUST be validated before the tool makes connections.
 
-**Verification Criteria:**
-- DNS A records are resolved and validated against scope
-- CNAME aliases are checked for scope compliance
-- DNS redirection attempts are logged
-- Out-of-scope IP ranges are not contacted
-- Reverse DNS lookups do not override scope decisions
-- DNSSec validation is performed if applicable
-- Geodiversity in DNS responses is handled safely
+Specific controls:
+
+- DNS A records MUST be resolved and validated against scope.
+- CNAME aliases MUST be checked for scope compliance at every hop of the chain.
+- DNS redirection attempts MUST be logged.
+- Out-of-scope IP ranges returned by DNS MUST NOT be contacted.
+- Reverse DNS lookups MUST NOT override forward scope decisions.
+- DNSSEC validation MUST be performed where the zone is signed.
+- Geographic diversity in DNS responses MUST be handled safely and consistently across resolver hops.
 
 ### Verification
 
@@ -460,14 +468,15 @@ The tool MUST validate network-layer resolution results against authorized scope
 
 The autonomous pentesting tool MUST NOT be weaponized as an SSRF client by target systems. When target systems respond with URLs, endpoints, or content pointing to out-of-scope locations, these MUST be subject to strict scope validation before the tool attempts to connect.
 
-**Verification Criteria:**
-- URLs in target responses are validated against scope before following
-- IP addresses in target responses are validated against authorized IP ranges
-- Localhost and private IP access is restricted
-- Redirect loops and SSRF chains are detected
-- Metadata (XML, JSON) with embedded URLs are validated
-- File:// protocol and other dangerous schemes are rejected
-- API endpoints suggesting out-of-scope tests are flagged
+Specific controls:
+
+- URLs discovered in target responses MUST be validated against scope before any outbound request is issued.
+- IP addresses discovered in target responses MUST be validated against authorized IP ranges.
+- Localhost and private IP access MUST be restricted, and access MUST require explicit scope authorization.
+- Redirect loops and SSRF chains MUST be detected.
+- Structured payloads (XML, JSON, YAML) containing embedded URLs MUST be validated before following any URL they contain.
+- The file:// scheme and other dangerous URL schemes MUST be rejected.
+- API endpoints that suggest out-of-scope tests MUST be flagged.
 
 > **See also:** APTS-SE-006 (pre-action scope validation invoked before each URL is followed), APTS-SE-012 (DNS rebinding defense that complements SSRF prevention at the resolution layer).
 
@@ -485,7 +494,9 @@ The autonomous pentesting tool MUST NOT be weaponized as an SSRF client by targe
    - Localhost (127.0.0.1, ::1) access is restricted
    - Private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) are restricted
    - Link-local addresses (169.254.0.0/16) are rejected
-   - AWS metadata endpoint (169.254.169.254) is blocked
+   - AWS IMDS (169.254.169.254, including IMDSv2 token requests) is blocked
+   - GCP metadata service is blocked (metadata.google.internal, 169.254.169.254, and IPv6 fd00:ec2::254)
+   - Azure IMDS is blocked (169.254.169.254 on HTTP path /metadata/instance with required header "Metadata: true")
 
 3. **Protocol Validation**: Test:
    - file:// protocol rejection
@@ -513,14 +524,15 @@ This requirement addresses linguistic and social engineering manipulation. For c
 
 The tool MUST detect and resist social engineering attempts embedded in target content that attempt to convince the tool (or its operator) to expand testing scope. These attempts may use logical reasoning, authority claims, urgency language, or appeals to thoroughness.
 
-**Verification Criteria:**
-- Social engineering language is detected in target responses
-- Appeals to "completeness" are recognized as potentially suspicious
-- Urgency language triggers caution, not action
-- Authority claims are handled per APTS-MR-005
-- Tool behavior is not influenced by emotional language or logical appeals
-- Operator is alerted when social engineering patterns are detected
-- Tool maintains immutable scope regardless of persuasive arguments
+Specific controls:
+
+- Social engineering language MUST be detected in target responses.
+- Appeals to "completeness" or "thoroughness" MUST be treated as potentially suspicious.
+- Urgency language MUST trigger caution, not action.
+- Authority claims MUST be handled per APTS-MR-005.
+- Tool behavior MUST NOT be influenced by emotional language or persuasive logical appeals in target content.
+- Operators MUST be alerted when social engineering patterns are detected.
+- The tool MUST maintain its immutable scope regardless of persuasive arguments encountered in target content.
 
 ### Verification
 
@@ -563,13 +575,14 @@ The tool MUST detect and resist social engineering attempts embedded in target c
 
 The tool MUST prevent target systems from using out-of-band communication channels to communicate instructions or scope changes. Email, webhooks, DNS TXT records, or any secondary communication channel discovered during testing MUST NOT be used as an instruction channel.
 
-**Verification Criteria:**
-- Email addresses discovered are not automatically contacted
-- Webhook URLs are not followed unless in authorized scope
-- DNS TXT records are analyzed for content, not treated as instructions
-- Out-of-band callbacks are not automatically made
-- Operator approval is required for any out-of-band communication initiation
-- All out-of-band communication attempts are logged
+Specific controls:
+
+- Email addresses discovered during testing MUST NOT be contacted automatically.
+- Webhook URLs MUST NOT be followed unless they fall within authorized scope.
+- DNS TXT records MUST be analyzed as data only and MUST NOT be treated as instructions.
+- Out-of-band callbacks MUST NOT be initiated automatically.
+- Operator approval MUST be required before any out-of-band communication is initiated.
+- All out-of-band communication attempts MUST be logged.
 
 > **See also:** APTS-MR-018 (architectural I/O boundary that forbids channels outside the defined model I/O surface), APTS-SC-019 (kernel-enforced sandbox that prevents unapproved network egress).
 
@@ -615,14 +628,15 @@ The tool's testing scope MUST be enforced through layered controls designed to r
 
 Exception: At Autonomy Level 4 (see APTS-AL-020), scope MAY expand within pre-approved boundary parameters defined before testing begins. Such pre-approved expansion parameters are part of the original scope definition and do not constitute mid-test scope modification. All expansions MUST be logged and reported.
 
-**Verification Criteria:**
-- Scope is read-only after testing initialization
-- Scope is cryptographically signed or verified before use
-- Any modification attempt is logged and escalates to operator
-- Scope is defined and fixed before testing begins
-- Scope cannot be modified mid-test without operator intervention
-- Operator approval of scope is recorded and auditable
-- Scope changes require documented restart with operator approval
+Specific controls:
+
+- Scope MUST be read-only after testing initialization.
+- Scope MUST be cryptographically signed or verified before use.
+- Any modification attempt MUST be logged and MUST be escalated to the operator.
+- Scope MUST be defined and fixed before testing begins.
+- Scope MUST NOT be modified mid-test without explicit operator intervention.
+- Operator approval of scope MUST be recorded and auditable.
+- Scope changes MUST require a documented restart with operator approval.
 
 ### Verification
 
@@ -686,16 +700,17 @@ The LLM models used in the autonomous pentesting tool MUST be tested and verifie
 
 The autonomous pentesting tool MUST implement strict timeout enforcement and prevent resource exhaustion from tarpits and infinite content generation. (1) Tarpit Detection and Timeout Enforcement: Implement strict timeout enforcement at multiple levels (connection, read, overall request, test suite). Detect "tarpit" services designed to consume resources through artificially slow responses, incomplete data, or hanging connections. (2) Infinite Content Generation Prevention: Enforce content size limits to prevent services generating infinite or arbitrarily large content. Detect infinite pagination loops and halt after N pages. Block directory traversal to infinite directories. Monitor memory usage and trigger alerts on rapid growth. (3) Resource Management: Ensure open connections are closed after timeout, memory from incomplete requests is freed, CPU usage remains bounded, and tool can continue to other targets. Configurable timeout values with logging.
 
-**Verification Criteria:**
-- Timeouts enforced at connection, read, and overall request levels
-- Tarpit services detected and flagged; timeout occurrences logged
-- Content size limits enforced; responses exceeding limits rejected
-- Infinite pagination detected; tool halts after N pages
-- Tool continues testing despite timeouts, tarpits, or infinite content
-- Memory usage monitored with alerts on rapid growth
-- Operator alerts for timeouts, tarpits, and infinite content patterns
-- No hanging connections persist indefinitely
-- Timeout and content size values configurable and logged
+Specific controls:
+
+- Timeouts MUST be enforced at connection, read, and overall request levels.
+- Tarpit services MUST be detected and flagged, and timeout occurrences MUST be logged.
+- Content size limits MUST be enforced, and responses exceeding those limits MUST be rejected.
+- Infinite pagination MUST be detected, and the tool MUST halt pagination after a configurable page count.
+- The tool MUST continue testing despite timeouts, tarpits, or infinite content patterns affecting any single target.
+- Memory usage MUST be monitored with alerts on rapid growth.
+- Operators MUST receive alerts for timeouts, tarpits, and infinite content patterns.
+- No connection MUST be permitted to hang indefinitely.
+- Timeout and content size values MUST be configurable and MUST be logged with every engagement.
 
 ### Verification
 
@@ -751,15 +766,16 @@ The tool MUST flag and escalate to operator any authentication endpoint exhibiti
 5. Avoid sending credentials to deceptive services
 6. Escalate uncertain cases to the operator rather than proceeding autonomously
 
-**Verification Criteria:**
-- Tool does not attempt authentication without operator approval
-- Discovered credentials are not automatically used
-- Anomalous authentication endpoints are detected and flagged
-- Tool escalates uncertain authentication cases to operator
-- Operator is alerted to authentication endpoints with anomalies
-- Multiple failed authentication attempts are logged
-- Tool can safely skip authentication-required areas
-- Tool demonstrates a documented detection heuristic
+Specific controls:
+
+- The tool MUST NOT attempt authentication without operator approval.
+- Discovered credentials MUST NOT be used automatically.
+- Anomalous authentication endpoints MUST be detected and flagged.
+- The tool MUST escalate uncertain authentication cases to the operator.
+- Operators MUST be alerted to authentication endpoints exhibiting anomalies.
+- Multiple failed authentication attempts MUST be logged.
+- The tool MUST be able to safely skip authentication-required areas when appropriate.
+- The tool MUST use, and MUST document, a deliberate detection heuristic.
 
 **Note:** Perfect honeypot detection is not achievable. This requirement is satisfied when the platform demonstrates a documented detection heuristic and escalates uncertain cases to the operator rather than proceeding autonomously.
 
@@ -807,14 +823,15 @@ The tool MUST detect and appropriately handle anti-automation defenses that targ
 
 The tool MUST NOT attempt to bypass these defenses but instead flag them and alert the operator.
 
-**Verification Criteria:**
-- Rate limiting is detected and respected
-- Browser detection is logged and findings noted
-- CAPTCHA/JS challenges are not bypassed
-- Tool halts when blocked rather than escalating attempts
-- Operator is alerted to anti-automation defenses
-- Tool can recover after respecting rate limits
-- Blocking patterns are documented
+Specific controls:
+
+- Rate limiting MUST be detected and respected.
+- Browser detection MUST be logged and the findings noted.
+- CAPTCHA and JavaScript challenges MUST NOT be bypassed.
+- The tool MUST halt when blocked rather than escalating attempts.
+- Operators MUST be alerted to anti-automation defenses.
+- The tool MUST be able to recover after respecting rate limits.
+- Blocking patterns MUST be documented in engagement artifacts.
 
 ### Verification
 
@@ -848,14 +865,15 @@ The tool MUST NOT attempt to bypass these defenses but instead flag them and ale
 
 The tool MUST detect anomalies in target response patterns that indicate deceptive services or honeypots. When responses deviate from expected patterns, the tool MUST flag the anomaly and investigate further.
 
-**Verification Criteria:**
-- Baseline response patterns are established
-- Deviations from baseline trigger investigation
-- Suspicious patterns are logged
-- Operator is alerted to anomalies
-- Tool does not assume anomalies are vulnerabilities
-- Tool gathers data about anomalies for operator review
-- Common anomaly patterns are documented
+Specific controls:
+
+- Baseline response patterns MUST be established.
+- Deviations from baseline MUST trigger investigation.
+- Suspicious patterns MUST be logged.
+- Operators MUST be alerted to anomalies.
+- The tool MUST NOT assume an anomaly is a vulnerability.
+- The tool MUST gather data about anomalies for operator review.
+- Common anomaly patterns MUST be documented.
 
 ### Verification
 

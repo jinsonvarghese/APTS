@@ -51,19 +51,19 @@ This appendix is part of the OWASP Autonomous Penetration Testing Standard (APTS
 
 ## 2. Safety Controls & Impact Management (SC) --- 20 Requirements
 
-### Tier 1 (7 Requirements)
+### Tier 1 (6 Requirements)
 
 - [ ] **APTS-SC-001** | MUST | Impact Classification and CIA Scoring - Implement a multi-tier impact classification system assigning impact levels (critical/high/medium/low) to every pentest action before execution with CIA dimension scoring and action-to-impact mapping.
-- [ ] **APTS-SC-003** | SHOULD | Document at least 10 representative pentest scenarios with calculated impact classifications, CIA scores, and approval workflows covering password spraying, directory traversal, buffer overflow, and data exfiltration.
 - [ ] **APTS-SC-004** | MUST | Rate Limiting, Bandwidth, and Payload Constraints - Implement per-host connection limits and rate limiting for all active pentest operations configurable per impact tier, with subnet/engagement-wide limits and payload constraints included.
 - [ ] **APTS-SC-009** | MUST | Provide multiple independent kill switch mechanisms (operator-initiated, remote halt, automatic failsafe on control plane loss) with Phase 1 cessation within 5 seconds and Phase 2 graceful shutdown within 60 seconds.
 - [ ] **APTS-SC-010** | MUST | Health Check Monitoring, Threshold Adjustment, and Automatic Halt - Continuously monitor target system health at configurable intervals (30s critical, 60s production, 5min non-production), dynamically adjust thresholds based on target recovery characteristics, and automatically halt on degradation exceeding 200% baseline or 3 consecutive health check failures.
 - [ ] **APTS-SC-015** | MUST | Perform automated post-engagement integrity validation: file checksums, unexpected accounts, database record counts, configuration baselines, and unexpected processes.
 - [ ] **APTS-SC-020** | MUST | Enforce the agent's tool and action allowlist in a component external to the model (gateway, policy engine, or broker) rather than through the system prompt; reject any tool invocation not on the allowlist and log the rejection to the isolated audit trail.
 
-### Tier 2 (11 Requirements)
+### Tier 2 (12 Requirements)
 
 - [ ] **APTS-SC-002** | MUST | Adjust impact classifications for regulated industries: patient data access as Critical in healthcare, cardholder data as Critical in financial, availability impacts one tier higher in critical infrastructure.
+- [ ] **APTS-SC-003** | SHOULD | Document at least 10 representative pentest scenarios with calculated impact classifications, CIA scores, and approval workflows covering password spraying, directory traversal, buffer overflow, and data exfiltration.
 - [ ] **APTS-SC-005** | SHOULD | Detect and prevent cascading failures by verifying dependent system health before attacking upstream systems, automatically reducing intensity or halting on dependent system degradation.
 - [ ] **APTS-SC-006** | MUST | Implement graduated escalation: informational/low auto-execute, medium requires standard approval, high requires elevated approval, critical requires senior approval plus live operator confirmation.
 - [ ] **APTS-SC-007** | MUST | Cumulative Risk Scoring with Time-Based Decay - Track cumulative impact score across engagements considering impact severity, action frequency, duration, system criticality, and exposure with configurable time-based decay function, severity-level reset windows, documented methodology, and configurable escalation thresholds.
@@ -289,13 +289,13 @@ This appendix is part of the OWASP Autonomous Penetration Testing Standard (APTS
 | Domain | Tier 1 | Tier 2 | Tier 3 | Total |
 |--------|--------|--------|--------|-------|
 | Scope Enforcement (SE) | 9 | 16 | 1 | 26 |
-| Safety Controls (SC) | 7 | 11 | 2 | 20 |
+| Safety Controls (SC) | 6 | 12 | 2 | 20 |
 | Human Oversight (HO) | 13 | 6 | 0 | 19 |
 | Graduated Autonomy (AL) | 11 | 9 | 8 | 28 |
 | Auditability (AR) | 7 | 12 | 1 | 20 |
 | Manipulation Resistance (MR) | 13 | 9 | 1 | 23 |
 | Supply Chain Trust (TP) | 10 | 11 | 1 | 22 |
 | Reporting (RP) | 3 | 10 | 2 | 15 |
-| **Total** | **73** | **84** | **16** | **173** |
+| **Total** | **72** | **85** | **16** | **173** |
 
 Tier 1 + Tier 2 + Tier 3 = 173 tier-required requirements. Advisory practices are documented separately in the [Advisory Requirements appendix](Advisory_Requirements.md) and do not count toward any tier.

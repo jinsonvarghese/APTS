@@ -234,10 +234,10 @@ Minimum cloud configuration requirements for platforms deployed on public cloud:
 
 | Classification | Description | Handling Requirements | Examples |
 |---------------|-------------|----------------------|----------|
-| Critical | Data whose exposure would cause severe harm | Encrypt at rest and in transit. Access logged and alerted. Retain minimum period only. Destroy with certification. | Discovered credentials, authentication tokens, PII, PHI, payment card data |
-| Confidential | Engagement-specific data not for public disclosure | Encrypt at rest and in transit. Access logged. Retain per engagement agreement. | Vulnerability findings, network maps, exploitation evidence, target configurations |
-| Internal | Platform operational data | Encrypt in transit. Standard access controls. Standard retention. | Platform logs, health metrics, operator activity records |
-| Public | Information safe for public disclosure | No special handling required. | Published CVE references, public documentation, framework version information |
+| RESTRICTED | Data whose exposure would cause severe harm | Encrypt at rest and in transit. Access logged and alerted. Retain minimum period only. Destroy with certification. | Discovered credentials, authentication tokens, PII, PHI, payment card data |
+| CONFIDENTIAL | Engagement-specific data not for public disclosure | Encrypt at rest and in transit. Access logged. Retain per engagement agreement. | Vulnerability findings, network maps, exploitation evidence, target configurations |
+| INTERNAL | Platform operational data | Encrypt in transit. Standard access controls. Standard retention. | Platform logs, health metrics, operator activity records |
+| PUBLIC | Information safe for public disclosure | No special handling required. | Published CVE references, public documentation, framework version information |
 
 All data MUST be classified at the point of discovery or creation. Classification MUST NOT be downgraded without documented justification and approval.
 

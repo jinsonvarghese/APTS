@@ -9,7 +9,7 @@ This appendix is part of the OWASP Autonomous Penetration Testing Standard (APTS
 ## A
 
 **Adjacent Network**
-A network reachable from the scoped network through routing, including networks on the same broadcast domain, behind the same gateway, or accessible via discovered routes. Used in scope enforcement to define boundaries that autonomous testing must not cross without explicit authorization. See APTS-SE-013.
+A network reachable from the scoped network through routing, including networks on the same broadcast domain, behind the same gateway, or accessible via discovered routes. Used in scope enforcement to define boundaries that autonomous testing MUST NOT cross without explicit authorization. See APTS-SE-013.
 
 **AI/LLM Provider**
 External service providing artificial intelligence or large language model capabilities to autonomous pentest systems. Examples: OpenAI GPT-4, Anthropic Claude, Google Gemini. Requires data handling agreements and security vetting per the Supply Chain Trust domain.
@@ -79,7 +79,7 @@ Notation for specifying IP address ranges using a base address and prefix length
 Alternative security measures that mitigate vulnerability when the primary control is missing. Example: Two-factor authentication compensates for weak passwords.
 
 **Compliance Tier**
-One of three progressive levels of APTS conformance. Tier 1 (Foundation) requires 73 core requirements (MUST | Tier 1). Tier 2 (Verified) adds 84 requirements for a cumulative 157 (MUST | Tier 2 + SHOULD | Tier 2). Tier 3 (Comprehensive) adds 16 requirements for a cumulative 173 (MUST | Tier 3 + SHOULD | Tier 3). A platform must meet 100% of requirements assigned to its claimed tier (both MUST and SHOULD). An additional 10 advisory practices in the Advisory Requirements appendix are recommended for highest-assurance engagements but are not counted toward any tier.
+One of three progressive levels of APTS conformance. Tier 1 (Foundation) requires 72 core requirements (MUST | Tier 1). Tier 2 (Verified) adds 85 requirements for a cumulative 157 (MUST | Tier 2 + SHOULD | Tier 2). Tier 3 (Comprehensive) adds 16 requirements for a cumulative 173 (MUST | Tier 3 + SHOULD | Tier 3). A platform must meet 100% of requirements assigned to its claimed tier (both MUST and SHOULD). An additional 10 advisory practices in the Advisory Requirements appendix are recommended for highest-assurance engagements but are not counted toward any tier.
 
 **Confidence Score**
 A numeric value on a 0-100% scale indicating the platform's certainty in a scope boundary determination, target legitimacy assessment, asset classification, or finding validity. Scores below 75% for scope-related decisions trigger mandatory human escalation. See APTS-HO-013, APTS-RP-003.
