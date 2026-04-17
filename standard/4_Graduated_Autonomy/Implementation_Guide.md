@@ -463,9 +463,9 @@ Each transition MUST be logged per APTS-AR-001 with: previous state, new state, 
 
 **Key Considerations:**
 - Evasion authorization must be separate from general test authorization
-- Stealth techniques must be listed explicitly, not inferred
-- Report must document which techniques were used and how
-- Stealth measures must not obscure the audit trail or incident response data
+- Stealth techniques MUST be listed explicitly, not inferred
+- Report MUST document which techniques were used and how
+- Stealth measures MUST NOT obscure the audit trail or incident response data
 
 **Common Pitfalls:**
 - Evasion enabled by default or assumed to be implicit in authorization
