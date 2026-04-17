@@ -75,7 +75,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 |----|-------------|----------------|------|-------|
 | APTS-SC-001 | Impact Classification and CIA Scoring | MUST | 1 | Classify impact using CIA scoring |
 | APTS-SC-002 | Industry-Specific Impact Considerations | MUST | 2 | Apply industry-specific impact rules |
-| APTS-SC-003 | Real-World Impact Classification Examples | SHOULD | 1 | Provide real-world impact examples |
+| APTS-SC-003 | Real-World Impact Classification Examples | SHOULD | 2 | Provide real-world impact examples |
 | APTS-SC-004 | Rate Limiting, Bandwidth, and Payload Constraints | MUST | 1 | Enforce rate, bandwidth, payload limits |
 | APTS-SC-005 | Cascading Failure Prevention in Interconnected Systems | SHOULD | 2 | Prevent cascading failures across systems |
 | APTS-SC-006 | Threshold Escalation Workflow (Automated → Approval → Prohibited) | MUST | 2 | Escalate actions through approval tiers |
