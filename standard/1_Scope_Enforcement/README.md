@@ -805,7 +805,9 @@ When engagements have conflicting permissions (for example, Engagement A authori
 
 ### Requirement
 
-When the platform deploys agents, sensors, or any software component to client infrastructure (for example, endpoint agents, browser extensions, network probes, cloud connectors), those components SHOULD operate under the same scope and safety constraints as the platform itself.
+**Applicability:** This requirement is conditional. It applies only to platforms that deploy agents, sensors, or any software component to client or target infrastructure (for example, endpoint agents, browser extensions, network probes, cloud connectors). Platforms that perform testing exclusively over the network or via APIs without deploying any client-side software component are out of scope for this requirement and SHOULD document this fact in their Conformance Claim.
+
+When this requirement applies, the platform SHOULD operate its client-side components under the same scope and safety constraints as the platform itself. The conditions enumerated below describe what that constraint set looks like in practice; while the parent requirement is SHOULD-classified, each enumerated condition is MUST when the platform has elected (or been required by an engagement) to deploy client-side components.
 
 1. Client-side agents MUST be explicitly listed in the Rules of Engagement, including what systems they will be deployed on and what actions they are authorized to take.
 2. Client-side agents MUST validate scope independently. They MUST NOT rely solely on instructions from the central platform. If the agent loses contact with the platform, it MUST cease testing and enter a safe idle state.
@@ -813,8 +815,6 @@ When the platform deploys agents, sensors, or any software component to client i
 4. Kill switch activation MUST terminate all client-side agents, not just server-side processes.
 5. Client-side agents MUST be removable by the client at any time without requiring operator assistance or platform cooperation.
 6. All data collected by client-side agents MUST be subject to the same data handling, encryption, and retention requirements as server-side data.
-
-**Applicability:** This requirement applies to platforms that deploy client-side agents, sensors, or software components to target infrastructure. Platforms using API-based or network-based testing only MAY document a justified exemption.
 
 ### Verification
 
