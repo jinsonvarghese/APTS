@@ -33,9 +33,9 @@ APTS defines four discrete autonomy levels. Each level expands what the platform
 
 ### Tier and Level Mapping
 
-APTS compliance Tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) and autonomy Levels (L1 through L4) are distinct concepts and MUST NOT be conflated:
+APTS Compliance Tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) and autonomy Levels (L1 through L4) are distinct concepts and MUST NOT be conflated:
 
-- A **Tier** is a compliance posture: which APTS requirements a platform satisfies.
+- A **Tier** is a conformance posture: which APTS requirements a platform satisfies.
 - A **Level** is an operational mode: how much independent action the platform takes during an engagement.
 
 A Tier 1 platform satisfies the foundational APTS requirements and is generally suitable for L1 operation. A Tier 2 platform satisfies the requirements needed to operate at L2 and L3. A Tier 3 platform satisfies the requirements needed to operate at L4. Several requirements in this domain (APTS-AL-008, APTS-AL-013, APTS-AL-015, APTS-AL-017) are classified at lower Tiers despite describing higher-Level behavior. This is intentional: the requirement applies to any platform that *offers* the corresponding Level, regardless of which Tier the platform targets overall. A platform that does not offer the corresponding Level may treat such requirements as not applicable.
