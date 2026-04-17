@@ -485,7 +485,9 @@ The autonomous pentesting tool MUST NOT be weaponized as an SSRF client by targe
    - Localhost (127.0.0.1, ::1) access is restricted
    - Private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) are restricted
    - Link-local addresses (169.254.0.0/16) are rejected
-   - AWS metadata endpoint (169.254.169.254) is blocked
+   - AWS IMDS (169.254.169.254, including IMDSv2 token requests) is blocked
+   - GCP metadata service is blocked (metadata.google.internal, 169.254.169.254, and IPv6 fd00:ec2::254)
+   - Azure IMDS is blocked (169.254.169.254 on HTTP path /metadata/instance with required header "Metadata: true")
 
 3. **Protocol Validation**: Test:
    - file:// protocol rejection
