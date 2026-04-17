@@ -9,7 +9,7 @@ This appendix is part of the OWASP Autonomous Penetration Testing Standard (APTS
 ## A
 
 **Adjacent Network**
-A network reachable from the scoped network through routing, including networks on the same broadcast domain, behind the same gateway, or accessible via discovered routes. Used in scope enforcement to define boundaries that autonomous testing must not cross without explicit authorization. See APTS-SE-013.
+A network reachable from the scoped network through routing, including networks on the same broadcast domain, behind the same gateway, or accessible via discovered routes. Used in scope enforcement to define boundaries that autonomous testing MUST NOT cross without explicit authorization. See APTS-SE-013.
 
 **AI/LLM Provider**
 External service providing artificial intelligence or large language model capabilities to autonomous pentest systems. Examples: OpenAI GPT-4, Anthropic Claude, Google Gemini. Requires data handling agreements and security vetting per the Supply Chain Trust domain.
