@@ -139,4 +139,4 @@ Transitions between testing phases SHOULD be governed by explicit criteria rathe
 | Exploitation → Post-Exploitation | Exploitation objectives met or time budget consumed, operator reviews findings | Operator approval required |
 | Post-Exploitation → Reporting & Cleanup | Post-exploitation objectives complete, rollback initiated, evidence preserved | Automatic on scope completion or operator trigger |
 
-For time-bounded engagements, the platform MUST reserve sufficient time for Reporting & Cleanup phase regardless of progress in earlier phases. A minimum of 10% of total engagement time or 2 hours (whichever is greater) SHOULD be reserved for cleanup.
+For time-bounded engagements, the platform MUST reserve sufficient time for the Reporting & Cleanup phase regardless of progress in earlier phases. A minimum of 5% of total engagement time or 1 hour (whichever is greater) SHOULD be reserved for cleanup, with a soft target of 2 hours for engagements of 20 hours or more. For engagements under 4 hours, the platform SHOULD document the chosen cleanup window and the rationale for it, since fixed minimums may be disproportionate at that scale.
