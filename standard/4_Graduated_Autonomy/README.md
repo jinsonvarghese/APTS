@@ -4,6 +4,8 @@
 
 This domain defines four levels of operational autonomy for autonomous penetration testing platforms (L1 Assisted through L4 Autonomous) and the controls each level requires. Graduated autonomy is the central safety mechanism of APTS: it ensures that the degree of independent action a platform takes is matched by proportionate human oversight, boundary enforcement, escalation handling, and audit coverage. Requirements in this domain govern how a platform earns the right to operate at a given level, what it must do at that level, and how it transitions or is downgraded between levels. This domain is also the source of the canonical phase model (Reconnaissance → Enumeration → Identification → Exploitation → Post-Exploitation → Reporting) used by the rest of the standard.
 
+**Applicability.** This domain applies to platforms that expose an operator-adjustable level of autonomy over pentest execution. Platforms that operate in a single fixed mode, or that use declarative policy rather than operator-facing autonomy tiers, should map their execution behavior to the nearest APTS Level and document any architectural deviations in their conformance claim. The Level framework describes the autonomy spectrum; it does not prescribe a specific product architecture. Vendors whose architecture does not map cleanly to an APTS Level may propose alternative patterns to the project for consideration in a future revision.
+
 This domain covers level-specific obligations and transitions between autonomy levels. Scope boundary definition belongs to Scope Enforcement (SE), hard-stop controls to Safety Controls (SC), human approval mechanics to Human Oversight (HO), and the audit trail for level transitions to Auditability (AR).
 
 > For implementation guidance, see the [Implementation Guide](Implementation_Guide.md).
@@ -31,9 +33,9 @@ APTS defines four discrete autonomy levels. Each level expands what the platform
 
 ### Tier and Level Mapping
 
-APTS compliance Tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) and autonomy Levels (L1 through L4) are distinct concepts and MUST NOT be conflated:
+APTS Compliance Tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) and autonomy Levels (L1 through L4) are distinct concepts and MUST NOT be conflated:
 
-- A **Tier** is a compliance posture: which APTS requirements a platform satisfies.
+- A **Tier** is a conformance posture: which APTS requirements a platform satisfies.
 - A **Level** is an operational mode: how much independent action the platform takes during an engagement.
 
 A Tier 1 platform satisfies the foundational APTS requirements and is generally suitable for L1 operation. A Tier 2 platform satisfies the requirements needed to operate at L2 and L3. A Tier 3 platform satisfies the requirements needed to operate at L4. Several requirements in this domain (APTS-AL-008, APTS-AL-013, APTS-AL-015, APTS-AL-017) are classified at lower Tiers despite describing higher-Level behavior. This is intentional: the requirement applies to any platform that *offers* the corresponding Level, regardless of which Tier the platform targets overall. A platform that does not offer the corresponding Level may treat such requirements as not applicable.

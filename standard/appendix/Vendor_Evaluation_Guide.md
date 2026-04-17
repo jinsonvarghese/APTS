@@ -116,7 +116,7 @@ Use the questions below to evaluate vendor capabilities across all eight APTS do
 
 Use these seven questions for initial assessment before detailed evaluation:
 
-1. **"Which APTS tier do you claim compliance with?"** If unfamiliar with APTS, share this standard. If claiming compliance, request evidence.
+1. **"Which APTS tier do you claim conformance with?"** If unfamiliar with APTS, share this standard. If claiming conformance, request evidence.
 
 2. **"Provide your completed APTS conformance assessment against the [Checklists](Checklists.md)."** A credible vendor maps capabilities to per-tier verification items, whether the assessment was performed internally or by a third party.
 

@@ -96,10 +96,7 @@ An operational mode where the platform conducts recurring or ongoing testing aga
 Data destruction method that deletes encryption keys rather than overwriting data. Once keys destroyed, data becomes unrecoverable even if stored media is not physically destroyed.
 
 **CVSS (Common Vulnerability Scoring System)**
-An open framework for communicating the characteristics and severity of software vulnerabilities. References to CVSS in this standard mean CVSS v3.1 or later (v4.0 is the current version as of this release). The specific version used should be consistent within an engagement and documented in engagement reports (see APTS-RP-003).
-
-**CVSS Score**
-Common Vulnerability Scoring System: Standardized method to rate vulnerability severity from 0.0 (none) to 10.0 (critical). CVSS v4.0 is the current version maintained by FIRST. Used to determine risk levels.
+An open framework maintained by FIRST for communicating the characteristics and severity of software vulnerabilities. Scores range from 0.0 (none) to 10.0 (critical). References to CVSS in this standard mean CVSS v3.1 or later (v4.0 is the current version as of this release). The specific version used should be consistent within an engagement and documented in engagement reports (see APTS-RP-003).
 
 **CWE (Common Weakness Enumeration)**
 Categorization of software weaknesses (programming errors, design flaws). Examples: CWE-89 (SQL Injection), CWE-79 (Cross-Site Scripting). Used to correlate similar vulnerabilities across products.

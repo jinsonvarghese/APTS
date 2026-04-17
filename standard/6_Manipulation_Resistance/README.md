@@ -8,6 +8,8 @@ This domain defines how an autonomous penetration testing platform defends itsel
 
 **Implementation reality.** Current AI/ML architectures process instructions and target-side data in a shared context, so absolute separation is not achievable today. Requirements therefore define a defense-in-depth posture: input sanitization, output validation, context isolation, monitoring, and adversarial testing. Verification criteria measure detection and response capability, not absolute prevention. Platforms MUST implement layered defenses, document known limitations, and evaluate effectiveness against published prompt-injection benchmarks where applicable.
 
+**Ongoing verification.** Controls in this domain defend against an evolving adversarial surface. Platforms are expected to maintain an adversarial test corpus that is refreshed as new injection and exfiltration patterns are disclosed (for example, OWASP LLM Top 10 revisions, published research, CVE-style disclosures). A point-in-time verification against a fixed corpus does not constitute sustained conformance with this domain.
+
 This domain covers adversarial manipulation of the platform's decisions, inputs, and safety controls during an engagement. Scope boundary definition belongs to Scope Enforcement (SE), hard-stop controls to Safety Controls (SC), human escalation of suspected manipulation to Human Oversight (HO), and model-supply-chain trust to Supply Chain Trust (TP).
 
 > For implementation guidance, see the [Implementation Guide](Implementation_Guide.md).

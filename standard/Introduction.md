@@ -52,7 +52,7 @@ APTS does not prescribe who performs the assessment. The choice of internal self
 
 APTS defines three compliance tiers. A platform must meet 100% of requirements assigned to its claimed tier (both MUST and SHOULD). No partial credit.
 
-**Verification model:** APTS follows a conformance assessment model, consistent with how other OWASP standards (WSTG, ASVS) are used by practitioners. Platform operators evaluate their platforms against the requirements using the [Checklists](appendix/Checklists.md) and document compliance. The [Conformance Claim Template](appendix/Conformance_Claim_Template.md) provides an optional format for publishing evidence of compliance. Customers MAY independently verify claims using the [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) or the [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) appendix for hands-on verification of behavioral requirements (kill switch response times, scope enforcement accuracy, manipulation resistance) that cannot be verified through documentation alone.
+**Verification model:** APTS follows a conformance assessment model, consistent with how other OWASP standards (WSTG, ASVS) are used by practitioners. Platform operators evaluate their platforms against the requirements using the [Checklists](appendix/Checklists.md) and document conformance. The [Conformance Claim Template](appendix/Conformance_Claim_Template.md) provides an optional format for publishing evidence of conformance. Customers MAY independently verify claims using the [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) or the [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) appendix for hands-on verification of behavioral requirements (kill switch response times, scope enforcement accuracy, manipulation resistance) that cannot be verified through documentation alone.
 
 ### Tier 1: Foundation (72 requirements)
 
@@ -82,7 +82,7 @@ All Tier 2 plus all `MUST | Tier 3` and `SHOULD | Tier 3` requirements. Adds: co
 
 In addition to the three compliance tiers, APTS designates a small number of requirements as **Advisory**. These are practices that provide meaningful additional assurance but were assessed as disproportionately burdensome relative to their safety value at their original tier, or as infeasible to verify with current technology (for example, full replay of LLM-based decision chains). Advisory requirements use the identifier pattern `APTS-<DOMAIN>-A0x` and are documented exclusively in the [Advisory Requirements](appendix/Advisory_Requirements.md) appendix; they do not appear in the domain READMEs.
 
-Advisory requirements are **not required for compliance at any tier** but are **recommended for high-risk engagements**, regulated industries, and platforms operating at Level 4 autonomy. Platforms that implement advisory requirements MAY document their adoption in vendor evaluation materials. Customers seeking maximum assurance SHOULD evaluate vendor adoption of advisory requirements as a differentiator.
+Advisory requirements are **not required for conformance at any tier** but are **recommended for high-risk engagements**, regulated industries, and platforms operating at Level 4 autonomy. Platforms that implement advisory requirements MAY document their adoption in vendor evaluation materials. Customers seeking maximum assurance SHOULD evaluate vendor adoption of advisory requirements as a differentiator.
 
 ---
 
@@ -119,7 +119,7 @@ This standard is complementary to existing standards:
 - **Application security** (OWASP ASVS, OWASP Top 10): autonomous systems should test against these
 - **Governance frameworks** (NIST CSF, ISO 27001, NIST AI RMF, SOC 2, PCI DSS, GDPR): APTS requirements align with these; see [Compliance Matrix](appendix/Compliance_Matrix.md) for specific version mappings
 - **AI agent security** ([OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/), [Singapore IMDA Agentic AI Governance Framework](https://www.imda.gov.sg/resources/press-releases-factsheets-and-speeches/press-releases/2026/new-model-ai-governance-framework-for-agentic-ai)): APTS addresses agentic AI risks specific to pentesting
-- **AI regulation** (EU AI Act): Platforms operating in EU markets should consider EU AI Act transparency and human oversight obligations alongside APTS requirements. APTS compliance does not constitute EU AI Act compliance, but many APTS requirements (particularly in the Human Oversight, Auditability, and Reporting domains) address concerns that overlap with EU AI Act obligations. Organizations should consult legal counsel for specific EU AI Act compliance determination
+- **AI regulation** (EU AI Act): Platforms operating in EU markets should consider EU AI Act transparency and human oversight obligations alongside APTS requirements. APTS conformance does not constitute EU AI Act compliance, but many APTS requirements (particularly in the Human Oversight, Auditability, and Reporting domains) address concerns that overlap with EU AI Act obligations. Organizations should consult legal counsel for specific EU AI Act compliance determination
 
 ---
 

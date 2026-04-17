@@ -2,11 +2,11 @@
 
 Informative Appendix (non-normative)
 
-> **Scope Note:** This guide validates core safety, scope, and reporting controls through hands-on testing. It covers 39 of the 173 tier-required APTS requirements and does not constitute full APTS tier validation. For comprehensive tier compliance verification, evaluate against all requirements using the [Checklists](Checklists.md).
+> **Scope Note:** This guide validates core safety, scope, and reporting controls through hands-on testing. It covers 39 of the 173 tier-required APTS requirements and does not constitute full APTS tier validation. For comprehensive tier conformance verification, evaluate against all requirements using the [Checklists](Checklists.md).
 
 ## Purpose
 
-This appendix provides **optional** structured tests for hands-on verification of platform behavior. It is not required for APTS compliance evaluation. Most customers will evaluate platform operators using operator-provided assessment evidence and operator demonstrations (see [Vendor Evaluation Guide](Vendor_Evaluation_Guide.md)). Internal enterprise platform teams MAY also use these same procedures for independent self-validation before publishing an internal conformance claim.
+This appendix provides **optional** structured tests for hands-on verification of platform behavior. It is not required for APTS conformance evaluation. Most customers will evaluate platform operators using operator-provided assessment evidence and operator demonstrations (see [Vendor Evaluation Guide](Vendor_Evaluation_Guide.md)). Internal enterprise platform teams MAY also use these same procedures for independent self-validation before publishing an internal conformance claim.
 
 CAT is intended for organizations that want additional assurance beyond operator-provided evidence, particularly for critical infrastructure, regulated environments, or fully autonomous (L4) deployments. CAT can be used in three ways:
 
