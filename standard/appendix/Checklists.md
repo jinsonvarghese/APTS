@@ -6,7 +6,7 @@ This appendix is part of the OWASP Autonomous Penetration Testing Standard (APTS
 
 **How to use:** For your target compliance tier, satisfy all requirements at that tier **and all lower tiers** within each domain. Tier 2 includes all Tier 1 requirements; Tier 3 includes all Tier 1 and Tier 2 requirements.
 
-**Notation:** Each requirement is marked **MUST** (mandatory) or **SHOULD** (recommended). Both MUST and SHOULD requirements must be satisfied for tier compliance. No partial credit.
+**Notation:** Each requirement is marked **MUST** (mandatory) or **SHOULD** (recommended). Both MUST and SHOULD requirements must be satisfied for tier conformance. No partial credit.
 
 ---
 
