@@ -156,7 +156,7 @@ When the kill switch activates, multiple domains execute in parallel:
 3. **HO domain:** HO-008 captures state dump, HO-015 sends notifications to all configured channels
 4. **SE domain:** SE-006 ceases all scope validation (no new actions to validate)
 
-Implementation must ensure these cross-domain actions execute independently. A failure in AR logging must not delay SC halt. A failure in HO notification must not prevent evidence preservation.
+Implementation MUST ensure these cross-domain actions execute independently. A failure in AR logging MUST NOT delay SC halt. A failure in HO notification MUST NOT prevent evidence preservation.
 
 ---
 
@@ -271,7 +271,7 @@ For platforms deployed on Kubernetes or container orchestration:
 **Implementation:** Deploy independent external watchdog (separate infrastructure) that periodically contacts the penetration test platform and receives health status. If no contact for 5 min, send out-of-band alert (SMS, PagerDuty) to incident commander and customer.
 
 **Key Considerations:**
-- Watchdog must not depend on same infrastructure as penetration test platform
+- Watchdog MUST NOT depend on same infrastructure as penetration test platform
 - Out-of-band alerts ensure notification even if primary systems are down
 
 **Common Pitfalls:**
