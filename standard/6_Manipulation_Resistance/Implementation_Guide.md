@@ -141,7 +141,7 @@ Platforms using LLMs for decision-making MUST implement layered prompt injection
 **Implementation:** Before following any URL discovered in target responses, validate against scope. Block private IP ranges (RFC 1918, 127.0.0.1, ::1) unless explicitly in scope.
 
 **Key Considerations:**
-- Maintain expanded IP blocklist (169.254.0.0/16, 224.0.0.0/4, metadata endpoints)
+- Maintain expanded IP blocklist: 169.254.0.0/16, 224.0.0.0/4, and cloud metadata endpoints for AWS (169.254.169.254 IMDSv1 and IMDSv2), GCP (metadata.google.internal, 169.254.169.254, and IPv6 fd00:ec2::254), and Azure (169.254.169.254 on path /metadata/instance with header "Metadata: true")
 - Check URL scheme (only http/https in most cases)
 - Log all blocked SSRF attempts with target source context
 
