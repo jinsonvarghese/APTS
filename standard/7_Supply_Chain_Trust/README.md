@@ -441,7 +441,7 @@ Upon engagement completion, the platform MUST generate a data destruction certif
 
 ### Requirement
 
-Each customer engagement MUST run in an isolated execution environment with separation of memory, storage, network resources, and credentials. Data from different clients MUST be segregated with no cross-contamination possible through accidental access patterns. Client findings MUST never be visible to other clients, and credentials MUST not be accessible across engagements.
+Each customer engagement MUST run in an isolated execution environment with separation of memory, storage, network resources, and credentials. Data from different clients MUST be segregated with no cross-contamination possible through accidental access patterns. Client findings MUST never be visible to other clients, and credentials MUST NOT be accessible across engagements.
 
 Isolation controls MUST include: (1) Execution environment isolation using separate containers, virtual machines, or namespaces per engagement. (2) Database-level isolation using separate schemas per client (not just tables) with row-level security policies. (3) Storage isolation using separate encrypted volumes or directories per engagement with unique encryption keys. (4) Network isolation using policies that prevent inter-engagement communication. (5) Credential segregation using per-engagement encrypted vaults with access control bound to engagement ID. (6) Access control enforcing role-based access by client with logging of all access attempts. (7) Log and evidence segregation in separate access-controlled repositories per engagement.
 
