@@ -13,6 +13,7 @@ Individuals appointed to review changes for technical accuracy and consistency. 
 
 | Name | Affiliation | Links |
 | --- | --- | --- |
+| Ananda Krishna | [Astra Security](https://www.getastra.com) | [Twitter](https://x.com/_AnandaKrishna), [LinkedIn](https://www.linkedin.com/in/anandakrish/) |
 <!-- Add your name here when appointed as a technical reviewer. See GOVERNANCE.md for the process. -->
 
 ## Contributors
