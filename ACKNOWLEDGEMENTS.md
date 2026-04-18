@@ -12,6 +12,7 @@ Individuals who made a significant contribution to the project:
 
 | Name | Affiliation | Links |
 | --- | --- | --- |
+| Chia Min Jun Lennon | Independent Security Researcher | [GitHub](https://github.com/Hinotoi-agent) |
 <!-- Add your name here via pull request. -->
 
 ## Influences
