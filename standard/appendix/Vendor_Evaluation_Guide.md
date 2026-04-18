@@ -106,7 +106,7 @@ Use the questions below to evaluate vendor capabilities across all eight APTS do
 
 | Question | What to Look For | Key Requirements |
 |----------|-----------------|------------------|
-| How are findings validated before reporting? | Multi-stage validation, false positive reduction, confidence scoring per finding | RP-001, RP-002 |
+| How are findings validated before reporting? | Multi-stage validation, false positive reduction, confidence scoring per finding, and a machine-readable evidence manifest linking findings to raw artifacts | RP-001, RP-002 |
 | What does a standard report include? | Executive summary, technical findings, evidence, remediation guidance, coverage disclosure | RP-011, RP-012, RP-008 |
 | How is finding confidence communicated? | Per-finding confidence scores with methodology and supporting evidence quality factors | RP-003 |
 | How is testing coverage measured and disclosed? | Coverage metrics per scope element, untested areas identified, coverage gaps explained | RP-008 |
@@ -114,21 +114,23 @@ Use the questions below to evaluate vendor capabilities across all eight APTS do
 
 ## What to Ask Vendors
 
-Use these seven questions for initial assessment before detailed evaluation:
+Use these eight questions for initial assessment before detailed evaluation:
 
 1. **"Which APTS tier do you claim conformance with?"** If unfamiliar with APTS, share this standard. If claiming conformance, request evidence.
 
 2. **"Provide your completed APTS conformance assessment against the [Checklists](Checklists.md)."** A credible vendor maps capabilities to per-tier verification items, whether the assessment was performed internally or by a third party.
 
-3. **"Can you demonstrate your safety controls in a live environment?"** Ask the vendor to demonstrate kill switch operation, scope enforcement, and rate limiting. The [Customer Acceptance Testing](Customer_Acceptance_Testing.md) appendix provides structured test procedures if you want to conduct your own hands-on verification.
+3. **"Show us a sample evidence package for one finding."** Ask the operator to walk through a manifest or equivalent artifact inventory and compare it to the [Evidence Package Manifest](Evidence_Package_Manifest.md) appendix. They should be able to explain hashes, provenance, review state, redaction, and downstream export handling.
 
-4. **"How does your kill switch work, and can we test it?"** Multiple independent kill switches are required (APTS-SC-009). Ask for a demo in a test environment.
+4. **"Can you demonstrate your safety controls in a live environment?"** Ask the vendor to demonstrate kill switch operation, scope enforcement, and rate limiting. The [Customer Acceptance Testing](Customer_Acceptance_Testing.md) appendix provides structured test procedures if you want to conduct your own hands-on verification.
 
-5. **"What happens to our data after the engagement?"** Request credential disposal reports and data destruction proof (APTS-SE-023, APTS-TP-015, APTS-TP-016).
+5. **"How does your kill switch work, and can we test it?"** Multiple independent kill switches are required (APTS-SC-009). Ask for a demo in a test environment.
 
-6. **"Do you deploy agents or software to our infrastructure?"** If yes, confirm agents can be removed without vendor cooperation and are covered in the Rules of Engagement (APTS-SE-022).
+6. **"What happens to our data after the engagement?"** Request credential disposal reports and data destruction proof (APTS-SE-023, APTS-TP-015, APTS-TP-016).
 
-7. **"What AI/ML models does the platform use, and how do you track model changes?"** Request the model change log and drift detection procedures (APTS-AR-019).
+7. **"Do you deploy agents or software to our infrastructure?"** If yes, confirm agents can be removed without vendor cooperation and are covered in the Rules of Engagement (APTS-SE-022).
+
+8. **"What AI/ML models does the platform use, and how do you track model changes?"** Request the model change log and drift detection procedures (APTS-AR-019).
 
 ## Red Flags
 

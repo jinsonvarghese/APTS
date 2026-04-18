@@ -184,6 +184,8 @@ All fields shown are REQUIRED for Tier 2 compliance. Tier 1 requires at minimum:
 - Using weak hashes (MD5, SHA1) for compliance
 - Hash verification gaps during storage transitions
 
+**Implementation Aid:** See the [Evidence Package Manifest appendix](../appendix/Evidence_Package_Manifest.md) for a practical example of how artifact identifiers, paths, hashes, timestamps, and sensitivity labels can be recorded together.
+
 ---
 
 ## APTS-AR-011: Chain of Custody for Evidence
