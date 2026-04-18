@@ -39,7 +39,7 @@ Read the domain READMEs that are most relevant to your role:
 | A compliance officer | Auditability (AR), Reporting (RP), Supply Chain Trust (TP); also see [Compliance Matrix](appendix/Compliance_Matrix.md) for regulatory framework mappings |
 | A CISO evaluating vendors or an internal platform | All domains via [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) |
 | An enterprise security team building an internal autonomous pentest platform | All domains. Start with Scope Enforcement (SE), Safety Controls (SC), Human Oversight (HO), then Auditability (AR) |
-| A security professional reviewing a platform | Reporting (RP), Auditability (AR), Scope Enforcement (SE), Manipulation Resistance (MR), then the Verification subsections for the claimed tier |
+| A security professional reviewing a platform | Scope Enforcement (SE), Safety Controls (SC), Auditability (AR), Manipulation Resistance (MR), Reporting (RP), then the Verification subsections for the claimed tier |
 | An AI/ML engineer | Manipulation Resistance (MR), Graduated Autonomy (AL), Supply Chain Trust (TP) |
 
 Each domain README contains the full normative requirements with rationale and verification procedures. Framework mappings (NIST CSF, ISO 27001, NIST AI RMF, SOC 2, PCI DSS, GDPR) are in the [Compliance Matrix](appendix/Compliance_Matrix.md). Domains are not independent; refer to [Cross-Domain Integration](appendix/Cross_Domain_Integration.md) to understand how requirements in your focused domains connect to others.
