@@ -19,7 +19,8 @@
 
 ## Project Leadership
 
-- **Jinson Varghese Behanan** - Project Lead
+- **Jinson Varghese Behanan**
+- **Shikhil Sharma**
 
 ## Contributors
 
