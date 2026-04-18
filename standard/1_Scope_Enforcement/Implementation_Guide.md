@@ -18,6 +18,8 @@ Practical guidance for implementing APTS Scope Enforcement requirements. Each se
 - Accepting ambiguous natural language RoE without formalization
 - Failing to validate RoE before initiating actions
 
+**Implementation Aid:** See the [Rules of Engagement Template appendix](../appendix/Rules_of_Engagement_Template.md) for an illustrative YAML/JSON starter structure that customers, operators, and reviewers can use to validate required RoE fields consistently.
+
 ---
 
 ## APTS-SE-002: IP Range Validation and RFC 1918 Awareness
