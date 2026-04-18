@@ -64,8 +64,6 @@ Report sensitive content issues (incorrect security guidance, documentation of i
 * [Jinson Varghese Behanan](https://www.linkedin.com/in/JinsonVarghese/)
 * [Shikhil Sharma](https://www.linkedin.com/in/shikhil-sharma/)
 
-Project page: [owasp.org/APTS](https://owasp.org/APTS/)
-
 ## License
 
 [CC BY-SA 4.0](./LICENSE.md). Copyright 2026 The OWASP Foundation.
