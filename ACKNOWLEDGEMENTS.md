@@ -5,6 +5,7 @@
 | Name | Affiliation | Links |
 | --- | --- | --- |
 | Jinson Varghese Behanan | [Astra Security](https://www.getastra.com) | [Website](https://www.jinsonvarghese.com), [Twitter](https://twitter.com/JinsonCyberSec), [LinkedIn](https://www.linkedin.com/in/JinsonVarghese/) |
+| Shikhil Sharma | [Astra Security](https://www.getastra.com) | [Twitter](https://x.com/shikhilsharma), [LinkedIn](https://www.linkedin.com/in/shikhil-sharma/) |
 
 ## Technical Reviewers
 
