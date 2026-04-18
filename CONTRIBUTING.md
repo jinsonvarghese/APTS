@@ -24,7 +24,7 @@ Found a gap, inconsistency, or error? [Open an issue](https://github.com/OWASP/A
 
 ### Translations
 
-Help make APTS available in other languages. Propose a new language by opening an issue and coordinating with the maintainers before starting. See the [translations directory](./standard/translations/) for structure.
+Help make APTS available in other languages. Propose a new language by opening an issue and coordinating with the project leads before starting. See the [translations directory](./standard/translations/) for structure.
 
 ## Getting Started
 
@@ -128,6 +128,16 @@ To propose a new requirement, open an issue or PR with the following fields:
 - **Advisory flag:** If the requirement represents a best practice rather than a tier-gated obligation, mark it as Advisory. Advisory requirements are documented in the [Advisory Requirements](./standard/appendix/Advisory_Requirements.md) appendix
 - **Framework mappings:** Applicable NIST CSF, ISO 27001, or other framework controls
 
+## AI-Assisted Contributions
+
+Contributions that were generated or substantially assisted by AI tools (including but not limited to LLMs, coding agents, and automated PR generators) are accepted, provided:
+
+1. The contributor discloses AI involvement in the PR description (for example, "Drafted with assistance from [tool name]")
+2. The contributor has reviewed the changes for accuracy, consistency with the standard, and compliance with the style guide
+3. The contributor takes full ownership of the submission and can respond to review feedback
+
+PRs submitted by fully automated agents without a responsible human author will not be merged. A human must stand behind every contribution.
+
 ## Licensing
 
 By contributing, you agree that:
@@ -145,4 +155,5 @@ All contributors are acknowledged in [ACKNOWLEDGEMENTS.md](./ACKNOWLEDGEMENTS.md
 - Search [existing issues](https://github.com/OWASP/APTS/issues)
 - Ask in [GitHub Discussions](https://github.com/OWASP/APTS/discussions)
 - Contact the project lead (see [Frontispiece](./standard/Frontispiece.md))
+- Project roles and governance: see [GOVERNANCE.md](./GOVERNANCE.md)
 - Security concerns: see [SECURITY.md](./SECURITY.md)

@@ -6,6 +6,14 @@
 | --- | --- | --- |
 | Jinson Varghese Behanan | [Astra Security](https://www.getastra.com) | [Website](https://www.jinsonvarghese.com), [Twitter](https://twitter.com/JinsonCyberSec), [LinkedIn](https://www.linkedin.com/in/JinsonVarghese/) |
 
+## Technical Reviewers
+
+Individuals appointed to review changes for technical accuracy and consistency. See [GOVERNANCE.md](./GOVERNANCE.md) for the process.
+
+| Name | Affiliation | Links |
+| --- | --- | --- |
+<!-- Add your name here when appointed as a technical reviewer. See GOVERNANCE.md for the process. -->
+
 ## Contributors
 
 Individuals who made a significant contribution to the project:
