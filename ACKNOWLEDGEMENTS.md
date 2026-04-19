@@ -23,6 +23,7 @@ Individuals who made a significant contribution to the project:
 | Name | Affiliation | Links |
 | --- | --- | --- |
 | Ramshath MM | [Astra Security](https://www.getastra.com) | [LinkedIn](https://www.linkedin.com/in/ramshath) |
+| Chia Min Jun Lennon | Independent Security Researcher | [GitHub](https://github.com/Hinotoi-agent) |
 <!-- Add your name here via pull request. -->
 
 ## Influences
