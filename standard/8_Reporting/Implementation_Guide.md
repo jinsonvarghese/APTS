@@ -78,6 +78,8 @@ Findings below 50% confidence SHOULD be flagged as "Unconfirmed" and excluded fr
 - Losing tool output or discovery artifacts mid-assessment
 - Failing to document who verified each finding and when
 
+**Implementation Aid:** See the [Evidence Package Manifest appendix](../appendix/Evidence_Package_Manifest.md) for an illustrative machine-readable structure that links one finding to its raw artifacts, provenance events, and review state.
+
 ---
 
 
