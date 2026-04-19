@@ -11,6 +11,7 @@ APTS requires platforms to ingest and validate machine-parseable Rules of Engage
 This appendix shows:
 
 - a minimal YAML example
+- an XML example
 - a JSON-equivalent structure
 - field-level guidance connecting the template to relevant APTS requirements
 - review questions customers and reviewers can use during evaluation
@@ -295,6 +296,41 @@ reporting_and_evidence:
   "allowed_actions": ["passive_reconnaissance", "authenticated_read_only_checks"],
   "prohibited_actions": ["destructive_testing", "lateral_movement"]
 }
+```
+
+## Example XML Shape
+
+```xml
+<rules_of_engagement>
+  <engagement_id>eng-2026-001</engagement_id>
+  <roe_version>1</roe_version>
+  <engagement_model>one_time</engagement_model>
+  <authorization>
+    <customer>Example Corp</customer>
+    <approval_reference>signed-roe-2026-001</approval_reference>
+  </authorization>
+  <temporal_boundaries>
+    <timezone>UTC</timezone>
+    <start_time>2026-04-18T02:00:00Z</start_time>
+    <end_time>2026-04-18T06:00:00Z</end_time>
+  </temporal_boundaries>
+  <targets>
+    <domains>
+      <domain wildcard_policy="exact_only">app.example.com</domain>
+    </domains>
+    <ip_ranges>
+      <cidr>203.0.113.0/24</cidr>
+    </ip_ranges>
+  </targets>
+  <allowed_actions>
+    <action>passive_reconnaissance</action>
+    <action>authenticated_read_only_checks</action>
+  </allowed_actions>
+  <prohibited_actions>
+    <action>destructive_testing</action>
+    <action>lateral_movement</action>
+  </prohibited_actions>
+</rules_of_engagement>
 ```
 
 ## Field Mapping to APTS Requirements
