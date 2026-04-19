@@ -32,10 +32,13 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Testing Phase Mapping](./appendix/Testing_Phase_Mapping.md) | Which requirements apply at each pentesting phase |
 | [Customer Acceptance Testing](./appendix/Customer_Acceptance_Testing.md) | Optional hands-on verification procedures for customers |
 | [Vendor Evaluation Guide](./appendix/Vendor_Evaluation_Guide.md) | Guide for evaluating autonomous pentest platform operators |
+| [Rules of Engagement Template](./appendix/Rules_of_Engagement_Template.md) | Illustrative machine-readable RoE starter template |
+| [Evidence Package Manifest](./appendix/Evidence_Package_Manifest.md) | Illustrative manifest for finding evidence, provenance, and downstream handoff |
+| [Conformance Claim Schema](./appendix/Conformance_Claim_Schema.md) | Illustrative machine-readable schema for structured conformance claims |
+| [Conformance Claim Template](./appendix/Conformance_Claim_Template.md) | Optional template for documenting platform conformance |
 | [Evidence Request Checklist](./appendix/Evidence_Request_Checklist.md) | Simple artifact checklist for customer and reviewer evidence requests |
 | [Advisory Requirements](./appendix/Advisory_Requirements.md) | Non-mandatory practices for enhanced assurance |
 | [Incident Response Integration](./appendix/Incident_Response_Integration.md) | Unified incident response workflow across domains |
-| [Conformance Claim Template](./appendix/Conformance_Claim_Template.md) | Optional template for documenting platform conformance |
 
 ## Requirements Index
 
