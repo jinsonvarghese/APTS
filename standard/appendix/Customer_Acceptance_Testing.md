@@ -28,6 +28,8 @@ Organizations MAY conduct acceptance testing:
 
 **For operator-led demonstrations:** The platform operator provides the test environment. The customer may observe the demonstration, review logs and results, and independently verify key claims (for example, request packet captures, review audit trails).
 
+Before running deeper hands-on tests, customers may also request a small initial artifact set using the [Evidence Request Checklist](Evidence_Request_Checklist.md) appendix.
+
 **For customer-led verification:** Organizations choosing to run acceptance testing independently may prepare the following:
 
 1. A controlled test environment that mirrors production characteristics (technology stack, network topology, authentication mechanisms) but is isolated from production systems.

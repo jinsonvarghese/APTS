@@ -71,11 +71,12 @@ Depending on your role:
 | [Incident Response Integration](appendix/Incident_Response_Integration.md) | Informative | Operational integration guidance |
 | [Cross-Domain Integration](appendix/Cross_Domain_Integration.md) | Informative | Cross-domain trigger mappings and dependency analysis |
 | [Testing Phase Mapping](appendix/Testing_Phase_Mapping.md) | Informative | Requirements mapped to pentesting lifecycle phases |
+| [Evidence Request Checklist](appendix/Evidence_Request_Checklist.md) | Informative | Lightweight checklist of artifacts customers and reviewers can request |
 | [Conformance Claim Schema](appendix/Conformance_Claim_Schema.md) | Informative | Illustrative machine-readable schema for structured conformance claims |
+| [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 | [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Informative | Illustrative manifest for finding evidence, provenance, and downstream handoff |
 | [Rules of Engagement Template](appendix/Rules_of_Engagement_Template.md) | Informative | Illustrative machine-readable Rules of Engagement starter template |
 | [Advisory Requirements](appendix/Advisory_Requirements.md) | Informative | Best-practice requirements not gated to any compliance tier |
-| [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 
 ## Common Questions
 

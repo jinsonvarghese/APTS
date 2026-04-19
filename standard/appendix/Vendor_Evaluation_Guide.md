@@ -164,8 +164,9 @@ Three approaches, in increasing order of assurance:
 
 1. **Define your minimum tier.** Tier 1 for general use, Tier 2 for regulated environments, Tier 3 for highest-assurance requirements.
 2. **Send the vendor the APTS Checklists** for their claimed tier and request a completed conformance assessment.
-3. **Review domain-specific questions** from the tables above, prioritizing domains most relevant to your environment.
-4. **Identify red flags** using the criteria above. Any red flag warrants deeper investigation before proceeding.
-5. **Request vendor demonstrations** of key safety controls (kill switch, scope enforcement, rate limiting). For higher-assurance needs, consider conducting [Customer Acceptance Testing](Customer_Acceptance_Testing.md).
-6. **Document the evaluation outcome** including tier, date, and any conditions or exceptions.
-7. **Re-evaluate periodically** or when major platform changes, security incidents, or autonomy level changes occur.
+3. **Request a small evidence pack first.** The [Evidence Request Checklist](Evidence_Request_Checklist.md) appendix provides a lightweight starting set of artifacts to request before deeper review.
+4. **Review domain-specific questions** from the tables above, prioritizing domains most relevant to your environment.
+5. **Identify red flags** using the criteria above. Any red flag warrants deeper investigation before proceeding.
+6. **Request vendor demonstrations** of key safety controls (kill switch, scope enforcement, rate limiting). For higher-assurance needs, consider conducting [Customer Acceptance Testing](Customer_Acceptance_Testing.md).
+7. **Document the evaluation outcome** including tier, date, and any conditions or exceptions.
+8. **Re-evaluate periodically** or when major platform changes, security incidents, or autonomy level changes occur.
