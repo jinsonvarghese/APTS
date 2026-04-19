@@ -25,7 +25,7 @@ A machine-readable RoE template should:
 - be versioned and auditable
 - default-deny when required sections are missing or ambiguous
 - support both one-time and recurring engagements
-- support review by customers, operators, and independent assessors
+- support review by customers, operators, and independent reviewers
 
 ## Recommended Template Sections
 
