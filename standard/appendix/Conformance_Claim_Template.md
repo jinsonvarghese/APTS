@@ -1,4 +1,4 @@
-# APTS Conformance Claim Template
+# Conformance Claim Template
 
 Informative Appendix (non-normative)
 

@@ -120,17 +120,15 @@ Use these seven questions for initial assessment before detailed evaluation:
 
 2. **"Provide your completed APTS conformance assessment against the [Checklists](Checklists.md)."** A credible vendor maps capabilities to per-tier verification items, whether the assessment was performed internally or by a third party.
 
-3. **"If you publish a conformance claim, show us the structured evidence behind it."** Ask the operator whether they maintain a machine-readable claim or equivalent requirement-by-requirement status record, and compare it to the [Conformance Claim Schema](Conformance_Claim_Schema.md) appendix.
+3. **"Can you demonstrate your safety controls in a live environment?"** Ask the vendor to demonstrate kill switch operation, scope enforcement, and rate limiting. The [Customer Acceptance Testing](Customer_Acceptance_Testing.md) appendix provides structured test procedures if you want to conduct your own hands-on verification.
 
-4. **"Can you demonstrate your safety controls in a live environment?"** Ask the vendor to demonstrate kill switch operation, scope enforcement, and rate limiting. The [Customer Acceptance Testing](Customer_Acceptance_Testing.md) appendix provides structured test procedures if you want to conduct your own hands-on verification.
+4. **"How does your kill switch work, and can we test it?"** Multiple independent kill switches are required (APTS-SC-009). Ask for a demo in a test environment.
 
-5. **"How does your kill switch work, and can we test it?"** Multiple independent kill switches are required (APTS-SC-009). Ask for a demo in a test environment.
+5. **"What happens to our data after the engagement?"** Request credential disposal reports and data destruction proof (APTS-SE-023, APTS-TP-015, APTS-TP-016).
 
-6. **"What happens to our data after the engagement?"** Request credential disposal reports and data destruction proof (APTS-SE-023, APTS-TP-015, APTS-TP-016).
+6. **"Do you deploy agents or software to our infrastructure?"** If yes, confirm agents can be removed without vendor cooperation and are covered in the Rules of Engagement (APTS-SE-022).
 
-7. **"Do you deploy agents or software to our infrastructure?"** If yes, confirm agents can be removed without vendor cooperation and are covered in the Rules of Engagement (APTS-SE-022).
-
-8. **"What AI/ML models does the platform use, and how do you track model changes?"** Request the model change log and drift detection procedures (APTS-AR-019).
+7. **"What AI/ML models does the platform use, and how do you track model changes?"** Request the model change log and drift detection procedures (APTS-AR-019).
 
 ## Red Flags
 
