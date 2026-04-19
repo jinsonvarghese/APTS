@@ -122,17 +122,23 @@ Practical guidance for implementing APTS Supply Chain Trust requirements. Each s
 
 ## APTS-TP-008: Cloud Security Configuration and Hardening
 
-**Implementation:** Apply least-privilege IAM policies, encrypt data at rest (AES-256) and in transit (TLS 1.2+), configure security groups restrictively, and enable MFA for all administrative access.
+**Implementation:** Apply least-privilege IAM policies, encrypt data at rest (AES-256) and in transit (TLS 1.2+), configure security groups restrictively, enable MFA for all administrative access, set up billing alerts, restrict allowed regions and services that can be used within cloud accounts.
 
 **Key Considerations:**
 - Use Infrastructure-as-Code for consistent, auditable hardening
 - Audit cloud configurations quarterly against CIS benchmarks
 - Monitor for configuration drift from baseline
+- Monitor for overspending
+- Limit allowed regions and cloud services
 
 **Common Pitfalls:**
 - Overly permissive security groups left from initial development
 - Unencrypted data stores or weak cipher suites in production
 - Disabled MFA on administrative accounts
+- Overspending because of using expensive resources
+- Created resources in regions that are not usually used by an organization
+- Administrative policies assigned to the IAM users
+- Missing alerts for the detected malicious activity
 
 **Cloud Security Hardening Baseline:**
 
@@ -145,6 +151,8 @@ Minimum cloud configuration requirements for platforms deployed on public cloud:
 - Enable S3 bucket versioning and block public access on all buckets containing engagement data
 - Use KMS customer-managed keys for encryption at rest
 - Deploy in a dedicated VPC with no internet gateway unless required
+- When using AWS Organizations, set up SCP policies
+- Set up billing alarms in CloudWatch or via AWS Budgets
 
 **Azure:**
 - Enable Azure Defender for all resource types hosting engagement data
@@ -152,6 +160,8 @@ Minimum cloud configuration requirements for platforms deployed on public cloud:
 - Enable diagnostic logging on all resources
 - Use customer-managed keys in Azure Key Vault for encryption
 - Deploy in a dedicated virtual network with Network Security Groups
+- Configure Azure Budgets and Cost Alerts
+- Configure allowed services and regions via Azure Policies
 
 **GCP:**
 - Enable Cloud Audit Logging for all services
@@ -159,12 +169,17 @@ Minimum cloud configuration requirements for platforms deployed on public cloud:
 - Enable VPC Service Controls for engagement data resources
 - Use Cloud KMS customer-managed keys for encryption
 - Enable Access Transparency logging
+- Set up Organization Policies
+- Configure budget alerts
 
 **Common (all providers):**
 - Enable multi-factor authentication for all administrative access
 - Implement network segmentation between platform components and engagement data
 - Rotate all credentials and API keys at least every 90 days
 - Monitor for configuration drift using cloud-native or third-party tools
+- Set up alerts and notifications for the team via different channels
+- Implement periodic IAM resources review to enforce principle of least privilege and detect unused entities
+- Automate response to the common incidents
 
 ---
 
