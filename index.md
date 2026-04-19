@@ -66,17 +66,14 @@ The full standard with all requirements, verification procedures, checklists, an
 
 ## Contributing
 
-This standard is open for community contributions. Whether it is improving requirement clarity, adding implementation examples, fixing errors, or translating the standard, all contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started. Translations are maintained in [`standard/translations/`](./standard/translations/).
+This standard is open for community contributions. Whether it is improving requirement clarity, adding implementation examples, fixing errors, or translating the standard, all contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started and [GOVERNANCE.md](./GOVERNANCE.md) for project roles and decision-making. Translations are maintained in [`standard/translations/`](./standard/translations/).
 
 Report sensitive content issues (incorrect security guidance, documentation of insecure patterns) via [SECURITY.md](./SECURITY.md).
 
-## Project Lead
+## Project Leads
 
-| Name | Affiliation | Links |
-| --- | --- | --- |
-| Jinson Varghese Behanan | [Astra Security](https://www.getastra.com) | [Website](https://www.jinsonvarghese.com), [Twitter](https://twitter.com/JinsonCyberSec), [LinkedIn](https://www.linkedin.com/in/JinsonVarghese/) |
-
-Project page: [owasp.org/APTS](https://owasp.org/APTS/)
+* [Jinson Varghese Behanan](https://www.linkedin.com/in/JinsonVarghese/)
+* [Shikhil Sharma](https://www.linkedin.com/in/shikhil-sharma/)
 
 ## License
 

@@ -39,6 +39,7 @@ Read the domain READMEs that are most relevant to your role:
 | A compliance officer | Auditability (AR), Reporting (RP), Supply Chain Trust (TP); also see [Compliance Matrix](appendix/Compliance_Matrix.md) for regulatory framework mappings |
 | A CISO evaluating vendors or an internal platform | All domains via [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) |
 | An enterprise security team building an internal autonomous pentest platform | All domains. Start with Scope Enforcement (SE), Safety Controls (SC), Human Oversight (HO), then Auditability (AR) |
+| A security professional reviewing a platform | Scope Enforcement (SE), Safety Controls (SC), Auditability (AR), Manipulation Resistance (MR), Reporting (RP), then the Verification subsections for the claimed tier |
 | An AI/ML engineer | Manipulation Resistance (MR), Graduated Autonomy (AL), Supply Chain Trust (TP) |
 
 Each domain README contains the full normative requirements with rationale and verification procedures. Framework mappings (NIST CSF, ISO 27001, NIST AI RMF, SOC 2, PCI DSS, GDPR) are in the [Compliance Matrix](appendix/Compliance_Matrix.md). Domains are not independent; refer to [Cross-Domain Integration](appendix/Cross_Domain_Integration.md) to understand how requirements in your focused domains connect to others.
@@ -53,7 +54,7 @@ Depending on your role:
 
 - **Platform builders (vendors, service providers, and enterprise security teams running internal platforms)**: Assess your platform against your target tier using the [Checklists](appendix/Checklists.md). Use the [Compliance Matrix](appendix/Compliance_Matrix.md) to understand alignment with external frameworks. The verification model and assessment options are described in the [Introduction](Introduction.md#compliance-tiers).
 - **Customers**: Use the [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) to review operator-provided evidence and conformance assessment claims. For additional assurance, the [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) appendix provides optional hands-on verification procedures.
-- **Security professionals**: Use the verification procedures in each requirement as a reference framework when reviewing platform capabilities.
+- **Security professionals**: Identify the claimed tier, deployment model, autonomy level, and platform configuration first. Then use each requirement's Verification subsection to review evidence, record gaps, and identify follow-up questions. Start with the [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) when reviewing an operator claim, and use [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) when behavioral evidence is needed for controls such as scope enforcement, kill switches, manipulation resistance, or reporting reproducibility.
 
 ## Quick Reference: Document Map
 
@@ -71,6 +72,7 @@ Depending on your role:
 | [Cross-Domain Integration](appendix/Cross_Domain_Integration.md) | Informative | Cross-domain trigger mappings and dependency analysis |
 | [Testing Phase Mapping](appendix/Testing_Phase_Mapping.md) | Informative | Requirements mapped to pentesting lifecycle phases |
 | [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Informative | Illustrative manifest for finding evidence, provenance, and downstream handoff |
+| [Rules of Engagement Template](appendix/Rules_of_Engagement_Template.md) | Informative | Illustrative machine-readable Rules of Engagement starter template |
 | [Advisory Requirements](appendix/Advisory_Requirements.md) | Informative | Best-practice requirements not gated to any compliance tier |
 | [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 
@@ -96,4 +98,3 @@ Re-evaluate after major platform changes, security incidents, autonomy level cha
 
 **Q: How much time should I budget for APTS?**
 For platform operators (vendors, service providers, and enterprise security teams running internal platforms): plan 2-3 days to read and understand requirements for your target tier, plus 1-2 days per domain for detailed implementation planning. For customers evaluating an external vendor or assessing an internal platform: plan 1-2 weeks using the Vendor Evaluation Guide to review evidence and demonstrations of key safety controls. If conducting optional Customer Acceptance Testing, add 1-2 weeks for test execution and analysis.
-
