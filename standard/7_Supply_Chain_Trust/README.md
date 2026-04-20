@@ -55,7 +55,7 @@ The 22 requirements in this domain fall into seven thematic groups:
 
 A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 TP requirement plus every Tier 2 TP requirement, and a Tier 3 platform satisfies all three tiers. SHOULD-level requirements are interpreted per RFC 2119.
 
-Three appendix-only advisory requirements for this domain (APTS-TP-A01 Breach Notification and Regulatory Reporting, APTS-TP-A02 Privacy Regulation Compliance, APTS-TP-A03 Professional Liability and Engagement Agreements) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
+Four appendix-only advisory requirements for this domain (APTS-TP-A01 Breach Notification and Regulatory Reporting, APTS-TP-A02 Privacy Regulation Compliance, APTS-TP-A03 Professional Liability and Engagement Agreements, APTS-TP-A04 External Tool Connector Trust Boundaries and Credential Isolation) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
 
 Every requirement in this domain includes a Verification subsection listing the verification procedures a reviewer uses to confirm implementation.
 
