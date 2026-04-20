@@ -330,13 +330,28 @@ For cloud environments, scope validation must account for:
 
 **Implementation:** Maintain real-time inventory of all testing credentials scoped to engagement. Automatically rotate credentials at engagement end. Log all credential access and usage.
 
+**Architecture Pattern - Credential Indirection for LLM-Based Agents:**
+
+For platforms using LLM-based agents, implement a credential manager that enforces a strict separation between credential references (which the agent sees) and credential values (which only the tool execution layer sees):
+
+1. **Credential Manager:** A dedicated component that stores secrets in memory only (never serialized to disk outside the encrypted vault). The manager issues opaque `CredentialReference` objects containing only the credential identifier, type, username, and role.
+2. **Agent Prompt Injection:** When the agent needs to know which credentials are available, the credential manager generates a secret-free summary listing references only. This summary is safe to include in the model prompt.
+3. **Tool-Time Resolution:** When a tool needs to use a credential (for example, to authenticate an HTTP request), the tool execution layer resolves the opaque reference to the actual secret value at execution time, outside the model's inference context. The secret is used in the outbound request but never returned to the model.
+4. **Discovery Interception:** When a tool call returns output containing a discovered credential (for example, a password in a config file), the platform intercepts the tool result, extracts the credential into the vault, and replaces the plaintext value with an opaque reference before the result enters the model context.
+
+This pattern ensures that credentials never appear in inference requests sent to model providers, agent reasoning traces, message history, or step-level logs.
+
 **Key Considerations:**
 - Enforce minimal credential permissions (least privilege)
 - Prevent credential reuse across engagements
+- For discovery interception, use pattern-based detection (regex for common secret formats like API keys, JWTs, connection strings) combined with entropy analysis to identify high-entropy strings that may be secrets
+- Discovery interception adds latency to tool results; implement it as a lightweight synchronous filter rather than a separate inference call
 
 **Common Pitfalls:**
 - Persistent credentials surviving engagement end
 - Excessive permissions for test credentials
+- Implementing credential indirection for client-provided credentials but not for discovered credentials, which still enter the model context via tool output
+- Logging the full tool result (including plaintext secrets) to trace files before the interception filter runs
 
 ---
 

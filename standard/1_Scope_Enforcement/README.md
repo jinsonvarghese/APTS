@@ -846,6 +846,9 @@ The platform MUST maintain a complete lifecycle for all credentials and secrets 
 7. At engagement completion, all temporary credentials created by the platform MUST be revoked or destroyed. Client-provided credentials MUST be returned to the client or confirmed destroyed; the platform MUST NOT retain any copy after engagement completion. All secrets MUST be revoked or securely destroyed per the documented retention policy.
 8. Discovered credentials MUST be logged but MUST NOT be stored in plaintext or reused across engagements.
 9. The platform MUST produce a credential disposal report at engagement completion confirming all credentials have been revoked, purged, or destroyed.
+10. **Credential indirection for LLM-based agents.** Platforms that use LLM-based agents MUST implement credential indirection so that plaintext secret values never enter the model's inference context. Specifically: (a) agents MUST receive opaque credential references (for example, an identifier, credential type, username, and role) rather than plaintext secrets; (b) secret values MUST be resolved at tool-execution time by a component outside the agent's inference context, so the secret is used in the outbound request but never included in the model prompt or model-generated output; (c) when a credential is discovered via tool output (for example, a password found in a configuration file), the platform MUST intercept and replace the plaintext value with an opaque reference before the tool result is returned to the model context; (d) credential references and secret-free credential summaries used in agent prompts MUST NOT contain any material from which the secret value can be derived.
+
+**Rationale for item 10:** In an LLM-based architecture, any secret that enters the model's context window is sent to the model provider as part of the inference request, may be echoed in the model's reasoning or tool call arguments, persists in message history used for context management and session resume, and appears in step-level trace logs. Encrypting credentials at rest (APTS-MR-019) does not prevent this exposure. Credential indirection is the architectural control that keeps secrets out of the inference pipeline entirely.
 
 ### Verification
 
@@ -859,8 +862,10 @@ The platform MUST maintain a complete lifecycle for all credentials and secrets 
 8. Test: discover a credential during testing; verify the platform enforces the reuse policy before using it autonomously
 9. Secret delegation to subprocesses is logged and authorized
 10. Token refresh and session reuse events are captured in the audit trail
+11. **(LLM-based platforms)** Provide the agent with a client-provided credential via the platform's credential API. Inspect the model prompt or context window content sent to the LLM provider for that inference call. Verify the plaintext secret value does not appear in the prompt, tool call arguments visible to the model, or model-generated output. Only the opaque reference (identifier, type, username, role) should be present.
+12. **(LLM-based platforms)** Plant a discoverable credential (for example, an API key in a configuration file) in a test target. Run the platform against the target. After the agent's tool call returns the file contents, inspect the tool result as it was presented to the model context. Verify the plaintext credential has been replaced with an opaque reference before entering the model context. Verify the original plaintext value is stored only in the credential vault per APTS-MR-019.
 
-> **See also:** APTS-MR-019 (immediate protection at the moment of credential discovery).
+> **See also:** APTS-MR-019 (immediate encryption at the moment of credential discovery; SE-023 item 10 extends this protection to the LLM inference pipeline).
 
 ---
 
