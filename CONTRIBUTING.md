@@ -115,9 +115,21 @@ When opening a PR:
 
 ## Proposing New Requirements
 
-To propose a new requirement, open an issue or PR with the following fields:
+### Version freeze policy
 
-- **ID:** Next available ID in the target domain. For a tier-gated requirement, use the next sequential number (for example, APTS-SE-026). For an advisory requirement, use the next sequential `A<NN>` number in the target domain (for example, APTS-SE-A01 if no SE advisory exists yet, or APTS-TP-A04 as the next TP advisory). Tier-gated and advisory IDs are in separate sequences and do not collide
+The normative requirement set (tier-gated requirements counted toward conformance) is frozen for each released version. New normative requirements are not merged into the current release branch. Instead, they are reviewed during the next version cycle and, if accepted, batched into that release so that requirement counts change only once per version.
+
+New advisory requirements (non-normative, documented in the Advisory Requirements appendix) may be accepted between releases because they do not affect conformance counts or tier definitions.
+
+Enhancements to existing requirements (adding sub-requirements, strengthening language, expanding Implementation Guide content) may be accepted between releases as long as they do not change the requirement count or alter the tier classification.
+
+The current version is **v0.1.0**. New normative requirements submitted now will be tagged as **v0.2.0-candidate** and tracked via GitHub issues until the v0.2.0 cycle opens.
+
+### Proposal format
+
+To propose a new requirement, open an issue first with the following fields. Do not submit a PR with cross-cutting count changes until the proposal has been reviewed and accepted for a target version.
+
+- **ID:** Next available ID in the target domain. For a tier-gated requirement, use the next sequential number (for example, APTS-SE-027). For an advisory requirement, use the next sequential `A<NN>` number in the target domain (for example, APTS-SE-A01 if no SE advisory exists yet, or APTS-TP-A04 as the next TP advisory). Tier-gated and advisory IDs are in separate sequences and do not collide
 - **Title:** Concise requirement name
 - **Classification:** MUST, SHOULD, or MAY
 - **Tier:** 1, 2, or 3
