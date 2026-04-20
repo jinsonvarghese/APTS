@@ -37,6 +37,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Conformance Claim Schema](./appendix/Conformance_Claim_Schema.md) | Illustrative machine-readable schema for structured conformance claims |
 | [Conformance Claim Template](./appendix/Conformance_Claim_Template.md) | Optional template for documenting platform conformance |
 | [Evidence Request Checklist](./appendix/Evidence_Request_Checklist.md) | Simple artifact checklist for customer and reviewer evidence requests |
+| [Human Review Record Template](./appendix/Human_Review_Record_Template.md) | Illustrative template for documenting reviewer approval of critical findings |
 | [Advisory Requirements](./appendix/Advisory_Requirements.md) | Non-mandatory practices for enhanced assurance |
 | [Incident Response Integration](./appendix/Incident_Response_Integration.md) | Unified incident response workflow across domains |
 
