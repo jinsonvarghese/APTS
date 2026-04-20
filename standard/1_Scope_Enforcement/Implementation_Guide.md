@@ -330,7 +330,7 @@ For cloud environments, scope validation must account for:
 
 **Implementation:** Maintain real-time inventory of all testing credentials scoped to engagement. Automatically rotate credentials at engagement end. Log all credential access and usage.
 
-**Architecture Pattern — Credential Indirection for LLM-Based Agents:**
+**Architecture Pattern - Credential Indirection for LLM-Based Agents:**
 
 For platforms using LLM-based agents, implement a credential manager that enforces a strict separation between credential references (which the agent sees) and credential values (which only the tool execution layer sees):
 
