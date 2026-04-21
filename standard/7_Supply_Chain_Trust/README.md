@@ -236,7 +236,7 @@ Platforms SHOULD document data residency requirements and verify that provider c
 
 ### Requirement
 
-Organizations MUST implement cloud security hardening for all cloud infrastructure supporting autonomous pentest operations. Configuration MUST follow principle of least privilege for identity and access management (IAM) policies. All data MUST be encrypted at rest using strong algorithms (AES-256 minimum). Network configuration MUST enforce security groups and network ACLs to restrict traffic to necessary flows only. Regular compliance scanning MUST identify deviations from hardening standards and trigger remediation. When hosting LLM models using provided by a selected cloud services, organizations MUST ensure that there are billing alerts in place to avoid overspending and to control defined limits. Where possible, organizations MUST limit the allowed services and regions within the cloud accounts to prevent misuse and minimize potential risks.
+Organizations MUST implement cloud security hardening for all cloud infrastructure supporting autonomous pentest operations. Configuration MUST follow principle of least privilege for identity and access management (IAM) policies. All data MUST be encrypted at rest using strong algorithms (AES-256 minimum). Network configuration MUST enforce security groups and network ACLs to restrict traffic to necessary flows only. Regular compliance scanning MUST identify deviations from hardening standards and trigger remediation. When hosting LLM models using services provided by a selected cloud provider, organizations MUST ensure that billing alerts are in place to detect anomalous resource provisioning that may indicate cloud account compromise. Organizations SHOULD limit the allowed services and regions within the cloud accounts to prevent misuse and minimize potential risks.
 
 ### Verification
 
@@ -246,7 +246,7 @@ Organizations MUST implement cloud security hardening for all cloud infrastructu
 4. Verify network security groups and ACLs restrict traffic to documented necessary flows only; fail any rule permitting traffic not in the architecture baseline
 5. Run the compliance scanner; require zero critical deviations and documented remediation plans for any high-severity deviations
 6. Verify that billing alerts are in place for the defined spending limits
-7. Verify that there are limitations for the allowed services and regions across the used cloud acccounts; fail if any deviations from the baseline detected
+7. Verify that there are limitations for the allowed services and regions across the used cloud accounts; fail if any deviations from the baseline detected
 8. **Negative test:** Introduce an intentionally overbroad IAM policy (for example, wildcard permissions) in a staging environment; verify the compliance scanner or policy gate detects and flags it
 9. **Negative test:** Try to create any cloud resources in the prohibited region; verify that this operation fails
 10. **Negative test:** Try to create resources using the prohibited service; verify that this action is blocked by the configured policies

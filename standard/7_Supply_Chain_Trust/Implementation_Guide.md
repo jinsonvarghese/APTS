@@ -128,17 +128,16 @@ Practical guidance for implementing APTS Supply Chain Trust requirements. Each s
 - Use Infrastructure-as-Code for consistent, auditable hardening
 - Audit cloud configurations quarterly against CIS benchmarks
 - Monitor for configuration drift from baseline
-- Monitor for overspending
+- Monitor for anomalous resource provisioning
 - Limit allowed regions and cloud services
 
 **Common Pitfalls:**
 - Overly permissive security groups left from initial development
 - Unencrypted data stores or weak cipher suites in production
 - Disabled MFA on administrative accounts
-- Overspending because of using expensive resources
+- Alerts for anomalous resource provisioning are missing
 - Created resources in regions that are not usually used by an organization
 - Administrative policies assigned to the IAM users
-- Missing alerts for the detected malicious activity
 
 **Cloud Security Hardening Baseline:**
 
