@@ -64,7 +64,7 @@ Request:
 - one sample approval record for a higher-risk action
 - one sample escalation or alert record
 - one example of the authority/approval workflow used in practice
-- one sample [Human Review Record Template](Human_Review_Record_Template.md)-style record when critical findings require explicit reviewer approval
+- one sample human review record (see [Human Review Record Template](Human_Review_Record_Template.md)) for a critical finding that required explicit reviewer approval
 
 Quick checks:
 
