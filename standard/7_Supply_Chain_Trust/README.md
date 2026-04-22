@@ -245,7 +245,7 @@ Organizations MUST implement cloud security hardening for all cloud infrastructu
 3. Verify all data at rest is encrypted with AES-256 or equivalent; inspect storage metadata to confirm algorithm and key length
 4. Verify network security groups and ACLs restrict traffic to documented necessary flows only; fail any rule permitting traffic not in the architecture baseline
 5. Run the compliance scanner; require zero critical deviations and documented remediation plans for any high-severity deviations
-6. Verify that billing alerts are in place for the defined spending limits
+6. Verify that billing alerts are in place to detect anomalous resource provisioning that may indicate cloud account compromise
 7. Verify that there are limitations for the allowed services and regions across the used cloud accounts; fail if any deviations from the baseline detected
 8. **Negative test:** Introduce an intentionally overbroad IAM policy (for example, wildcard permissions) in a staging environment; verify the compliance scanner or policy gate detects and flags it
 9. **Negative test:** Try to create any cloud resources in the prohibited region; verify that this operation fails

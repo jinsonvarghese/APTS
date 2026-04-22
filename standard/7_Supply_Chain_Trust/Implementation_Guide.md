@@ -122,7 +122,7 @@ Practical guidance for implementing APTS Supply Chain Trust requirements. Each s
 
 ## APTS-TP-008: Cloud Security Configuration and Hardening
 
-**Implementation:** Apply least-privilege IAM policies, encrypt data at rest (AES-256) and in transit (TLS 1.2+), configure security groups restrictively, enable MFA for all administrative access, set up billing alerts, restrict allowed regions and services that can be used within cloud accounts.
+**Implementation:** Apply least-privilege IAM policies, encrypt data at rest (AES-256) and in transit (TLS 1.2+), configure security groups restrictively, enable MFA for all administrative access, set up billing alerts to detect anomalous resource provisioning, restrict allowed regions and services that can be used within cloud accounts.
 
 **Key Considerations:**
 - Use Infrastructure-as-Code for consistent, auditable hardening
@@ -136,8 +136,8 @@ Practical guidance for implementing APTS Supply Chain Trust requirements. Each s
 - Unencrypted data stores or weak cipher suites in production
 - Disabled MFA on administrative accounts
 - Alerts for anomalous resource provisioning are missing
-- Created resources in regions that are not usually used by an organization
-- Administrative policies assigned to the IAM users
+- No region restrictions configured, allowing resource creation outside approved regions
+- Overly permissive IAM policies granting administrative access to regular users or service accounts
 
 **Cloud Security Hardening Baseline:**
 
