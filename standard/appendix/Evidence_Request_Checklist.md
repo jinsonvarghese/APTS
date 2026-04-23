@@ -64,12 +64,14 @@ Request:
 - one sample approval record for a higher-risk action
 - one sample escalation or alert record
 - one example of the authority/approval workflow used in practice
+- one sample human review record (see [Human Review Record Template](Human_Review_Record_Template.md)) for a critical finding that required explicit reviewer approval
 
 Quick checks:
 
 - is it clear who can approve which actions
 - do approval-required actions pause rather than continue silently
 - are escalation paths visible and reviewable
+- can the operator show who approved a critical finding and what evidence they checked
 
 ### Graduated Autonomy (AL)
 
