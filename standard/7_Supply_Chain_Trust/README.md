@@ -236,7 +236,7 @@ Platforms SHOULD document data residency requirements and verify that provider c
 
 ### Requirement
 
-Organizations MUST implement cloud security hardening for all cloud infrastructure supporting autonomous pentest operations. Configuration MUST follow principle of least privilege for identity and access management (IAM) policies. All data MUST be encrypted at rest using strong algorithms (AES-256 minimum). Network configuration MUST enforce security groups and network ACLs to restrict traffic to necessary flows only. Regular compliance scanning MUST identify deviations from hardening standards and trigger remediation.
+Organizations MUST implement cloud security hardening for all cloud infrastructure supporting autonomous pentest operations. Configuration MUST follow principle of least privilege for identity and access management (IAM) policies. All data MUST be encrypted at rest using strong algorithms (AES-256 minimum). Network configuration MUST enforce security groups and network ACLs to restrict traffic to necessary flows only. Regular compliance scanning MUST identify deviations from hardening standards and trigger remediation. When hosting LLM models using services provided by a selected cloud provider, organizations MUST ensure that billing alerts are in place to detect anomalous resource provisioning that may indicate cloud account compromise. Organizations SHOULD limit the allowed services and regions within the cloud accounts to prevent misuse and minimize potential risks.
 
 ### Verification
 
@@ -245,7 +245,11 @@ Organizations MUST implement cloud security hardening for all cloud infrastructu
 3. Verify all data at rest is encrypted with AES-256 or equivalent; inspect storage metadata to confirm algorithm and key length
 4. Verify network security groups and ACLs restrict traffic to documented necessary flows only; fail any rule permitting traffic not in the architecture baseline
 5. Run the compliance scanner; require zero critical deviations and documented remediation plans for any high-severity deviations
-6. **Negative test:** Introduce an intentionally overbroad IAM policy (for example, wildcard permissions) in a staging environment; verify the compliance scanner or policy gate detects and flags it
+6. Verify that billing alerts are in place to detect anomalous resource provisioning that may indicate cloud account compromise
+7. Verify that there are limitations for the allowed services and regions across the used cloud accounts; fail if any deviations from the baseline detected
+8. **Negative test:** Introduce an intentionally overbroad IAM policy (for example, wildcard permissions) in a staging environment; verify the compliance scanner or policy gate detects and flags it
+9. **Negative test:** Try to create any cloud resources in the prohibited region; verify that this operation fails
+10. **Negative test:** Try to create resources using the prohibited service; verify that this action is blocked by the configured policies
 
 > **See also:** APTS-SE-024 (cloud-native scope governance that this hardening baseline supports), APTS-TP-014 (secrets management inside the hardened cloud environment).
 
