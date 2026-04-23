@@ -151,6 +151,22 @@ Establish a continuous improvement framework for autonomous pentesting operation
 
 ---
 
+### APTS-TP-A04: External Tool Connector Trust Boundaries and Credential Isolation (Advisory)
+
+**Rationale:** Autonomous pentest platforms increasingly rely on external tool connectors such as remote browser agents, model tool servers, plugins, and data connectors that run outside the core platform trust boundary. These integrations can introduce new instruction channels, expand available actions, and inherit broad customer credentials. APTS already covers dependency inventory, provider vetting, action allowlists, and runtime containment, but it does not yet give implementation guidance specific to externally hosted tool connectors and protocol bridges.
+
+**Value:** Platforms that treat external tool connectors as distinct trust zones reduce the risk of tool-poisoning, over-privileged connector credentials, silent capability expansion, and connector-driven cross-tenant leakage. This is especially useful for platforms that integrate remote browsers, agent plugins, retrieval connectors, or Model Context Protocol-style tool servers.
+
+**Practice Description:**
+
+Document every external connector that can execute actions, access customer data, or supply context into the agent runtime. For each connector, define the approved capability scope, credential scope, network reachability, and data classes it may access. Route connector requests through an enforcement layer outside the model that validates connector identity, denies undeclared actions, and records connector invocation provenance. Connector credentials should be isolated per engagement or customer wherever operationally feasible, and high-impact connectors should require explicit operator approval before first use in an engagement. Connector output should be treated as untrusted input subject to the same validation and sanitization controls applied to target-side content.
+
+**Recommendation:** Start with a short connector inventory and per-connector approval profile rather than a heavyweight framework. Prioritize connectors that can execute code, browse arbitrary URLs, retrieve private documents, or introduce new action surfaces at runtime.
+
+**Related normative requirements:** APTS-TP-006, APTS-TP-017, APTS-SC-020, APTS-MR-022, APTS-MR-023.
+
+---
+
 ## Relationship to Conformance Tiers
 
 | Tier | Scope | Advisory Practices |
