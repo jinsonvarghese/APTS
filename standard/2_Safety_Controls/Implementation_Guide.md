@@ -326,13 +326,15 @@ For platforms deployed on Kubernetes or container orchestration:
 
 ---
 
-## Advisory: APTS-SC-A02 — Context Window Safety and Constraint Preservation
+## Advisory Practice Implementation Guidance
+
+### APTS-SC-A02: Context Window Safety and Constraint Preservation
 
 > This section provides implementation guidance for the advisory practice [APTS-SC-A02](../appendix/Advisory_Requirements.md#apts-sc-a02-context-window-safety-and-constraint-preservation-advisory). It is not required for conformance at any tier.
 
 **Implementation:** Maintain an authoritative "safety context" document outside the agent's conversation history. This document contains the current scope definition, deny lists, autonomy level, active operator directives, credential references, and escalation state. After every context compaction event (summarization, truncation, sliding window), unconditionally re-inject this document into the agent's context and verify its integrity before allowing the next action.
 
-**Architecture Pattern — External Safety Context Store:**
+**Architecture Pattern - External Safety Context Store:**
 
 1. **Safety context document:** A structured document (JSON or equivalent) maintained by the orchestration layer, not by the agent. Contains all safety-critical constraints derived from the RoE, operator directives, and platform state. Updated only by the orchestration layer when scope changes, operator directives arrive, or autonomy level changes.
 2. **Compaction hook:** Register a callback on the context management system that fires after every compaction event. The hook re-injects the safety context document into the agent's working context as a system-level message that the agent cannot modify or remove.
