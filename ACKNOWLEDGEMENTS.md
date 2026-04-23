@@ -1,5 +1,7 @@
 # Acknowledgements
 
+Affiliations are listed to identify contributors' organizational context. Unless explicitly stated, acknowledgements recognize individual contributions and do not imply employer sponsorship, review, endorsement, or representation.
+
 ## Project Lead
 
 | Name | Affiliation | Links |
@@ -23,7 +25,7 @@ Individuals who made a significant contribution to the project:
 | Name | Affiliation | Links |
 | --- | --- | --- |
 | Ramshath MM | [Astra Security](https://www.getastra.com) | [LinkedIn](https://www.linkedin.com/in/ramshath) |
-| Chia Min Jun Lennon | Ernst & Young (EY)<br>(The views contributed are of the individual and do not represent the EY organization.) | [GitHub](https://github.com/Hinotoi-agent), [LinkedIn](https://www.linkedin.com/in/lennon-chia/) |
+| Chia Min Jun Lennon | Ernst & Young (EY) | [GitHub](https://github.com/Hinotoi-agent), [LinkedIn](https://www.linkedin.com/in/lennon-chia/) |
 | Josh Kotrous | [Pensar](https://pensarai.com) | [LinkedIn](https://www.linkedin.com/in/joshkotrous) |
 | Ihor Sasovets | [TechMagic](https://www.techmagic.co/) | [GitHub](https://github.com/igorsasovets), [LinkedIn](https://www.linkedin.com/in/ihor-sasovets/) |
 <!-- Add your name here via pull request. -->
