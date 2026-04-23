@@ -97,6 +97,30 @@ Verify platform code integrity continuously during engagement execution. Hash lo
 
 ---
 
+### APTS-SC-A02: Context Window Safety and Constraint Preservation (Advisory)
+
+**Applicability:** This practice applies to platforms that use LLM-based agents with finite context windows where conversation history may be summarized, truncated, or compacted during an engagement.
+
+**Rationale:** Context window exhaustion is an inevitable event in long-running autonomous engagements. When the platform summarizes the agent's history to free token budget, the summarizer (whether LLM-based or heuristic) can drop, paraphrase, or dilute constraints that appeared earlier in the conversation. An agent that was told "never test 10.0.0.5" in message 3 may lose that constraint entirely when messages 1 through 50 are summarized into a paragraph. The agent then continues operating without the constraint, producing a silent scope violation that no other safety control detects because the agent genuinely believes it was never restricted. This failure mode is invisible, silent, and unique to LLM-based architectures. The normative requirement set for v0.1.0 is frozen; this practice is a high-priority candidate for tier-gated inclusion in v0.2.0 and is strongly recommended for any platform using LLM-based agents with finite context windows.
+
+**Value:** Platforms that implement context window safety prevent an entire class of silent scope violations caused by routine context management. This is especially critical for long-running engagements where compaction is guaranteed to occur multiple times, and where the constraints being lost (deny lists, autonomy restrictions, operator directives) are the constraints that prevent the most dangerous failures.
+
+**Practice Description:**
+
+When the platform summarizes, truncates, or otherwise compacts the agent's context window during an engagement, the platform should ensure that all safety-critical constraints survive the compaction intact. Specifically:
+
+1. **Identify safety-critical context.** Maintain a defined set of safety-critical context elements that must survive any context compaction event. At minimum, this set should include: the active scope definition and all deny lists (APTS-SE-001, APTS-SE-009), the current autonomy level and any restrictions imposed during the session (APTS-AL-025), all active escalation states and pending human decisions (APTS-HO-011 through APTS-HO-014), credential references and their usage policies (APTS-SE-023), and any operator-imposed constraints or directives issued during the engagement.
+2. **Re-inject safety-critical context after compaction.** After any context summarization, truncation, or compaction event, re-inject the full set of safety-critical context elements into the agent's working context before the agent's next action. Re-injection should not depend on the summarization process preserving these elements; treat summarization as lossy and unconditionally re-inject from an authoritative source external to the agent's context.
+3. **Verify constraint preservation.** After re-injection, verify that the safety-critical context elements are present and consistent with the authoritative source. If verification fails, halt the agent and escalate to the operator.
+4. **Log compaction events.** Every context compaction event should be logged with: timestamp, the compaction method used (summarization, truncation, sliding window), the token count before and after compaction, and confirmation that safety-critical context was re-injected and verified.
+5. **Prohibit safety-critical constraints in the summarizable region only.** Safety-critical constraints should not be conveyed solely through conversation history that is subject to summarization. Store the authoritative copy of all safety-critical context outside the agent's context window, in a location the summarization process cannot modify.
+
+**Recommendation:** Implement an external safety context store that the orchestration layer manages independently of the agent's conversation history. Keep the safety context document compact (under 2000 tokens) to minimize re-injection overhead. SC-020 (external action allowlist) provides a backstop: even if context-level constraints are lost, the external allowlist still blocks disallowed tools. This practice addresses constraints that are finer-grained than the allowlist (specific deny-list hosts, operator directives, autonomy-level restrictions).
+
+**Related normative requirements:** APTS-SE-001, APTS-SE-009, APTS-AL-025, APTS-SC-020, APTS-AR-001.
+
+---
+
 ### APTS-HO-A01: Out-of-Band Kill Switch via Independent Network (Advisory)
 
 **Rationale:** Core kill switch functionality is covered by APTS-HO-008. The requirement for kill switch activation via physically independent communication channels (cellular, management network, physical button) assumes deployment scenarios where the primary network may be compromised or unavailable.

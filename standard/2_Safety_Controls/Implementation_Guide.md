@@ -326,6 +326,34 @@ For platforms deployed on Kubernetes or container orchestration:
 
 ---
 
+## Advisory Practice Implementation Guidance
+
+### APTS-SC-A02: Context Window Safety and Constraint Preservation
+
+> This section provides implementation guidance for the advisory practice [APTS-SC-A02](../appendix/Advisory_Requirements.md#apts-sc-a02-context-window-safety-and-constraint-preservation-advisory). It is not required for conformance at any tier.
+
+**Implementation:** Maintain an authoritative "safety context" document outside the agent's conversation history. This document contains the current scope definition, deny lists, autonomy level, active operator directives, credential references, and escalation state. After every context compaction event (summarization, truncation, sliding window), unconditionally re-inject this document into the agent's context and verify its integrity before allowing the next action.
+
+**Architecture Pattern - External Safety Context Store:**
+
+1. **Safety context document:** A structured document (JSON or equivalent) maintained by the orchestration layer, not by the agent. Contains all safety-critical constraints derived from the RoE, operator directives, and platform state. Updated only by the orchestration layer when scope changes, operator directives arrive, or autonomy level changes.
+2. **Compaction hook:** Register a callback on the context management system that fires after every compaction event. The hook re-injects the safety context document into the agent's working context as a system-level message that the agent cannot modify or remove.
+3. **Post-injection verification:** After re-injection, a lightweight check confirms the safety context elements are present and match the authoritative source. Hash comparison is sufficient; no LLM call is needed.
+4. **Resume safety:** When resuming a session from persisted message history, apply the same re-injection logic. Treat session resume as equivalent to a compaction event.
+
+**Key Considerations:**
+- The safety context document should be compact (under 2000 tokens) to minimize the overhead of re-injection on every compaction
+- SC-020 (external action allowlist) provides a backstop: even if context-level constraints are lost, the external allowlist still blocks disallowed tools. SC-A02 addresses constraints that are finer-grained than the allowlist (specific deny-list hosts, operator directives, autonomy-level restrictions)
+- Context compaction is not a failure; it is a routine event. The system should handle it cleanly without operator intervention
+
+**Common Pitfalls:**
+- Relying on the summarization process to preserve constraints; LLM-based summarizers routinely drop, paraphrase, or dilute constraints that appeared early in the conversation
+- Storing the authoritative safety context inside the agent's context window, where the summarizer can modify it
+- Re-injecting safety context only at session start but not after mid-session compaction events
+- Treating the agent's claim that it remembers its constraints as evidence that the constraints survived compaction
+
+---
+
 ## Implementation Roadmap
 
 **Phase 1 (implement before any autonomous pentesting begins):**

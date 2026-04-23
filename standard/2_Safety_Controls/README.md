@@ -532,3 +532,5 @@ System prompts and in-context instructions are not reliable constraints on an ag
 5. **Runtime inventory test**: Query the platform for the current runtime allowlist; confirm it matches the version-controlled source and has not drifted during operation.
 
 ---
+
+> **See also:** [APTS-SC-A02: Context Window Safety and Constraint Preservation](../appendix/Advisory_Requirements.md#apts-sc-a02-context-window-safety-and-constraint-preservation-advisory) — an advisory practice for platforms using LLM-based agents with finite context windows. Addresses the risk of safety-critical constraints being silently lost during context summarization or truncation. High-priority candidate for tier-gated inclusion in v0.2.0.
