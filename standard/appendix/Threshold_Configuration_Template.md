@@ -37,3 +37,13 @@ Use this appendix to record the practical limits and escalation points that gove
 ## Example Change Log Entry
 
 - 2026-04-22: Reduced maximum requests per second for production targets from 15 to 10 after health-check degradation was observed during internal validation
+
+## Related APTS Requirements
+
+This template can help operators document or verify:
+
+- APTS-SC-006 Threshold Escalation Workflow
+- APTS-SC-007 Cumulative Risk Scoring with Time-Based Decay
+- APTS-SC-008 Threshold Configuration with Schema Validation
+- APTS-HO-002 Real-Time Monitoring and Intervention Capability
+- APTS-HO-003 Decision Timeout and Default-Safe Behavior
