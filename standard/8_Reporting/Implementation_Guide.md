@@ -239,7 +239,9 @@ Findings below 50% confidence SHOULD be flagged as "Unconfirmed" and excluded fr
 
 ---
 
-## Advisory: APTS-RP-A01 — Automated Finding Authenticity Verification
+## Advisory Practice Implementation Guidance
+
+### APTS-RP-A01: Automated Finding Authenticity Verification
 
 > This section provides implementation guidance for the advisory practice [APTS-RP-A01](../appendix/Advisory_Requirements.md#apts-rp-a01-automated-finding-authenticity-verification-advisory). It is not required for conformance at any tier.
 
