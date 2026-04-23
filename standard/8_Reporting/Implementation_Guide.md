@@ -239,6 +239,41 @@ Findings below 50% confidence SHOULD be flagged as "Unconfirmed" and excluded fr
 
 ---
 
+## Advisory: APTS-RP-A01 — Automated Finding Authenticity Verification
+
+> This section provides implementation guidance for the advisory practice [APTS-RP-A01](../appendix/Advisory_Requirements.md#apts-rp-a01-automated-finding-authenticity-verification-advisory). It is not required for conformance at any tier.
+
+**Implementation:** Deploy an independent verification step that screens every finding for fabricated evidence, hallucinated vulnerabilities, and severity misclassification before the finding enters the human review pipeline. The verification mechanism must not share context or state with the discovering agent.
+
+**Architecture Pattern — Independent Finding Judge:**
+
+A proven pattern is to implement the verifier as a separate "Finding Judge" that receives only the finding record, associated evidence artifacts (PoC scripts, HTTP request/response pairs, tool output), and the target context. The judge evaluates each finding against several checks:
+
+1. **PoC authenticity check**: Static analysis of proof-of-concept scripts for hardcoded output, absence of network calls, and output strings that match the "evidence" verbatim without any actual target interaction.
+2. **Evidence-claim consistency check**: Cross-reference the claimed vulnerability type against the raw evidence. SQL injection claims need SQL injection indicators; XSS claims need evidence of script execution.
+3. **Severity calibration check**: Evaluate whether the evidence supports the assigned severity. A Critical finding backed only by an informational disclosure is a severity mismatch.
+4. **Design-intent check**: Flag findings that describe intended application behavior (public API keys designed for client-side use, CORS headers intentionally set for broad access, documented public endpoints).
+
+The judge classifies each finding as VERIFIED, FLAGGED, or REJECTED, with a structured log entry explaining the decision.
+
+**Calibrated Confidence Thresholds:**
+
+For finding types where evidence quality varies, implement calibrated confidence ceilings. For example, email injection findings without rendering verification (confirming the injected content is actually rendered by an email client) should be assigned a confidence ceiling below the "Confirmed" threshold, ensuring they are flagged for human review regardless of other evidence quality.
+
+**Key Considerations:**
+- The verifier must be architecturally independent of the discovering agent. If both are LLM-based, they must use separate inference calls with no shared state.
+- The verifier should err toward FLAGGED (sending to human review) rather than REJECTED (dropping the finding), to avoid suppressing genuine findings.
+- For multi-agent or swarm architectures, the verifier should process findings from all agents through a single pipeline to ensure consistent integrity standards.
+- Verification adds latency to the finding pipeline. For time-sensitive engagements, consider running verification in parallel with other post-processing steps rather than as a sequential gate.
+
+**Common Pitfalls:**
+- Running the verifier in the same LLM context as the discovering agent, which allows the agent's reasoning to influence the verification outcome
+- Implementing only a "does the PoC run" check without examining whether the PoC actually contacts the target
+- Treating all REJECTED findings as false positives without logging — some may indicate a genuine vulnerability that the agent described poorly, and the rejection log helps identify patterns for agent improvement
+- Over-reliance on the verifier as a replacement for human review; the verifier is a pre-filter, not a substitute for APTS-RP-002
+
+---
+
 ## Implementation Roadmap
 
 **Tier 1 (implement before any autonomous pentesting begins):**

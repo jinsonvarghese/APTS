@@ -167,6 +167,30 @@ Document every external connector that can execute actions, access customer data
 
 ---
 
+### APTS-RP-A01: Automated Finding Authenticity Verification (Advisory)
+
+**Rationale:** LLM-based penetration testing agents can produce findings that appear legitimate but contain fabricated evidence: proof-of-concept scripts that output hardcoded strings instead of making real requests, HTTP responses that were not actually received from the target, or severity classifications unsupported by the evidence. Because these fabricated findings are fluent and internally consistent, they pass casual human review and erode trust in the platform's output. RP-001 and RP-002 require evidence-based validation and human review, but neither addresses the risk that the agent itself fabricates evidence. The normative requirement set for v0.1.0 is frozen; this practice is a candidate for tier-gated inclusion in v0.2.0 (likely as MUST | Tier 2 given the implementation complexity).
+
+**Value:** Platforms that implement automated finding authenticity verification catch fabricated PoCs, hallucinated vulnerability types, and severity mismatches before they reach human reviewers. This ensures reviewers spend their time on genuine judgment calls rather than authenticity checking, and prevents fabricated findings from reaching customers.
+
+**Practice Description:**
+
+Implement an automated verification mechanism that screens each reported finding for fabricated evidence, hallucinated vulnerabilities, and synthetic proof artifacts before the finding enters the human review pipeline (APTS-RP-002) or the final report. Specifically:
+
+1. **Operate independently of the agent that produced the finding.** The verification mechanism must not share a context window, conversation history, or in-memory state with the discovering agent. If the verifier is itself LLM-based, it should receive only the finding record, the associated evidence artifacts, and any relevant tool output — not the discovering agent's reasoning chain or system prompt.
+2. **Screen for fabricated evidence artifacts.** Detect proof-of-concept scripts or commands that produce output without interacting with the target (for example, scripts that echo canned strings, hardcoded HTTP responses, or synthetic screenshots). Detection should include static analysis of PoC artifacts for: absence of network calls to the target, hardcoded output strings that match the "evidence" verbatim, and output that could not have been produced by the claimed tool or technique.
+3. **Screen for hallucinated vulnerabilities.** Cross-reference the claimed vulnerability against the raw evidence artifacts. A finding that claims SQL injection should have evidence of actual SQL injection behavior (error messages, data exfiltration, time-based delay); a finding that claims XSS should have evidence of script execution or DOM manipulation. Findings where the evidence does not support the claimed vulnerability type should be flagged.
+4. **Screen for severity misclassification.** Evaluate whether the evidence supports the assigned severity. A finding classified as Critical should have evidence of impact commensurate with Critical severity (for example, remote code execution, authentication bypass, mass data exposure). Findings where severity is unsupported by the evidence should be flagged for reclassification.
+5. **Screen for design-intent false positives.** Detect findings that describe intended application behavior as vulnerabilities (for example, public API keys designed for client-side use, CORS headers intentionally set for broad access, or documented public endpoints).
+6. **Classify each finding.** Assign each finding one of the following integrity statuses: VERIFIED (evidence is authentic, supports the claimed vulnerability type and severity), FLAGGED (evidence appears inconsistent with the claim; requires human review before inclusion), or REJECTED (evidence is fabricated or does not demonstrate any vulnerability). REJECTED findings should not appear in the main findings section of the report.
+7. **Log all verification decisions.** Each verification decision should be logged with: the finding identifier, the integrity status assigned, the specific checks that passed or failed, and the evidence artifacts examined.
+
+**Recommendation:** Implement the verifier as a separate "Finding Judge" that receives only the finding record, associated evidence artifacts, and target context. The judge should err toward FLAGGED (sending to human review) rather than REJECTED (dropping the finding), to avoid suppressing genuine findings. For multi-agent or swarm architectures, process findings from all agents through a single verification pipeline to ensure consistent integrity standards.
+
+**Related normative requirements:** APTS-RP-001, APTS-RP-002, APTS-RP-003, APTS-AR-006.
+
+---
+
 ## Relationship to Conformance Tiers
 
 | Tier | Scope | Advisory Practices |
