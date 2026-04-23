@@ -1,6 +1,6 @@
 # Acknowledgements
 
-Affiliations are listed to identify contributors' organizational context. Unless explicitly stated, acknowledgements recognize individual contributions and do not imply employer sponsorship, review, endorsement, or representation.
+Affiliations are provided for contributor identification only. Acknowledgements recognize individual contributions and do not imply organizational representation, sponsorship, approval, or endorsement. Contributions do not necessarily represent the views of any listed affiliation or organization.
 
 ## Project Lead
 
