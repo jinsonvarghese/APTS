@@ -87,6 +87,16 @@ Verify platform code integrity continuously during engagement execution. Hash lo
 
 ---
 
+### APTS-SC-A01: Platform Health Monitoring and Anomaly Detection (Advisory)
+
+**Rationale:** Core health monitoring is covered by APTS-SC-010. The advanced anomaly detection capabilities (behavioral baseline deviation, statistical confidence scoring, pattern analysis across testing, decision-making, and action dimensions) go beyond practical health monitoring into ML-based behavioral analysis territory.
+
+**Value:** Behavioral anomaly detection can identify prompt injection attacks, model drift, or platform compromise that simple health checks would miss. Confidence-scored anomaly routing reduces alert fatigue while preserving detection of high-severity events.
+
+**Recommendation:** Implement basic anomaly detection (probe rate spikes, unusual error rates) as part of SC-010 health monitoring. Reserve statistical baseline analysis and confidence scoring for platforms with dedicated security operations teams.
+
+---
+
 ### APTS-SC-A02: Context Window Safety and Constraint Preservation (Advisory)
 
 **Applicability:** This practice applies to platforms that use LLM-based agents with finite context windows where conversation history may be summarized, truncated, or compacted during an engagement.
@@ -108,16 +118,6 @@ When the platform summarizes, truncates, or otherwise compacts the agent's conte
 **Recommendation:** Implement an external safety context store that the orchestration layer manages independently of the agent's conversation history. Keep the safety context document compact (under 2000 tokens) to minimize re-injection overhead. SC-020 (external action allowlist) provides a backstop: even if context-level constraints are lost, the external allowlist still blocks disallowed tools. This practice addresses constraints that are finer-grained than the allowlist (specific deny-list hosts, operator directives, autonomy-level restrictions).
 
 **Related normative requirements:** APTS-SE-001, APTS-SE-009, APTS-AL-025, APTS-SC-020, APTS-AR-001.
-
----
-
-### APTS-SC-A01: Platform Health Monitoring and Anomaly Detection (Advisory)
-
-**Rationale:** Core health monitoring is covered by APTS-SC-010. The advanced anomaly detection capabilities (behavioral baseline deviation, statistical confidence scoring, pattern analysis across testing, decision-making, and action dimensions) go beyond practical health monitoring into ML-based behavioral analysis territory.
-
-**Value:** Behavioral anomaly detection can identify prompt injection attacks, model drift, or platform compromise that simple health checks would miss. Confidence-scored anomaly routing reduces alert fatigue while preserving detection of high-severity events.
-
-**Recommendation:** Implement basic anomaly detection (probe rate spikes, unusual error rates) as part of SC-010 health monitoring. Reserve statistical baseline analysis and confidence scoring for platforms with dedicated security operations teams.
 
 ---
 
