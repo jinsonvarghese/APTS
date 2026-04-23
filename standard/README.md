@@ -33,6 +33,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Customer Acceptance Testing](./appendix/Customer_Acceptance_Testing.md) | Optional hands-on verification procedures for customers |
 | [Vendor Evaluation Guide](./appendix/Vendor_Evaluation_Guide.md) | Guide for evaluating autonomous pentest platform operators |
 | [Rules of Engagement Template](./appendix/Rules_of_Engagement_Template.md) | Illustrative machine-readable RoE starter template |
+| [Threshold Configuration Template](./appendix/Threshold_Configuration_Template.md) | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Evidence Package Manifest](./appendix/Evidence_Package_Manifest.md) | Illustrative manifest for finding evidence, provenance, and downstream handoff |
 | [Conformance Claim Schema](./appendix/Conformance_Claim_Schema.md) | Illustrative machine-readable schema for structured conformance claims |
 | [Conformance Claim Template](./appendix/Conformance_Claim_Template.md) | Optional template for documenting platform conformance |
