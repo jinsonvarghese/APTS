@@ -44,9 +44,21 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 
 A machine-readable JSON export of APTS requirements is available at:
 
-[standard/apts_requirements.json](apts_requirements.json)
+[apts_requirements.json](apts_requirements.json)
+
+A JSON schema for validating the export is available at:
+
+[apts_requirements_schema.json](apts_requirements_schema.json)
 
 This enables automation, compliance tooling integration, and vendor self-assessment workflows.
+
+### Generating the JSON Export
+
+If you modify the requirements in the Markdown files or add new domains, you can automatically regenerate both the JSON export and its schema by running the `apts_exporter` module from the root directory:
+
+```bash
+python -m apts_exporter
+```
 
 ## Requirements Index
 
