@@ -28,7 +28,7 @@
           "id",
           "domain",
           "tier",
-          "level",
+          "classification",
           "title"
         ],
         "properties": {
@@ -57,7 +57,7 @@
               3
             ]
           },
-          "level": {
+          "classification": {
             "type": "string",
             "enum": [
               "MUST",
