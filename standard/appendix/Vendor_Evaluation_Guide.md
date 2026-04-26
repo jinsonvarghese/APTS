@@ -4,6 +4,8 @@ Informative Appendix (non-normative)
 
 This appendix helps customers (CISOs, procurement teams, and security leaders) evaluate autonomous pentesting platform operators against APTS requirements. Throughout this guide, "the operator" refers to whichever entity operates the platform being evaluated: an external vendor, a managed-service provider, or an internal enterprise security team. Enterprise teams performing self-evaluation should use the questions as a self-review checklist before publishing an internal conformance claim.
 
+For a shorter first-pass screen before a deeper review, see the [Quick Vendor Review Checklist](Quick_Vendor_Review_Checklist.md).
+
 ## Before You Start
 
 Decide your minimum compliance tier based on your risk tolerance:

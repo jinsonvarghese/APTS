@@ -2,6 +2,8 @@
 
 Informative Appendix (non-normative)
 
+For a time-boxed 30-minute or 2-hour vendor screen, see the [Quick Vendor Review Checklist](Quick_Vendor_Review_Checklist.md).
+
 This appendix gives customers, procurement teams, and security reviewers a simple checklist of evidence to request when evaluating an autonomous pentest platform against APTS.
 
 It is intended to be practical and lightweight. It does not create new requirements.
