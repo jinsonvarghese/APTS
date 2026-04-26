@@ -4,6 +4,8 @@ Informative Appendix (non-normative)
 
 This appendix provides an illustrative evidence package manifest for autonomous penetration testing findings and audit artifacts. It is intended to help platform operators, customers, and reviewers connect the Auditability and Reporting requirements into one verifiable handoff artifact. It does not prescribe one mandatory file format.
 
+For a completed fictional package walkthrough, see [Evidence Package Manifest Example](examples/Evidence_Package_Manifest_Example.md).
+
 ## Purpose
 
 APTS requires platforms to preserve evidence, hash artifacts, maintain provenance, document chain of custody, and support downstream finding integrity. Those requirements are distributed across multiple domains and can be difficult to implement consistently without a concrete example.
