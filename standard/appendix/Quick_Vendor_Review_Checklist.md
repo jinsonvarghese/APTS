@@ -19,6 +19,9 @@ Collect these basics from the operator:
 | Item | What to Ask For | Why It Matters |
 |------|-----------------|----------------|
 | Claimed APTS tier | Tier 1, Tier 2, Tier 3, or no claim | Sets the review depth and expected evidence |
+| APTS version and claim date | Version of APTS used and date the claim was last reviewed | Helps identify stale or generic claims |
+| Assessment method | Self-assessment, independent internal review, or third-party assessment | Clarifies who reviewed the claim and what assurance it provides |
+| Platform version | Product, service, or worker version reviewed | Prevents evidence for one version from being applied to another |
 | Deployment model | SaaS, managed service, on-premises, hybrid, customer-hosted workers | Determines scope, tenant isolation, and customer responsibility boundaries |
 | Supported autonomy levels | L1 Assisted through L4 Autonomous | Determines human oversight and safety expectations |
 | Intended targets | Non-production, production, critical systems, APIs, cloud, client-side agents | Determines safety, scope, and evidence expectations |
@@ -33,7 +36,7 @@ Use this screen to decide whether the operator is ready for deeper review.
 | Question | Acceptable Signal | Red Flag |
 |----------|-------------------|----------|
 | Which APTS tier do you claim, if any? | Clear tier statement or clear statement that no APTS conformance is claimed | Vague "APTS-aligned" statement with no tier, scope, or evidence |
-| Can you provide a completed APTS checklist? | Completed [Checklists](Checklists.md) for the claimed tier or a mapped internal assessment | No per-requirement mapping |
+| Can you provide a completed APTS checklist? | Completed [Checklists](Checklists.md) for the claimed tier, or a mapped internal assessment for first-pass screening only | No per-requirement mapping |
 | How do you ingest and enforce Rules of Engagement? | Machine-readable RoE, validation, pre-action checks, audit trail | Scope handled manually or only by operator policy |
 | Can you demonstrate a kill switch? | Recorded or live demo showing stop behavior and audit record | No demo, no timing expectation, or unclear authority |
 | How are findings validated before reporting? | Reproduction, confidence scoring, and human review for critical findings | Findings reported directly from model output without validation |
@@ -55,16 +58,16 @@ Use this screen to decide whether the operator is ready for deeper review.
 
 ## 2-Hour Review
 
-Use this review when the 30-minute screen passes and the engagement has moderate risk.
+Use this review when the 30-minute screen passes and the engagement has moderate risk. Treat the result as triage or conditional procurement input unless none of the full review triggers below apply.
 
 ### Minimum Evidence Pack
 
-Ask for a small evidence pack before scheduling detailed demos:
+Ask for a small evidence pack before scheduling detailed demos. This pack is a prioritized subset of the broader [Evidence Request Checklist](Evidence_Request_Checklist.md):
 
 | Evidence | Related APTS Areas | Review Focus |
 |----------|--------------------|--------------|
 | Completed checklist for claimed tier | All domains | Does every claimed requirement have status and evidence? |
-| Conformance claim or equivalent statement | Introduction, conformance model | Is claim scope clear and limited to specific deployment modes? |
+| [Conformance Claim Template](Conformance_Claim_Template.md) or equivalent statement | Introduction, conformance model | Is claim scope, assessment method, APTS version, platform version, and claim date clear? |
 | Sample Rules of Engagement record | Scope Enforcement | Is scope machine-readable and enforced before actions? |
 | Kill switch test evidence | Safety Controls, Human Oversight, Auditability | Is stop behavior demonstrated and logged? |
 | Sample audit log excerpt | Auditability | Can actions, decisions, actors, timestamps, and outcomes be traced? |
@@ -73,6 +76,12 @@ Ask for a small evidence pack before scheduling detailed demos:
 | Model/provider disclosure | Supply Chain Trust, Auditability | Are model identifiers, provider review, and change controls documented? |
 | Data retention and deletion summary | Supply Chain Trust, Scope Enforcement | Are customer data and credentials retained and deleted according to policy? |
 | Incident response and notification process | Safety Controls, Supply Chain Trust | Are customer notification triggers and timelines documented? |
+
+### Evidence Quality Checks
+
+For each artifact, verify that it is current, representative of the reviewed deployment mode and autonomy level, and cross-checkable against another artifact such as an audit log, checklist row, evidence manifest, or demonstration recording. Sanitized demos and marketing summaries are useful for orientation, but they are not substitutes for reviewable evidence when the deployment is high risk.
+
+Confirm exclusions and shared-responsibility boundaries explicitly, especially for SaaS, on-premises, hybrid, and customer-hosted worker deployments. Customer responsibilities can materially affect the risk decision.
 
 ### Suggested 2-Hour Agenda
 
@@ -110,6 +119,9 @@ For full review, use the [Vendor Evaluation Guide](Vendor_Evaluation_Guide.md), 
 |-------|-------|
 | Operator reviewed | _[Name]_ |
 | Platform/version | _[Name and version]_ |
+| APTS version reviewed | _[Version, for example v0.1.0]_ |
+| Claim date | _[YYYY-MM-DD]_ |
+| Assessment method | _[Self-assessment / independent internal review / third-party assessment]_ |
 | Claimed APTS tier | _[Tier or no claim]_ |
 | Deployment model reviewed | _[SaaS / managed service / on-premises / hybrid]_ |
 | Autonomy levels reviewed | _[L1-L4]_ |
@@ -138,7 +150,7 @@ For full review, use the [Vendor Evaluation Guide](Vendor_Evaluation_Guide.md), 
 
 ## Output of a Quick Review
 
-A quick review should produce one of four outcomes:
+A quick review typically produces one of four practical outcomes:
 
 | Outcome | Meaning |
 |---------|---------|
