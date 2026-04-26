@@ -2,7 +2,56 @@ import os
 import json
 import re
 from datetime import datetime, timezone
-from apts_exporter.schema import SCHEMA
+
+SCHEMA = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["requirements", "version", "source", "last_updated"],
+  "properties": {
+    "version": { "type": "string", "enum": ["0.1.0"] },
+    "source": { "type": "string" },
+    "last_updated": { "type": "string" },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "domain",
+          "tier",
+          "classification",
+          "title"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^APTS-[A-Z]+-\\d+$" },
+          "domain": { 
+            "type": "string",
+            "enum": [
+              "Scope Enforcement",
+              "Safety Controls",
+              "Human Oversight",
+              "Graduated Autonomy",
+              "Auditability",
+              "Manipulation Resistance",
+              "Supply Chain Trust",
+              "Reporting"
+            ]
+          },
+          "tier": { 
+            "type": "integer",
+            "enum": [1, 2, 3]
+          },
+          "classification": { 
+            "type": "string",
+            "enum": ["MUST", "SHOULD"]
+          },
+          "title": { "type": "string" }
+        },
+        "additionalProperties": False
+      }
+    }
+  }
+}
 
 # Constants
 STANDARD_DIR = "standard"
@@ -49,12 +98,12 @@ def export_all():
             line = line.strip()
             match = pattern.match(line)
             if match:
-                req_id, title, level, tier = match.groups()
+                req_id, title, classification, tier = match.groups()
                 requirements.append({
                     "id": req_id,
                     "domain": domain_name,
                     "tier": int(tier),
-                    "level": level,
+                    "classification": classification,
                     "title": title
                 })
                 
