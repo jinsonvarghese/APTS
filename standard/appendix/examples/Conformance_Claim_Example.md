@@ -2,7 +2,7 @@
 
 Informative Appendix Example (non-normative)
 
-This example shows how a platform operator might complete the [Conformance Claim Template](../Conformance_Claim_Template.md). The organization, platform, evidence identifiers, and dates are fictional. This example is intentionally partial: it illustrates expected detail and traceability without implying that every operator must use the same wording, evidence structure, or publication format.
+This example shows how a platform operator might complete the [Conformance Claim Template](../Conformance_Claim_Template.md). The organization, platform, evidence identifiers, and dates are fictional. This example is intentionally partial: it illustrates one possible level of detail and traceability without implying that every operator must use the same wording, evidence structure, or publication format.
 
 Use this example with the [Conformance Claim Template](../Conformance_Claim_Template.md), [Conformance Claim Schema](../Conformance_Claim_Schema.md), [Checklists](../Checklists.md), and [Evidence Package Manifest](../Evidence_Package_Manifest.md).
 
@@ -19,7 +19,7 @@ Use this example with the [Conformance Claim Template](../Conformance_Claim_Temp
 | **APTS Version** | v0.1.0 |
 | **Claimed Tier** | Tier 2 (Verified) |
 | **Claim Date** | 2026-04-20 |
-| **Assessment Method** | Independent internal review |
+| **Assessment Method** | Internal review independent of the implementation team |
 | **Contact** | security-assurance@example.invalid |
 
 ---
@@ -62,19 +62,19 @@ ExampleCorp does not permit runtime model substitution outside the approved mode
 
 ## Domain Summary
 
-The table below is illustrative. A real claim should use the current requirement counts for the claimed APTS version and attach the completed checklist used during assessment.
+The table below is illustrative. A real claim can use the current requirement counts for the claimed APTS version and attach the completed checklist used during assessment.
 
 | Domain | Requirements at Claimed Tier | Met | Example Notes |
 |--------|------------------------------|-----|---------------|
-| Scope Enforcement (SE) | Tier 1 + Tier 2 applicable requirements | All claimed | RoE validation, deny lists, temporal enforcement, scope refresh, and credential lifecycle controls reviewed |
-| Safety Controls (SC) | Tier 1 + Tier 2 applicable requirements | All claimed | Kill switch, rate limiting, cumulative impact thresholds, rollback, and platform health monitoring demonstrated in staging |
-| Human Oversight (HO) | Tier 1 + Tier 2 applicable requirements | All claimed | Approval gates, escalation paths, stale approval expiry, and reviewer qualification records sampled |
-| Graduated Autonomy (AL) | Tier 1 + Tier 2 applicable requirements | All claimed | L1-L3 operating modes documented; L4 excluded from this claim |
-| Auditability (AR) | Tier 1 + Tier 2 applicable requirements | All claimed | Decision logs, evidence hashes, model version logs, and tamper-evident storage reviewed |
-| Manipulation Resistance (MR) | Tier 1 + Tier 2 applicable requirements | All claimed | Prompt/data separation, scope anchor validation, adversarial input handling, and red-team test summaries reviewed |
-| Supply Chain Trust (TP) | Tier 1 + Tier 2 applicable requirements | All claimed | Provider due diligence, dependency inventory, tenant isolation, retention, and deletion evidence reviewed |
-| Reporting (RP) | Tier 1 + Tier 2 applicable requirements | All claimed | Finding validation, confidence scoring, evidence integrity, and downstream export controls sampled |
-| **Total** | Tier 2 cumulative requirements | All claimed | Completed checklist reference: `apts-checklist-tier2-examplecorp-2026-04-20.xlsx` |
+| Scope Enforcement (SE) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | RoE validation, deny lists, temporal enforcement, scope refresh, and credential lifecycle controls reviewed |
+| Safety Controls (SC) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Kill switch, rate limiting, cumulative impact thresholds, rollback, and platform health monitoring demonstrated in staging |
+| Human Oversight (HO) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Approval gates, escalation paths, stale approval expiry, and reviewer qualification records sampled |
+| Graduated Autonomy (AL) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | L1-L3 operating modes documented; L4 excluded from this claim |
+| Auditability (AR) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Decision logs, evidence hashes, model version logs, and tamper-evident storage reviewed |
+| Manipulation Resistance (MR) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Prompt/data separation, scope anchor validation, adversarial input handling, and red-team test summaries reviewed |
+| Supply Chain Trust (TP) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Provider due diligence, dependency inventory, tenant isolation, retention, and deletion evidence reviewed |
+| Reporting (RP) | Tier 1 + Tier 2 applicable requirements | All applicable tier requirements met | Finding validation, confidence scoring, evidence integrity, and downstream export controls sampled |
+| **Total** | Tier 2 cumulative requirements | All applicable tier requirements met | Completed checklist reference: `apts-checklist-tier2-examplecorp-2026-04-20.xlsx` |
 
 > **Reminder:** APTS requires 100% of requirements at the claimed tier to be met. Partial credit is not awarded.
 
@@ -87,7 +87,7 @@ The table below is illustrative. A real claim should use the current requirement
 | APTS-TP-A01 external tool connector trust boundaries | Yes | MCP-style connector configuration is isolated per customer engagement and reviewed before enablement |
 | APTS-HO-A01 out-of-band kill switch authority | Partial | Documented for production engagements; not enabled for all non-production engagements |
 
-Advisory practices are not counted toward the claimed tier. Operators should label partial advisory implementation clearly so customers do not confuse advisory practices with tier-required controls.
+Advisory practices are not counted toward the claimed tier. Clear labels for partial advisory implementation help customers distinguish advisory practices from tier-required controls.
 
 ---
 
@@ -109,11 +109,11 @@ Evidence package references:
 
 | Evidence ID | Description | Related APTS Areas |
 |-------------|-------------|--------------------|
-| `EVID-SE-001` | RoE schema validation and signed scope record | SE-001, SE-004, SE-015 |
-| `EVID-SC-009` | Kill switch test recording and result log | SC-009, HO-008, AR-001 |
-| `EVID-AR-010` | Tamper-evident audit log hash sample | AR-010, AR-012 |
-| `EVID-RP-002` | Human review record for critical finding | RP-002, HO-010 |
-| `EVID-TP-021` | Foundation model disclosure and capability baseline | TP-021, TP-022 |
+| `EVID-SE-001` | RoE schema validation and signed scope record | APTS-SE-001, APTS-SE-004, APTS-SE-015 |
+| `EVID-SC-009` | Kill switch test recording and result log | APTS-SC-009, APTS-HO-008, APTS-AR-001 |
+| `EVID-AR-010` | Tamper-evident audit log hash sample | APTS-AR-010, APTS-AR-012 |
+| `EVID-RP-002` | Human review record for critical finding | APTS-RP-002, APTS-HO-010 |
+| `EVID-TP-021` | Foundation model disclosure and capability baseline | APTS-TP-021, APTS-TP-022 |
 
 ---
 
@@ -127,7 +127,7 @@ ExampleCorp declares the following boundaries for this fictional claim:
 - Scanner workers cannot initiate lateral movement outside the approved target inventory
 - Credential collection is disabled by default and requires customer-approved handling rules
 
-These boundaries describe the claim's scope. They should not be used to hide implementation gaps for requirements that remain applicable to the claimed tier.
+These boundaries describe the claim's scope. They do not remove requirements that remain applicable to the claimed deployment.
 
 ---
 
@@ -140,6 +140,18 @@ These boundaries describe the claim's scope. They should not be used to hide imp
 | Human oversight | Approval workflow export, reviewer qualification record, escalation policy | Are approval authorities and default-deny behavior documented? |
 | Auditability | Decision log sample, artifact hashes, retention policy | Can the customer trace a finding from action to report? |
 | Reporting | Finding validation record, evidence package manifest, confidence score explanation | Is the reported finding independently reproducible from preserved evidence? |
+
+---
+
+## Sample Requirement-Level Traceability
+
+This abbreviated table shows one way to connect the high-level claim to requirement-level evidence. A real claim can replace these fictional evidence IDs with the operator's completed checklist outputs and evidence package references.
+
+| Requirement | Example Status | Evidence Reference | Reviewer Note |
+|-------------|----------------|--------------------|---------------|
+| APTS-SE-001 | Met | `EVID-SE-001` | RoE schema validation and signature checks were sampled for one staging and one production engagement |
+| APTS-SC-009 | Met | `EVID-SC-009` | Kill switch demonstration showed graceful termination followed by forced stop on timeout |
+| APTS-RP-002 | Met | `EVID-RP-002` | Critical finding review record included reviewer identity, decision, timestamp, and evidence references |
 
 ---
 

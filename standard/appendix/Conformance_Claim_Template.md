@@ -3,7 +3,7 @@
 Informative Appendix (non-normative)
 
 For teams that also want to publish a structured companion artifact, see the [Conformance Claim Schema](Conformance_Claim_Schema.md) appendix.
-For a completed fictional example showing expected detail and evidence traceability, see [Conformance Claim Example](examples/Conformance_Claim_Example.md).
+For a completed fictional example showing an example level of detail and evidence traceability, see [Conformance Claim Example](examples/Conformance_Claim_Example.md).
 
 This appendix provides an optional template for any platform operator who chooses to document their APTS conformance: vendors publishing claims to their customers, service providers standing behind a platform they operate for clients, and enterprise security teams running an internal autonomous pentest platform who want to surface their conformance in customer-facing trust documentation (trust center pages, security whitepapers, customer security questionnaires, or SOC 2 complementary user entity control narratives). Use of this template is entirely voluntary. There is no requirement to submit this claim to any organization, certification body, or third party. Platform operators may use this template as-is, adapt it to their own format, or choose not to publish a conformance claim at all.
 
