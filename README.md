@@ -7,6 +7,21 @@
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen" alt="Contributions Welcome"></a>
 </p>
 
+
+## Choose Your APTS Path
+
+Use this reader path to choose the shortest route through APTS based on your role and goal.
+
+![APTS reader path flowchart](assets/images/apts-reader-flow.svg)
+
+| Role | Start with | Then use | Outcome |
+|------|------------|----------|---------|
+| Vendor or platform builder | [Checklists](./standard/appendix/Checklists.md) | Domain READMEs, Implementation Guides, [Conformance Claim Template](./standard/appendix/Conformance_Claim_Template.md) | Documented conformance claim |
+| Enterprise internal team | [Getting Started](./standard/Getting_Started.md) | Scope Enforcement, Safety Controls, Human Oversight, Auditability, templates | Internal governance baseline |
+| CISO or procurement lead | [Vendor Evaluation Guide](./standard/appendix/Vendor_Evaluation_Guide.md) | [Evidence Request Checklist](./standard/appendix/Evidence_Request_Checklist.md), conformance claim, optional acceptance tests | Vendor evaluation decision |
+| Security reviewer or auditor | Claimed tier and [Checklists](./standard/appendix/Checklists.md) | Domain verification sections, [Customer Acceptance Testing](./standard/appendix/Customer_Acceptance_Testing.md) | Independent review findings |
+| Contributor | [CONTRIBUTING.md](./CONTRIBUTING.md) | Existing issues and PRs, focused documentation or template gaps | Small, reviewable PR |
+
 ## What is OWASP APTS?
 
 A governance standard for autonomous penetration testing platforms. It defines what these systems must do to operate safely, transparently, and within defined boundaries, whether they are delivered by vendors, operated as a service, or built in-house by enterprise security teams for testing their own organization.
