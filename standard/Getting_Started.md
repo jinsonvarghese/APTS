@@ -9,11 +9,13 @@ Use this reader path to move from orientation to the documents most relevant to 
 
 ![APTS reader path flowchart](../assets/images/apts-reader-flow.svg)
 
+This orientation aid is informative and does not create or modify APTS requirements.
+
 | Role | Start with | Then use | Outcome |
 |------|------------|----------|---------|
-| Vendor or platform builder | [Checklists](appendix/Checklists.md) | Domain READMEs, Implementation Guides, [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Documented conformance claim |
+| Vendor or platform builder | [Checklists](appendix/Checklists.md) | Domain READMEs, Implementation Guides, [Conformance Claim Template](appendix/Conformance_Claim_Template.md), [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Documented conformance and evidence package |
 | Enterprise internal team | This guide | Scope Enforcement, Safety Controls, Human Oversight, Auditability, templates | Internal governance baseline |
-| CISO or procurement lead | [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) | [Evidence Request Checklist](appendix/Evidence_Request_Checklist.md), conformance claim, optional acceptance tests | Vendor evaluation decision |
+| CISO or procurement lead | [Vendor Evaluation Guide](appendix/Vendor_Evaluation_Guide.md) | [Evidence Request Checklist](appendix/Evidence_Request_Checklist.md), [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md), conformance claim, optional acceptance tests | Vendor evaluation decision |
 | Security reviewer or auditor | Claimed tier and [Checklists](appendix/Checklists.md) | Domain verification sections, [Customer Acceptance Testing](appendix/Customer_Acceptance_Testing.md) | Independent review findings |
 | Contributor | [CONTRIBUTING.md](../CONTRIBUTING.md) | Existing issues and PRs, focused documentation or template gaps | Small, reviewable PR |
 
