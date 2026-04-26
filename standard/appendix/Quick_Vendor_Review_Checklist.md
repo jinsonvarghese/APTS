@@ -60,7 +60,7 @@ Use this screen to decide whether the operator is ready for deeper review.
 
 Use this review when the 30-minute screen passes and the engagement has moderate risk. Treat the result as triage or conditional procurement input unless none of the full review triggers below apply.
 
-### Minimum Evidence Pack
+### 2-Hour Evidence Pack
 
 Ask for a small evidence pack before scheduling detailed demos. This pack is a prioritized subset of the broader [Evidence Request Checklist](Evidence_Request_Checklist.md):
 
