@@ -45,6 +45,21 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Advisory Requirements](./appendix/Advisory_Requirements.md) | Non-mandatory practices for enhanced assurance |
 | [Incident Response Integration](./appendix/Incident_Response_Integration.md) | Unified incident response workflow across domains |
 
+## Machine-readable export
+
+A machine-readable JSON export of APTS requirements is available at: [apts_requirements.json](apts_requirements.json)<br>
+A JSON schema for validating the export is available at: [apts_requirements_schema.json](apts_requirements_schema.json)
+
+This enables automation, compliance tooling integration, and vendor self-assessment workflows.
+
+### Generating the JSON Export
+
+If you modify the requirements in the Markdown files or add new domains, you can automatically regenerate both the JSON export and its schema by running the export script from the root directory:
+
+```bash
+python scripts/export_requirements.py
+```
+
 ## Requirements Index
 
 ### [Scope Enforcement](./1_Scope_Enforcement/) | [Implementation Guide](./1_Scope_Enforcement/Implementation_Guide.md)
