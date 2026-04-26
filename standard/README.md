@@ -54,10 +54,10 @@ This enables automation, compliance tooling integration, and vendor self-assessm
 
 ### Generating the JSON Export
 
-If you modify the requirements in the Markdown files or add new domains, you can automatically regenerate both the JSON export and its schema by running the `apts_exporter` module from the root directory:
+If you modify the requirements in the Markdown files or add new domains, you can automatically regenerate both the JSON export and its schema by running the export script from the root directory:
 
 ```bash
-python -m apts_exporter
+python scripts/export_requirements.py
 ```
 
 ## Requirements Index
