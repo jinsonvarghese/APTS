@@ -131,18 +131,6 @@ These boundaries describe the claim's scope. They do not remove requirements tha
 
 ---
 
-## Supporting Evidence Summary
-
-| Requirement Area | Example Evidence | Customer Review Question |
-|------------------|------------------|--------------------------|
-| Scope enforcement | Signed RoE, pre-action scope check logs, drift detection alert sample | Can the operator show that each network action was checked against the active RoE? |
-| Safety controls | Kill switch test, rate-limit configuration, threshold escalation log | Can the operator demonstrate stop behavior before production use? |
-| Human oversight | Approval workflow export, reviewer qualification record, escalation policy | Are approval authorities and default-deny behavior documented? |
-| Auditability | Decision log sample, artifact hashes, retention policy | Can the customer trace a finding from action to report? |
-| Reporting | Finding validation record, evidence package manifest, confidence score explanation | Is the reported finding independently reproducible from preserved evidence? |
-
----
-
 ## Sample Requirement-Level Traceability
 
 This abbreviated table shows one way to connect the high-level claim to requirement-level evidence. A real claim can replace these fictional evidence IDs with the operator's completed checklist outputs and evidence package references.
@@ -163,7 +151,10 @@ A customer reviewing this claim should treat it as an operator-provided statemen
 2. Request a small evidence pack using the [Evidence Request Checklist](../Evidence_Request_Checklist.md)
 3. Review one representative [Evidence Package Manifest](../Evidence_Package_Manifest.md)
 4. Ask for a vendor demonstration of behavioral controls such as kill switch and scope enforcement
-5. Use [Customer Acceptance Testing](../Customer_Acceptance_Testing.md) for higher-assurance deployments
+5. Check whether the evidence shows that network actions were checked against the active RoE
+6. Confirm that approval authorities, default-deny behavior, and escalation paths are documented
+7. Verify that one reported finding can be traced from action to report with preserved evidence
+8. Use [Customer Acceptance Testing](../Customer_Acceptance_Testing.md) for higher-assurance deployments
 
 ---
 
@@ -171,7 +162,7 @@ A customer reviewing this claim should treat it as an operator-provided statemen
 
 | Date | Version | Change |
 |------|---------|--------|
-| 2026-04-20 | 1.0 | Initial fictional example claim |
+| 2026-04-20 | 0.1 | Initial fictional example claim for APTS v0.1.0 |
 
 ---
 
