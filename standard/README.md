@@ -32,6 +32,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Testing Phase Mapping](./appendix/Testing_Phase_Mapping.md) | Which requirements apply at each pentesting phase |
 | [Customer Acceptance Testing](./appendix/Customer_Acceptance_Testing.md) | Optional hands-on verification procedures for customers |
 | [Vendor Evaluation Guide](./appendix/Vendor_Evaluation_Guide.md) | Guide for evaluating autonomous pentest platform operators |
+| [Quick Vendor Review Checklist](./appendix/Quick_Vendor_Review_Checklist.md) | Short 30-minute and 2-hour screening checklist for vendor or operator reviews |
 | [Rules of Engagement Template](./appendix/Rules_of_Engagement_Template.md) | Illustrative machine-readable RoE starter template |
 | [Threshold Configuration Template](./appendix/Threshold_Configuration_Template.md) | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Evidence Package Manifest](./appendix/Evidence_Package_Manifest.md) | Illustrative manifest for finding evidence, provenance, and downstream handoff |
