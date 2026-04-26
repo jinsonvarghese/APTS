@@ -42,13 +42,8 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 
 ## Machine-readable export
 
-A machine-readable JSON export of APTS requirements is available at:
-
-[apts_requirements.json](apts_requirements.json)
-
-A JSON schema for validating the export is available at:
-
-[apts_requirements_schema.json](apts_requirements_schema.json)
+A machine-readable JSON export of APTS requirements is available at: [apts_requirements.json](apts_requirements.json)<br>
+A JSON schema for validating the export is available at: [apts_requirements_schema.json](apts_requirements_schema.json)
 
 This enables automation, compliance tooling integration, and vendor self-assessment workflows.
 
