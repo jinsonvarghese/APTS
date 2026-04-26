@@ -8,22 +8,6 @@
 </p>
 
 
-## Choose Your APTS Path
-
-Use this reader path to choose the shortest route through APTS based on your role and goal.
-
-![APTS reader path flowchart](assets/images/apts-reader-flow.svg)
-
-This orientation aid is informative and does not create or modify APTS requirements.
-
-| Role | Start with | Then use | Outcome |
-|------|------------|----------|---------|
-| Vendor or platform builder | [Checklists](./standard/appendix/Checklists.md) | Domain READMEs, Implementation Guides, [Conformance Claim Template](./standard/appendix/Conformance_Claim_Template.md), [Evidence Package Manifest](./standard/appendix/Evidence_Package_Manifest.md) | Documented conformance and evidence package |
-| Enterprise internal team | [Getting Started](./standard/Getting_Started.md) | Scope Enforcement, Safety Controls, Human Oversight, Auditability, templates | Internal governance baseline |
-| CISO or procurement lead | [Vendor Evaluation Guide](./standard/appendix/Vendor_Evaluation_Guide.md) | [Evidence Request Checklist](./standard/appendix/Evidence_Request_Checklist.md), [Evidence Package Manifest](./standard/appendix/Evidence_Package_Manifest.md), conformance claim, optional acceptance tests | Vendor evaluation decision |
-| Security reviewer or auditor | Claimed tier and [Checklists](./standard/appendix/Checklists.md) | Domain verification sections, [Customer Acceptance Testing](./standard/appendix/Customer_Acceptance_Testing.md) | Independent review findings |
-| Contributor | [CONTRIBUTING.md](./CONTRIBUTING.md) | Existing issues and PRs, focused documentation or template gaps | Small, reviewable PR |
-
 ## What is OWASP APTS?
 
 A governance standard for autonomous penetration testing platforms. It defines what these systems must do to operate safely, transparently, and within defined boundaries, whether they are delivered by vendors, operated as a service, or built in-house by enterprise security teams for testing their own organization.
@@ -59,14 +43,20 @@ Requirements use the format `APTS-XX-NNN` where `XX` is the domain prefix and `N
 
 ## Quick Start: Where to Begin
 
-| If you are... | Start here |
-|---------------|------------|
-| **New to APTS** and want to understand the standard | [Introduction](./standard/Introduction.md) |
-| A **vendor or service provider** building an autonomous pentest platform | [Checklists](./standard/appendix/Checklists.md) for your target tier then the domain READMEs |
-| An **enterprise security team** building or operating an internal autonomous pentest platform | [Checklists](./standard/appendix/Checklists.md) for your target tier then the domain READMEs, then the [Conformance Claim Template](./standard/appendix/Conformance_Claim_Template.md) to document conformance for your downstream customers |
-| A **CISO or procurement lead** evaluating an external vendor or an internal platform | [Vendor Evaluation Guide](./standard/appendix/Vendor_Evaluation_Guide.md) |
-| A **security professional** reviewing a platform | [Getting Started](./standard/Getting_Started.md) then the domain READMEs relevant to your review |
-| A **contributor** looking to improve the standard | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+Use this reader path to choose the shortest route through APTS based on your role and goal after reviewing the framework overview, domains, and tier structure above.
+
+![APTS reader path flowchart](assets/images/apts-reader-flow.svg)
+
+| Role | Start with | Then use | Outcome |
+|------|------------|----------|---------|
+| **New to APTS** | [Introduction](./standard/Introduction.md), [Glossary](./standard/appendix/Glossary.md) | [Getting Started guide](./standard/Getting_Started.md) | Understand the framework and scope |
+| Vendor or platform builder | [Introduction](./standard/Introduction.md), [Glossary](./standard/appendix/Glossary.md), then [Checklists](./standard/appendix/Checklists.md) for target tier | Domain READMEs, Implementation Guides, [Conformance Claim Template](./standard/appendix/Conformance_Claim_Template.md), [Evidence Package Manifest](./standard/appendix/Evidence_Package_Manifest.md) | Documented conformance and evidence package |
+| Enterprise internal team | [Introduction](./standard/Introduction.md), [Glossary](./standard/appendix/Glossary.md), then [Getting Started](./standard/Getting_Started.md) | Core domains (SE, SC, HO, AR), templates | Internal governance baseline |
+| CISO or procurement lead | [Introduction](./standard/Introduction.md), [Glossary](./standard/appendix/Glossary.md), then [Vendor Evaluation Guide](./standard/appendix/Vendor_Evaluation_Guide.md) | [Evidence Request Checklist](./standard/appendix/Evidence_Request_Checklist.md), [Evidence Package Manifest](./standard/appendix/Evidence_Package_Manifest.md), conformance claim | Vendor evaluation decision |
+| Security reviewer or auditor | [Introduction](./standard/Introduction.md), [Glossary](./standard/appendix/Glossary.md), then claimed tier and [Checklists](./standard/appendix/Checklists.md) | Domain verification sections, [Customer Acceptance Testing](./standard/appendix/Customer_Acceptance_Testing.md) | Independent review findings |
+| Contributor | [CONTRIBUTING.md](./CONTRIBUTING.md) | Existing issues and PRs | Small, reviewable PR |
+
+This orientation aid is informative and does not create or modify APTS requirements.
 
 The full standard with all requirements, verification procedures, checklists, and appendices is in the [`standard/`](./standard/) folder.
 
