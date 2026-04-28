@@ -123,13 +123,13 @@ Recommended fields:
 - `reuse_restrictions`
 - `revoke_at_end`
 
-### 9. Approval matrix and escalation
+### 9. Authority delegation reference and escalation
 
-Define who can authorize higher-risk actions and what happens on timeout.
+Reference the Authority Delegation Matrix that governs who may approve higher-risk actions. The RoE may identify engagement-specific escalation contacts and timeout behavior, but it should not redefine approval authority that belongs in the ADM.
 
 Recommended fields:
 
-- `approval_matrix`
+- `authority_delegation_matrix`
 - `timeout_behavior`
 - `escalation_contacts`
 - `kill_switch_contacts`
@@ -239,22 +239,17 @@ credential_policy:
     - no_post_engagement_reuse
   revoke_at_end: true
 
-approval_matrix:
-  medium_risk:
-    approvers:
-      - security-lead@example.com
-    timeout_behavior: deny
-  high_risk:
-    approvers:
-      - security-lead@example.com
-      - app-owner@example.com
-    timeout_behavior: deny
-  critical_risk:
-    approvers:
-      - security-lead@example.com
-      - app-owner@example.com
-      - ciso@example.com
-    timeout_behavior: deny
+authority_delegation_matrix:
+  matrix_id: adm-2026-001
+  version: "1.0"
+  effective_from: "2026-04-01T00:00:00Z"
+  approval_reference: approval-ticket-2026-041
+  role_binding_reference: shift-roster-2026-04-18-day
+
+timeout_behavior:
+  medium_risk: deny
+  high_risk: deny
+  critical_risk: pause_and_escalate
 
 incident_and_stop_conditions:
   kill_switch_contacts:
@@ -344,7 +339,7 @@ reporting_and_evidence:
 | Per-action scope validation inputs | `APTS-SE-006`, `APTS-SE-024`, `APTS-SE-025` |
 | Rate limits and impact controls | `APTS-SE-019`, `APTS-SC-004`, `APTS-SC-010` |
 | Credential policy | `APTS-SE-023`, `APTS-MR-019` |
-| Approval and escalation matrix | `APTS-HO-001`, `APTS-HO-003`, `APTS-HO-011` |
+| Approval and escalation reference | `APTS-HO-001`, `APTS-HO-003`, `APTS-HO-004`, `APTS-HO-011` |
 | Agent-specific boundaries | `APTS-SE-022`, `APTS-AL-014` |
 
 ## Validation Guidance for Customers and Reviewers
