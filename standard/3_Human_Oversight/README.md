@@ -221,7 +221,8 @@ Organizations operating autonomous penetration testing systems MUST establish an
 
 ### Verification
 
-1. **Matrix documentation audit**: Verify written ADM exists, signed by CISO/VP Security
+1. **Matrix documentation audit**: Verify written ADM exists, signed by CISO/VP Security.
+   The [Authority Delegation Matrix Template](../appendix/Authority_Delegation_Matrix_Template.md) provides an illustrative format for recording role-based approval, escalation, and emergency authority.
 2. **Operator role audit**: For each active operator, confirm ADM lists their role and autonomy level
 3. **Approval authority test**: Operator attempts approval outside their authority; verify the system rejects the action and escalates
 4. **Authority renewal audit**: Verify all ADM entries renewed within required periods
