@@ -35,6 +35,8 @@ An Authority Delegation Matrix should:
 - bind authority to roles rather than individual convenience exceptions
 - separate routine approval authority from emergency intervention authority
 - identify dual-control requirements for high-risk actions
+- define cascading authority chains so a pre-authorized backup role can inherit the same approval authority when the primary authority is unavailable
+- prohibit ad hoc delegation of approval authority outside the documented ADM
 - make escalation paths explicit when an operator lacks authority
 - avoid storing unnecessary personal data in broadly shared artifacts
 - be protected as sensitive operational information
@@ -81,8 +83,9 @@ Recommended fields:
 - `assignment_source`
 - `active_operator_roster_reference`
 - `pre_authorized_backup_role`
+- `delegation_allowed`
 
-A backup role should be a role already approved in the ADM, not an ad hoc delegation by the primary approver. `authorized_autonomy_levels` describes routine approval authority for that role; emergency activation authority, such as kill-switch activation, can be documented separately in the authority matrix or emergency authority sections.
+A backup role should be a role already approved in the ADM, not an ad hoc delegation by the primary approver. `delegation_allowed` should normally be `false` unless another formal governance process explicitly creates and records the updated ADM authority. `authorized_autonomy_levels` describes routine approval authority for that role; emergency activation authority, such as kill-switch activation, can be documented separately in the authority matrix or emergency authority sections.
 
 ### 3. Authority matrix
 
@@ -99,6 +102,7 @@ Recommended fields:
 - `minimum_independent_approvers`
 - `approver_independence_rule`
 - `secondary_approver_role`
+- `cascading_authority_chain`
 - `escalation_role`
 - `default_safe_action_if_unavailable`
 - `evidence_required_before_approval`
@@ -175,6 +179,7 @@ role_catalog:
     assignment_source: identity-governance-group
     active_operator_roster_reference: iam-group-apts-operators
     pre_authorized_backup_role: ho-role-senior-operator
+    delegation_allowed: false
 
   - role_id: ho-role-senior-operator
     role_name: Senior Autonomous Testing Operator
@@ -188,6 +193,7 @@ role_catalog:
     assignment_source: identity-governance-group
     active_operator_roster_reference: iam-group-apts-senior-operators
     pre_authorized_backup_role: ho-role-manager-on-call
+    delegation_allowed: false
 
   - role_id: ho-role-manager-on-call
     role_name: Security Manager On-Call
@@ -201,6 +207,7 @@ role_catalog:
     assignment_source: on-call-roster
     active_operator_roster_reference: shift-roster-2026-04-01-day
     pre_authorized_backup_role: ho-role-ciso
+    delegation_allowed: false
 
   - role_id: ho-role-ciso
     role_name: CISO Emergency Authority
@@ -213,6 +220,7 @@ role_catalog:
     assignment_source: executive-authority-registry
     active_operator_roster_reference: executive-duty-roster
     pre_authorized_backup_role: null
+    delegation_allowed: false
 
 authority_matrix:
   - action_category: exploitation_attempt
@@ -222,6 +230,10 @@ authority_matrix:
     maximum_risk_or_impact: below the matrix's dual-control threshold and within the documented impact threshold for this role
     dual_control_required: false
     secondary_approver_role: null
+    cascading_authority_chain:
+      - ho-role-senior-operator
+      - ho-role-manager-on-call
+      - ho-role-ciso
     escalation_role: ho-role-manager-on-call
     default_safe_action_if_unavailable: deny_action_and_skip_target
     evidence_required_before_approval:
@@ -240,6 +252,9 @@ authority_matrix:
     minimum_independent_approvers: 2
     approver_independence_rule: approvers must be separate authenticated individuals, and at least one must hold ho-role-manager-on-call or higher
     secondary_approver_role: ho-role-manager-on-call
+    cascading_authority_chain:
+      - ho-role-manager-on-call
+      - ho-role-ciso
     escalation_role: ho-role-ciso
     default_safe_action_if_unavailable: pause_and_escalate
     evidence_required_before_approval:
@@ -255,6 +270,9 @@ authority_matrix:
     maximum_risk_or_impact: assets within the authorized engagement scope only
     dual_control_required: false
     secondary_approver_role: null
+    cascading_authority_chain:
+      - ho-role-manager-on-call
+      - ho-role-ciso
     escalation_role: ho-role-ciso
     default_safe_action_if_unavailable: do_not_expand_scope
     evidence_required_before_approval:
@@ -272,6 +290,11 @@ authority_matrix:
     maximum_risk_or_impact: any suspected safety, scope, legal, or customer-impact condition
     dual_control_required: false
     secondary_approver_role: null
+    cascading_authority_chain:
+      - ho-role-operator
+      - ho-role-senior-operator
+      - ho-role-manager-on-call
+      - ho-role-ciso
     escalation_role: ho-role-ciso
     shift_or_handoff_reference: shift-roster-2026-04-01-day
     default_safe_action_if_unavailable: any_currently_assigned_authorized_operator_may_activate
@@ -321,6 +344,8 @@ When reviewing an ADM with this template, check whether it contains authority ro
 - customer notification
 - legal or compliance escalation
 - timeout and default-safe escalation paths
+- cascading authority chains for primary-unavailable scenarios
+- no-delegation constraints on role assignments
 - shift handoff and emergency authority
 
 ## Reviewer Questions
@@ -329,6 +354,7 @@ When using this template to inspect an Authority Delegation Matrix, reviewers ca
 
 - does the matrix identify current ownership, version, effective date, and expiration date
 - are approval powers tied to roles with documented qualifications rather than informal individual preferences
+- does each role prohibit ad hoc delegation, and does each approval row define a cascading authority chain for primary-unavailable scenarios
 - does the matrix reflect the dual-control expectation for CVSS >= 9.0 actions in APTS-HO-004, and does it route scope expansion or irreversible actions to the applicable approval or escalation path
 - is emergency authority documented separately from routine approval authority
 - can approval records and shift handoffs be reconciled back to the authority matrix version that was effective at the time
