@@ -1058,3 +1058,5 @@ The rest of Manipulation Resistance defends against an outside attacker trying t
 5. **Exercise review**: Retrieve records of the platform's last tabletop exercise or red-team drill that specifically tested the agent-as-insider scenario; confirm the exercise took place within the documented review interval and that identified issues were tracked to resolution.
 
 ---
+
+> **See also:** [APTS-MR-A01: Goal Misgeneralization and Emergent Misalignment Evaluation Suite](../appendix/Advisory_Requirements.md#apts-mr-a01-goal-misgeneralization-and-emergent-misalignment-evaluation-suite-advisory) — an advisory practice for platforms using fine-tuned or adapted LLM-based agents. Evaluates the agent's underlying objective alignment under distribution shift and detects emergent misalignment after fine-tuning, addressing failure modes that input-side (MR-013) and control-side (MR-020) adversarial testing do not cover. Candidate for tier-gated inclusion in v0.2.0.
