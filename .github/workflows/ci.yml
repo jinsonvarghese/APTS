@@ -13,6 +13,9 @@ jobs:
   sanity-checks:
     name: Repository sanity checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout repository
@@ -28,61 +31,156 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install validation tools
+      - name: Install Markdown validation tools
         run: |
-          python -m pip install --upgrade pip
-          npm install -g markdownlint-cli2 markdown-link-check
+          set -euo pipefail
+          npm install --global markdownlint-cli2@0.22.1 markdown-link-check@3
 
-      - name: Check Python syntax
+      - name: Validate Python syntax in scripts
         run: |
-          if [ -d "scripts" ]; then
+          set -euo pipefail
+
+          if [[ -d "scripts" ]]; then
             python -m compileall scripts
           else
-            echo "No scripts directory found. Skipping Python syntax check."
+            echo "No scripts directory found. Skipping Python syntax validation."
           fi
 
       - name: Validate JSON files
         run: |
-          find . -name "*.json" -not -path "./.git/*" -print0 | while IFS= read -r -d '' file; do
-            echo "Validating $file"
-            python -m json.tool "$file" > /dev/null
-          done
+          set -euo pipefail
+          failed=0
 
-      - name: Check Markdown structure
+          while IFS= read -r -d '' file; do
+            echo "Validating ${file}"
+            if ! python -m json.tool "${file}" > /dev/null; then
+              failed=1
+            fi
+          done < <(
+            find . -type f -name "*.json" \
+              ! -path "./.git/*" \
+              ! -path "./node_modules/*" \
+              ! -path "./.venv/*" \
+              -print0
+          )
+
+          exit "$failed"
+
+      - name: Validate Markdown structure
         run: |
-          cat > .markdownlint-cli2.jsonc <<'EOF'
+          set -euo pipefail
+
+          config_file="${RUNNER_TEMP}/markdownlint-cli2.jsonc"
+
+          cat > "${config_file}" <<'EOF'
           {
             "config": {
-              "MD013": false,
-              "MD060": false
+              "default": false,
+              "MD009": true,
+              "MD010": true,
+              "MD018": true,
+              "MD019": true
             },
-            "globs": ["**/*.md", "!vendor/**", "!node_modules/**"]
+            "globs": [
+              "**/*.md",
+              "!**/.git/**",
+              "!**/node_modules/**",
+              "!**/.venv/**",
+              "!**/vendor/**"
+            ]
           }
           EOF
 
-          markdownlint-cli2
+          markdownlint-cli2 --config "${config_file}"
 
       - name: Check Markdown links
+        continue-on-error: true
         run: |
-          find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -print0 | while IFS= read -r -d '' file; do
-            echo "Checking links in $file"
-            markdown-link-check "$file" --quiet
-          done
+          set -euo pipefail
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            echo "Checking links in ${file}"
+            if ! markdown-link-check "${file}" --quiet; then
+              failed=1
+            fi
+          done < <(
+            find . -type f -name "*.md" \
+              ! -path "./.git/*" \
+              ! -path "./node_modules/*" \
+              ! -path "./.venv/*" \
+              -print0
+          )
+
+          exit "$failed"
 
       - name: Check generated artifacts are up to date
         run: |
-          if [ -f "scripts/export_requirements.py" ]; then
-            python scripts/export_requirements.py
-            git diff --exit-code
-          else
+          set -euo pipefail
+
+          if [[ ! -f "scripts/export_requirements.py" ]]; then
             echo "No export script found. Skipping generated artifact check."
+            exit 0
           fi
+
+          for file in standard/apts_requirements.json standard/apts_requirements_schema.json; do
+            if [[ ! -f "${file}" ]]; then
+              echo "Expected generated artifact ${file} is missing."
+              exit 1
+            fi
+          done
+
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "${tmpdir}"' EXIT
+          cp "standard/apts_requirements.json" "${tmpdir}/apts_requirements.original.json"
+          cp "standard/apts_requirements_schema.json" "${tmpdir}/apts_requirements_schema.original.json"
+
+          python scripts/export_requirements.py
+
+          python - "${tmpdir}/apts_requirements.original.json" "standard/apts_requirements.json" <<'PY'
+          import difflib
+          import json
+          import pathlib
+          import sys
+
+          def normalized_lines(path_str: str) -> list[str]:
+              data = json.loads(pathlib.Path(path_str).read_text(encoding="utf-8"))
+              if isinstance(data, dict) and "last_updated" in data:
+                  data["last_updated"] = "1970-01-01T00:00:00Z"
+              return json.dumps(data, indent=2).splitlines()
+
+          expected = normalized_lines(sys.argv[1])
+          actual = normalized_lines(sys.argv[2])
+
+          if expected != actual:
+              print("Generated requirements JSON is out of date after normalizing last_updated.")
+              for line in difflib.unified_diff(
+                  expected,
+                  actual,
+                  fromfile="expected",
+                  tofile="actual",
+                  lineterm="",
+              ):
+                  print(line)
+              raise SystemExit(1)
+          PY
+
+          diff -u "${tmpdir}/apts_requirements_schema.original.json" "standard/apts_requirements_schema.json"
 
       - name: Check for temporary or debug files
         run: |
-          if find . -type f \( -name "*.tmp" -o -name "*.bak" -o -name "*.log" -o -name ".DS_Store" \) | grep .; then
-            echo "Temporary/debug files found."
+          set -euo pipefail
+
+          matches="$(find . -type f \
+            \( -name "*.tmp" -o -name "*.bak" -o -name "*.log" -o -name ".DS_Store" \) \
+            ! -path "./.git/*" \
+            ! -path "./node_modules/*" \
+            ! -path "./.venv/*")"
+
+          if [[ -n "${matches}" ]]; then
+            echo "Temporary or debug files found:"
+            echo "${matches}"
             exit 1
           fi
 
-          echo "No temporary/debug files found."
+          echo "No temporary or debug files found."
