@@ -31,9 +31,24 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Markdown validation tools
+      - name: Cache npm package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-markdown-tools-${{ runner.os }}-markdownlint-cli2-0.22.1-markdown-link-check-3
+          restore-keys: |
+            npm-markdown-tools-${{ runner.os }}-
+
+      - name: Install validation tools
         run: |
           set -euo pipefail
+
+          python -m pip install --upgrade pip
+          python -m pip install "PyYAML==6.0.2" "ruff==0.8.6"
+
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
           npm install --global markdownlint-cli2@0.22.1 markdown-link-check@3
 
       - name: Validate Python syntax in scripts
@@ -46,23 +61,87 @@ jobs:
             echo "No scripts directory found. Skipping Python syntax validation."
           fi
 
+      - name: Run Python lint with ruff
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          if [[ -d "scripts" ]]; then
+            ruff check scripts --output-format=github
+          else
+            echo "No scripts directory found. Skipping ruff."
+          fi
+
+      - name: Validate YAML files
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          import yaml
+
+          raw = subprocess.check_output(
+              ["git", "ls-files", "-z", "--", "*.yml", "*.yaml"]
+          )
+
+          files = [Path(item.decode()) for item in raw.split(b"\0") if item]
+          failed = False
+
+          if not files:
+              print("No YAML files found. Skipping YAML validation.")
+              raise SystemExit(0)
+
+          for path in files:
+              print(f"Validating YAML: {path}")
+              try:
+                  yaml.safe_load(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  print(f"FAILED: {path}: {exc}")
+                  failed = True
+
+          raise SystemExit(1 if failed else 0)
+          PY
+
+      - name: Validate shell scripts
+        run: |
+          set -euo pipefail
+
+          mapfile -d '' shell_files < <(
+            git ls-files -z -- '*.sh' '*.bash'
+          )
+
+          if (( ${#shell_files[@]} == 0 )); then
+            echo "No shell scripts found. Skipping shellcheck."
+            exit 0
+          fi
+
+          failed=0
+
+          for file in "${shell_files[@]}"; do
+            echo "Running shellcheck on ${file}"
+            if ! shellcheck "${file}"; then
+              failed=1
+            fi
+          done
+
+          exit "$failed"
+
       - name: Validate JSON files
         run: |
           set -euo pipefail
           failed=0
 
           while IFS= read -r -d '' file; do
-            echo "Validating ${file}"
-            if ! python -m json.tool "${file}" > /dev/null; then
+            echo "Validating JSON: ${file}"
+
+            if ! python -m json.tool "${file}" > /dev/null 2>&1; then
+              echo "FAILED: Invalid JSON in ${file}"
               failed=1
             fi
-          done < <(
-            find . -type f -name "*.json" \
-              ! -path "./.git/*" \
-              ! -path "./node_modules/*" \
-              ! -path "./.venv/*" \
-              -print0
-          )
+          done < <(git ls-files -z -- '*.json')
 
           exit "$failed"
 
@@ -80,37 +159,303 @@ jobs:
               "MD010": true,
               "MD018": true,
               "MD019": true
-            },
-            "globs": [
-              "**/*.md",
-              "!**/.git/**",
-              "!**/node_modules/**",
-              "!**/.venv/**",
-              "!**/vendor/**"
-            ]
+            }
           }
           EOF
 
-          markdownlint-cli2 --config "${config_file}"
+          mapfile -d '' markdown_files < <(git ls-files -z -- '*.md')
 
-      - name: Check Markdown links
+          if (( ${#markdown_files[@]} == 0 )); then
+            echo "No Markdown files found. Skipping markdownlint."
+            exit 0
+          fi
+
+          markdownlint-cli2 --config "${config_file}" "${markdown_files[@]}"
+
+      - name: Validate Markdown tables
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import re
+          import subprocess
+          from pathlib import Path
+
+          raw = subprocess.check_output(["git", "ls-files", "-z", "--", "*.md"])
+          files = [Path(item.decode()) for item in raw.split(b"\0") if item]
+
+          separator_pattern = re.compile(r"^:?-{3,}:?$")
+
+          def visible_lines(path: Path) -> list[tuple[int, str]]:
+              lines = path.read_text(encoding="utf-8").splitlines()
+              result = []
+              in_fence = False
+              fence_marker = ""
+
+              for number, line in enumerate(lines, start=1):
+                  stripped = line.lstrip()
+
+                  if stripped.startswith("```") or stripped.startswith("~~~"):
+                      marker = stripped[:3]
+
+                      if not in_fence:
+                          in_fence = True
+                          fence_marker = marker
+                      elif marker == fence_marker:
+                          in_fence = False
+
+                      result.append((number, ""))
+                      continue
+
+                  if not in_fence:
+                      result.append((number, line))
+                  else:
+                      result.append((number, ""))
+
+              return result
+
+          def split_table_row(row: str) -> list[str]:
+              row = row.strip()
+
+              if row.startswith("|"):
+                  row = row[1:]
+
+              if row.endswith("|"):
+                  row = row[:-1]
+
+              cells = []
+              current = []
+              escaped = False
+
+              for char in row:
+                  if escaped:
+                      current.append(char)
+                      escaped = False
+                      continue
+
+                  if char == "\\":
+                      current.append(char)
+                      escaped = True
+                      continue
+
+                  if char == "|":
+                      cells.append("".join(current).strip())
+                      current = []
+                  else:
+                      current.append(char)
+
+              cells.append("".join(current).strip())
+              return cells
+
+          def is_separator_row(row: str) -> bool:
+              cells = split_table_row(row)
+              return bool(cells) and all(
+                  separator_pattern.fullmatch(cell.replace(" ", ""))
+                  for cell in cells
+              )
+
+          failed = False
+
+          for path in files:
+              lines = visible_lines(path)
+              index = 0
+
+              while index < len(lines) - 1:
+                  line_number, line = lines[index]
+                  next_number, next_line = lines[index + 1]
+
+                  if "|" not in line or not is_separator_row(next_line):
+                      index += 1
+                      continue
+
+                  header_cells = split_table_row(line)
+                  separator_cells = split_table_row(next_line)
+                  expected_columns = len(header_cells)
+
+                  if expected_columns != len(separator_cells):
+                      print(
+                          f"FAILED: {path}:{next_number}: "
+                          "Markdown table separator column count does not "
+                          "match the header row."
+                      )
+                      failed = True
+
+                  row_index = index + 2
+
+                  while row_index < len(lines):
+                      row_number, row = lines[row_index]
+
+                      if not row.strip() or "|" not in row:
+                          break
+
+                      row_cells = split_table_row(row)
+
+                      if len(row_cells) != expected_columns:
+                          print(
+                              f"FAILED: {path}:{row_number}: "
+                              f"Markdown table row has {len(row_cells)} "
+                              f"columns; expected {expected_columns}."
+                          )
+                          failed = True
+
+                      row_index += 1
+
+                  index = row_index
+
+          raise SystemExit(1 if failed else 0)
+          PY
+
+      - name: Check internal Markdown links
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          import re
+          import shlex
+          import subprocess
+          from pathlib import Path
+          from urllib.parse import unquote, urlparse
+
+          repo_root = Path(".").resolve()
+          raw = subprocess.check_output(["git", "ls-files", "-z", "--", "*.md"])
+          files = [Path(item.decode()) for item in raw.split(b"\0") if item]
+
+          markdown_link_pattern = re.compile(r"!?\[[^\]]*\]\(([^)\n]+)\)")
+          html_link_pattern = re.compile(
+              r"""(?:href|src)=["']([^"']+)["']""",
+              re.IGNORECASE,
+          )
+
+          external_schemes = (
+              "http://",
+              "https://",
+              "mailto:",
+              "tel:",
+              "javascript:",
+              "data:",
+          )
+
+          def strip_code_fences(text: str) -> str:
+              output = []
+              in_fence = False
+              fence_marker = ""
+
+              for line in text.splitlines():
+                  stripped = line.lstrip()
+
+                  if stripped.startswith("```") or stripped.startswith("~~~"):
+                      marker = stripped[:3]
+
+                      if not in_fence:
+                          in_fence = True
+                          fence_marker = marker
+                      elif marker == fence_marker:
+                          in_fence = False
+
+                      output.append("")
+                      continue
+
+                  output.append("" if in_fence else line)
+
+              return "\n".join(output)
+
+          def extract_target(raw_target: str) -> str:
+              target = raw_target.strip()
+
+              if target.startswith("<") and ">" in target:
+                  target = target[1 : target.index(">")]
+
+              try:
+                  parts = shlex.split(target)
+                  if parts:
+                      target = parts[0]
+              except ValueError:
+                  target = target.split()[0] if target.split() else target
+
+              return target.strip()
+
+          def is_external(target: str) -> bool:
+              lowered = target.lower()
+              parsed = urlparse(target)
+              return lowered.startswith(external_schemes) or bool(parsed.scheme)
+
+          def resolve_local_link(source_file: Path, target: str) -> Path | None:
+              target = extract_target(target)
+
+              if not target or target.startswith("#") or is_external(target):
+                  return None
+
+              target_without_fragment = target.split("#", 1)[0]
+
+              if not target_without_fragment:
+                  return None
+
+              target_path = unquote(target_without_fragment)
+
+              if target_path.startswith("/"):
+                  return repo_root / target_path.lstrip("/")
+
+              return (source_file.parent / target_path).resolve()
+
+          failed = False
+
+          for path in files:
+              text = strip_code_fences(path.read_text(encoding="utf-8"))
+
+              targets = [
+                  match.group(1)
+                  for match in markdown_link_pattern.finditer(text)
+              ]
+              targets.extend(
+                  match.group(1)
+                  for match in html_link_pattern.finditer(text)
+              )
+
+              for target in targets:
+                  resolved = resolve_local_link(path, target)
+
+                  if resolved is None:
+                      continue
+
+                  if not resolved.exists():
+                      print(
+                          f"FAILED: {path}: internal link target not found: "
+                          f"{target}"
+                      )
+                      failed = True
+
+          raise SystemExit(1 if failed else 0)
+          PY
+
+      - name: Check external Markdown links
         continue-on-error: true
         run: |
           set -euo pipefail
+
+          config_file="${RUNNER_TEMP}/markdown-link-check-external.json"
+
+          cat > "${config_file}" <<'EOF'
+          {
+            "ignorePatterns": [
+              {
+                "pattern": "^(?!https?:\\/\\/)"
+              }
+            ],
+            "timeout": "10s",
+            "retryOn429": true,
+            "retryCount": 2
+          }
+          EOF
+
           failed=0
 
           while IFS= read -r -d '' file; do
-            echo "Checking links in ${file}"
-            if ! markdown-link-check "${file}" --quiet; then
+            echo "Checking external links in ${file}"
+
+            if ! markdown-link-check "${file}" --quiet --config "${config_file}"; then
               failed=1
             fi
-          done < <(
-            find . -type f -name "*.md" \
-              ! -path "./.git/*" \
-              ! -path "./node_modules/*" \
-              ! -path "./.venv/*" \
-              -print0
-          )
+          done < <(git ls-files -z -- '*.md')
 
           exit "$failed"
 
@@ -132,12 +477,17 @@ jobs:
 
           tmpdir="$(mktemp -d)"
           trap 'rm -rf "${tmpdir}"' EXIT
-          cp "standard/apts_requirements.json" "${tmpdir}/apts_requirements.original.json"
-          cp "standard/apts_requirements_schema.json" "${tmpdir}/apts_requirements_schema.original.json"
+
+          cp "standard/apts_requirements.json" \
+            "${tmpdir}/apts_requirements.original.json"
+          cp "standard/apts_requirements_schema.json" \
+            "${tmpdir}/apts_requirements_schema.original.json"
 
           python scripts/export_requirements.py
 
-          python - "${tmpdir}/apts_requirements.original.json" "standard/apts_requirements.json" <<'PY'
+          python - \
+            "${tmpdir}/apts_requirements.original.json" \
+            "standard/apts_requirements.json" <<'PY'
           import difflib
           import json
           import pathlib
@@ -145,15 +495,24 @@ jobs:
 
           def normalized_lines(path_str: str) -> list[str]:
               data = json.loads(pathlib.Path(path_str).read_text(encoding="utf-8"))
+
               if isinstance(data, dict) and "last_updated" in data:
                   data["last_updated"] = "1970-01-01T00:00:00Z"
-              return json.dumps(data, indent=2).splitlines()
+
+              return (
+                  json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True)
+                  + "\n"
+              ).splitlines()
 
           expected = normalized_lines(sys.argv[1])
           actual = normalized_lines(sys.argv[2])
 
           if expected != actual:
-              print("Generated requirements JSON is out of date after normalizing last_updated.")
+              print(
+                  "Generated requirements JSON is out of date after "
+                  "normalizing last_updated."
+              )
+
               for line in difflib.unified_diff(
                   expected,
                   actual,
@@ -162,25 +521,27 @@ jobs:
                   lineterm="",
               ):
                   print(line)
+
               raise SystemExit(1)
           PY
 
-          diff -u "${tmpdir}/apts_requirements_schema.original.json" "standard/apts_requirements_schema.json"
+          diff -u \
+            "${tmpdir}/apts_requirements_schema.original.json" \
+            "standard/apts_requirements_schema.json"
 
       - name: Check for temporary or debug files
         run: |
           set -euo pipefail
 
-          matches="$(find . -type f \
-            \( -name "*.tmp" -o -name "*.bak" -o -name "*.log" -o -name ".DS_Store" \) \
-            ! -path "./.git/*" \
-            ! -path "./node_modules/*" \
-            ! -path "./.venv/*")"
+          failed=0
 
-          if [[ -n "${matches}" ]]; then
-            echo "Temporary or debug files found:"
-            echo "${matches}"
-            exit 1
-          fi
+          while IFS= read -r -d '' file; do
+            case "${file}" in
+              *.tmp|*.bak|*.log|*.swp|*.swo|*.orig|.DS_Store)
+                echo "Temporary or debug file is tracked: ${file}"
+                failed=1
+                ;;
+            esac
+          done < <(git ls-files -z)
 
-          echo "No temporary or debug files found."
+          exit "$failed"
