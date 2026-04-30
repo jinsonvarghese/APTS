@@ -131,6 +131,27 @@ When the platform summarizes, truncates, or otherwise compacts the agent's conte
 
 ---
 
+### APTS-HO-A02: Disclosure and Mitigation of AI Influence on Operator Decisions (Advisory)
+
+**Applicability:** This practice applies to platforms that use language models or other AI components to generate content shown to operators at decision points — narrative summaries, recommended approval responses, prefilled answer choices, preselected defaults, or any other UI affordance that shapes what the operator confirms. It applies uniformly across every channel that delivers an operator decision affordance (web dashboard, mobile, instant-messaging, voice, push notification).
+
+**Rationale:** Autonomous pentest platforms increasingly use language models not only to act on the target but also to shape what the operator sees at decision time — the narrative that frames a finding, the option set in an approval prompt, the wording, the preselected default. This is a manipulation surface distinct from the prompt-injection threats covered by the Manipulation Resistance domain: there, an external entity manipulates the agent; here, the agent influences its own supervisor's choice through affordances the agent controls. Established findings from human-computer interaction (default bias, primacy bias, choice architecture effects) show these shaping decisions meaningfully influence which option the operator selects, even without adversarial intent. APTS-HO-001, HO-005, and HO-010 mandate approval gates and audit trails but do not address the form of the question put to the operator; APTS-AR-006 covers the agent's reasoning chain but not the model-shaped inputs handed to the human. The practical effect is that an audit trail can show "operator approved" while concealing that the operator was offered a single highlighted choice with the safer option visually de-emphasized. The normative requirement set for v0.1.0 is frozen; this practice is a candidate for tier-gated inclusion in v0.2.0.
+
+**Value:** Platforms that implement this practice make operator approval a more deliberate act and the audit trail more honest. Reviewers can distinguish a typed approval from a default click-through, customers can audit whether the platform's UI has steered operators toward expedient choices, and operators retain meaningful agency at high-impact decision points.
+
+**Practice Description:**
+
+1. **Distinguish a default click-through from an actively-selected response.** Where the operator confirms a preselected default with a single action, the audit trail should identify the response as a default click-through rather than treating it as semantically equivalent to a typed answer or an actively-selected non-default option.
+2. **Log the model and prompt that shaped the operator's view.** When a model produces summary text, recommended responses, option sets, or defaults shown to the operator, the audit record should identify the model version, the prompt template, and the relevant context window state at generation time.
+3. **Record the full option set, including filtered alternatives.** When the operator is presented with a constrained set of choices generated or curated by a model, the audit trail should record the candidate options the model considered and any options that were dropped, reordered, or de-emphasized before presentation, so reviewers can detect cases where the model omitted a safer option (for example, "deny" or "abort") or buried it behind progressive disclosure.
+4. **Reduce default and ordering bias for high-impact gates.** For approvals governing irreversible actions (see APTS-HO-010) and other high-impact decisions, the platform should avoid preselecting a default, present the abort or deny option with visual weight equal to other options, and consider randomizing option order to mitigate primacy bias. For the most severe action categories, consider requiring a typed confirmation phrase rather than a single click.
+
+**Recommendation:** Treat the operator-facing decision interface as a controlled surface and apply the same provenance discipline already required for agent action logging. Items 1 and 2 form the lowest-cost starting wedge — a response-classification audit field plus model and prompt-template provenance — both addable without touching the operator UI. The presentation rules in item 4 are most consequential for APTS-HO-010 gates and for actions classified as Critical or High under APTS-SC-001.
+
+**Related normative requirements:** APTS-HO-001, APTS-HO-005, APTS-HO-010, APTS-AR-006, APTS-AR-019.
+
+---
+
 ### APTS-AL-A01: Continuous Improvement and Maturity Roadmap (Advisory)
 
 **Rationale:** Multi-year maturity roadmaps, formal improvement frameworks, and annual strategic assessments are organizational process practices rather than technical governance for autonomous pentest platforms. APTS defines platform requirements, not organizational management practices.
