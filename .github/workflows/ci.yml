@@ -1,0 +1,213 @@
+name: CI Sanity Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  sanity-checks:
+    name: Repository sanity checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache npm package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-markdown-tools-${{ runner.os }}-markdownlint-cli2-0.22.1-markdown-link-check-3
+          restore-keys: |
+            npm-markdown-tools-${{ runner.os }}-
+
+      - name: Install validation tools
+        run: |
+          set -euo pipefail
+
+          python -m pip install --upgrade pip
+          python -m pip install "PyYAML==6.0.2" "ruff==0.8.6"
+
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+          npm install --global markdownlint-cli2@0.22.1 markdown-link-check@3
+
+      - name: Validate Python syntax in scripts
+        run: |
+          set -euo pipefail
+
+          if [[ -d "scripts" ]]; then
+            python -m compileall scripts
+          else
+            echo "No scripts directory found. Skipping Python syntax validation."
+          fi
+
+      - name: Run Python lint with ruff
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          if [[ -d "scripts" ]]; then
+            ruff check scripts --output-format=github
+          else
+            echo "No scripts directory found. Skipping ruff."
+          fi
+
+      - name: Validate YAML files
+        run: |
+          set -euo pipefail
+
+          python scripts/validate_yaml.py
+
+      - name: Validate shell scripts
+        run: |
+          set -euo pipefail
+
+          mapfile -d '' shell_files < <(
+            git ls-files -z -- '*.sh' '*.bash'
+          )
+
+          if (( ${#shell_files[@]} == 0 )); then
+            echo "No shell scripts found. Skipping shellcheck."
+            exit 0
+          fi
+
+          failed=0
+
+          for file in "${shell_files[@]}"; do
+            echo "Running shellcheck on ${file}"
+            if ! shellcheck "${file}"; then
+              failed=1
+            fi
+          done
+
+          exit "$failed"
+
+      - name: Validate JSON files
+        run: |
+          set -euo pipefail
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            echo "Validating JSON: ${file}"
+
+            if ! python -m json.tool "${file}" > /dev/null 2>&1; then
+              echo "FAILED: Invalid JSON in ${file}"
+              failed=1
+            fi
+          done < <(git ls-files -z -- '*.json')
+
+          exit "$failed"
+
+      - name: Validate Markdown structure
+        run: |
+          set -euo pipefail
+
+          config_file="${RUNNER_TEMP}/markdownlint-cli2.jsonc"
+
+          cat > "${config_file}" <<'EOF'
+          {
+            "config": {
+              "default": false,
+              "MD009": true,
+              "MD010": true,
+              "MD018": true,
+              "MD019": true
+            }
+          }
+          EOF
+
+          mapfile -d '' markdown_files < <(git ls-files -z -- '*.md')
+
+          if (( ${#markdown_files[@]} == 0 )); then
+            echo "No Markdown files found. Skipping markdownlint."
+            exit 0
+          fi
+
+          markdownlint-cli2 --config "${config_file}" "${markdown_files[@]}"
+
+      - name: Validate Markdown tables
+        run: |
+          set -euo pipefail
+
+          python scripts/validate_markdown_tables.py
+
+      - name: Check internal Markdown links
+        run: |
+          set -euo pipefail
+
+          python scripts/check_internal_markdown_links.py
+
+      - name: Check external Markdown links
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          config_file="${RUNNER_TEMP}/markdown-link-check-external.json"
+
+          cat > "${config_file}" <<'EOF'
+          {
+            "ignorePatterns": [
+              {
+                "pattern": "^(?!https?:\\/\\/)"
+              }
+            ],
+            "timeout": "10s",
+            "retryOn429": true,
+            "retryCount": 2
+          }
+          EOF
+
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            echo "Checking external links in ${file}"
+
+            if ! markdown-link-check "${file}" --quiet --config "${config_file}"; then
+              failed=1
+            fi
+          done < <(git ls-files -z -- '*.md')
+
+          exit "$failed"
+
+      - name: Check generated artifacts are up to date
+        run: |
+          set -euo pipefail
+
+          python scripts/check_generated_artifacts.py
+
+      - name: Check for temporary or debug files
+        run: |
+          set -euo pipefail
+
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            case "${file}" in
+              *.tmp|*.bak|*.log|*.swp|*.swo|*.orig|.DS_Store)
+                echo "Temporary or debug file is tracked: ${file}"
+                failed=1
+                ;;
+            esac
+          done < <(git ls-files -z)
+
+          exit "$failed"
