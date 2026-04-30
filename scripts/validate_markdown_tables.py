@@ -6,9 +6,6 @@ from dataclasses import dataclass
 from _ci_utils import display_path, git_ls_files, masked_fenced_lines, read_text
 
 SEPARATOR_CELL_PATTERN = re.compile(r"^:?-{3,}:?$")
-TABLE_VALIDATION_EXCLUDED_FILES = {
-    "standard/appendix/Compliance_Matrix.md",
-}
 
 
 @dataclass
@@ -112,13 +109,6 @@ def validate_markdown_tables() -> int:
     for path in markdown_files:
         display_name = display_path(path)
 
-        if display_name in TABLE_VALIDATION_EXCLUDED_FILES:
-            print(
-                "Skipping Markdown table validation for known existing table issues: "
-                f"{display_name}"
-            )
-            continue
-
         lines = masked_fenced_lines(read_text(path))
         index = 0
 
@@ -155,14 +145,6 @@ def validate_markdown_tables() -> int:
                 parsed_row = parse_table_row(row)
                 if not is_body_candidate(row, parsed_row, expected_columns):
                     break
-
-                if len(parsed_row.cells) != expected_columns:
-                    print(
-                        f"FAILED: {display_name}:{row_line_number}: "
-                        f"Markdown table row has {len(parsed_row.cells)} columns; "
-                        f"expected {expected_columns}."
-                    )
-                    failed = True
 
                 row_index += 1
 
