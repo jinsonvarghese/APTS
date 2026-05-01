@@ -28,6 +28,7 @@ Individuals who made a significant contribution to the project:
 | Chia Min Jun Lennon | Ernst & Young (EY) | [GitHub](https://github.com/Hinotoi-agent), [LinkedIn](https://www.linkedin.com/in/lennon-chia/) |
 | Josh Kotrous | [Pensar](https://pensarai.com) | [LinkedIn](https://www.linkedin.com/in/joshkotrous) |
 | Ihor Sasovets | [TechMagic](https://www.techmagic.co/) | [GitHub](https://github.com/igorsasovets), [LinkedIn](https://www.linkedin.com/in/ihor-sasovets/) |
+| Zain Nadeem | [StepSharp Digital](https://stepsharp.com/) | [GitHub](https://github.com/zainnadeem786), [LinkedIn](https://www.linkedin.com/in/zain-nadeem786/) |
 <!-- Add your name here via pull request. -->
 
 ## Influences
