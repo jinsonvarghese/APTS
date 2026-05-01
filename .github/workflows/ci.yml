@@ -151,6 +151,12 @@ jobs:
 
           python scripts/validate_markdown_tables.py
 
+      - name: Validate cross-references
+        run: |
+          set -euo pipefail
+
+          python scripts/validate_cross_references.py
+
       - name: Check internal Markdown links
         run: |
           set -euo pipefail
