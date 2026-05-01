@@ -916,6 +916,8 @@ For platforms operating in continuous or always-on mode, the platform SHOULD imp
 
 Approval queues SHOULD enforce shift-awareness so that approvals granted by an outgoing operator for future actions are flagged for incoming operator review.
 
+> **Implementation aid:** The [Shift Handoff Template](../appendix/Shift_Handoff_Template.md) provides an informative record format for transferring engagement state, pending approvals, open escalations, suppression-rule status, and kill-switch authority between operators.
+
 ### Verification
 
 1. Shift handoff procedure is documented and includes engagement state, pending approvals, and active escalations

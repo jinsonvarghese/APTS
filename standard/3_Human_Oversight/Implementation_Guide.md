@@ -331,6 +331,8 @@ Competency MUST be validated through practical assessment (not just attendance).
 
 **Shift Handoff Checklist:**
 
+The [Shift Handoff Template](../appendix/Shift_Handoff_Template.md) provides an optional record structure for preserving this context with the engagement audit trail.
+
 The outgoing operator MUST complete the following before transferring authority:
 
 1. [ ] Confirm engagement status (active/paused/completing) with incoming operator
