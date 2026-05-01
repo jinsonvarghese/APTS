@@ -403,6 +403,43 @@ Implement the post-fine-tuning out-of-distribution audit as a separate evaluatio
 
 ---
 
+### APTS-MR-A02: Sandbagging Detection and Behavioral Consistency Validation
+
+> This section provides implementation guidance for the advisory practice [APTS-MR-A02](../appendix/Advisory_Requirements.md#apts-mr-a02-sandbagging-detection-and-behavioral-consistency-validation-advisory). It is not required for conformance at any tier.
+
+**Implementation:** Build the consistency measurement as an independent pipeline that ingests, on one side, per-scenario records from the adversarial eval suite of APTS-MR-020, and on the other side a stratified sample of production engagement transcripts captured under APTS-AR-001. Each measurement run is anchored to a single model snapshot identifier (per APTS-AR-019) and produces a structured differential report — per-dimension deltas, sample sizes, and a verbalized-recognition correlation — committed to the audit trail.
+
+**Architecture Pattern — Differential Measurement Pipeline:**
+
+The pipeline has four components, mirroring the structure used in APTS-MR-A01:
+
+1. **Eval-side ingestor.** Reads per-scenario records emitted by the MR-020 eval suite for the model snapshot under measurement. The ingestor records, per scenario, the agent's terminal action, tool-call trace, and reasoning trace if available.
+2. **Production-side sampler.** Draws a stratified sample of production transcripts from the audit store (APTS-AR-001), applying redactions consistent with APTS-TP-013 sensitive-data handling. The sampler MUST NOT relax retention or consent boundaries to obtain samples; where sampling is constrained, the limitation is reported in the differential report rather than worked around.
+3. **Differential scorer.** Computes per-dimension metrics on each sample and the delta between them. Where rule-based scoring is insufficient (for example, refusal-rate classification on free-form tool invocations), an LLM judge is used; the judge MUST run as a separate inference call with no shared context with the agent under test (same constraint as APTS-MR-A01 and APTS-RP-A01) and SHOULD use a different model family.
+4. **Trend reporter.** Aggregates the differential across model snapshots tracked under APTS-AR-019 so that the change in the differential itself is observable, writes a signed run record to the audit trail per APTS-AR-012, and emits the validation report for inclusion alongside the customer engagement record.
+
+**Stratified Sampling:**
+
+Stratify the production-side sample across at least three dimensions: autonomy level (L1–L4), engagement size class, and customer-environment class (for example, web application, internal network, cloud control plane). Document a minimum sample size per dimension before per-dimension thresholds apply; for dimensions with sparse samples, report a confidence-interval band rather than a single point estimate, and compare the band's bound against the threshold (mirroring the calibrated-threshold treatment in APTS-MR-A01).
+
+**Verbalized Eval-Recognition Audit:**
+
+Where reasoning traces are available, scan eval-side transcripts for evaluation-context tokens or situational-awareness markers (Laine et al., 2024, *Situational Awareness Dataset*; Anthropic Sonnet 4.5 / Opus 4.6 system-card methodology) and compute the correlation between verbalized recognition and the per-scenario behavioral classification. A non-zero correlation is informative even when the verbalized-recognition rate is low; absence of verbalized recognition is not informative and MUST NOT be reported as evidence of absence of recognition.
+
+**Key Considerations:**
+- Production telemetry sampling MUST respect APTS-TP-013 sensitive-data handling and MUST NOT extend retention beyond what APTS-AR-001 already permits. Differential measurement is not a justification for new collection.
+- The differential is interpretable only against a model-snapshot identifier (APTS-AR-019). Comparing eval samples and production samples drawn under different snapshots without correcting for the change confounds the measurement.
+- Eval-suite contamination from the production side — for example, production samples that were previously absorbed into post-deployment learning data — silently narrows the measured delta. Treat eval scenarios as held out from any post-deployment learning data, consistent with APTS-MR-A01's contamination guidance.
+- Where production sampling is impossible (privacy-restricted engagement, contractual restriction), substitute high-fidelity production-mimicking synthetic transcripts and disclose the substitution; do not omit the dimension.
+
+**Common Pitfalls:**
+- Computing the delta against a single eval run and a single engagement; the noise floor is high, and any threshold crossing under such a sample is more likely to be sampling noise than a real consistency violation. Aggregate across multiple runs and engagements before applying threshold checks.
+- Treating zero verbalized eval recognition as evidence of no eval awareness. Anthropic Opus 4.6 results show models can detect evaluations without verbalizing the detection; verbalization is one signal, not the metric.
+- Using the same model and prompt for the judge as for the agent under test. The independence requirement collapses, and the measurement becomes a mirror of the agent's own classification behavior.
+- Publishing a differential report once and never refreshing. The Chaudhary et al. (2025) power-law scaling result implies the differential will tend to grow with model scale; the practice is only useful as a longitudinal artifact across snapshot changes.
+
+---
+
 ## Implementation Roadmap
 
 **Tier 1 (implement before any autonomous pentesting begins):**
