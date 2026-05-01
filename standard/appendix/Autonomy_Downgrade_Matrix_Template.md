@@ -123,14 +123,14 @@ Before returning to the previous autonomy level, verify:
 ## Related Requirements and Appendices
 
 - APTS-SE-006: Pre-Action Scope Validation
-- APTS-SC-009: Emergency Stop / Kill Switch
-- APTS-SC-018: Safety Control Verification After Incident
+- APTS-SC-009: Kill Switch
+- APTS-SC-018: Incident Containment and Recovery
 - APTS-HO-011 through APTS-HO-014: Escalation triggers
 - APTS-HO-019: 24/7 Operational Continuity and Shift Handoff
-- APTS-AL-018: Incident Response During Testing
+- APTS-AL-018: Incident Response During Autonomous Testing
 - APTS-AL-025: Autonomy Level Authorization, Transition, and Reauthorization
 - APTS-AL-026: Incident Investigation and Autonomy Level Adjustment
-- APTS-MR-004: Prompt Injection Resistance
+- APTS-MR-018: AI Model Input/Output Architectural Boundary
 - APTS-TP-022: Re-attestation on Material Foundation Model Change
 - [Authority Delegation Matrix Template](Authority_Delegation_Matrix_Template.md)
 - [Incident Response Integration](Incident_Response_Integration.md)
