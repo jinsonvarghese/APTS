@@ -447,6 +447,7 @@ Each transition MUST be logged per APTS-AR-001 with: previous state, new state, 
 **Key Considerations:**
 - Incident investigation must be documented and shared with stakeholders
 - Downgrade must occur promptly; testing may resume only at lower autonomy level
+- A downgrade matrix can predefine trigger conditions, temporary autonomy caps, approval paths, and evidence preservation requirements before an incident occurs
 - Root-cause analysis must address system, process, or training failures
 - Corrective actions must be verified before autonomy level is restored
 
