@@ -77,6 +77,8 @@ This standard is open for community contributions. Whether it is improving requi
 
 Report sensitive content issues (incorrect security guidance, documentation of insecure patterns) via [SECURITY.md](./SECURITY.md).
 
+Join the discussion on [OWASP Slack](https://owasp.slack.com/archives/C0B1EJMT2GY) in the `#project-apts` channel.
+
 ## Project Leads
 
 * [Jinson Varghese Behanan](https://www.linkedin.com/in/JinsonVarghese/)
