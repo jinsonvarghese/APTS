@@ -1293,7 +1293,7 @@ If an unintended impact incident occurs, structured investigation determines lev
 
 After a mandatory downgrade, the platform MUST NOT be re-authorized at the previous autonomy level until: (a) root cause analysis of the triggering incident is completed and documented, (b) corrective actions are implemented and verified, (c) a mandatory cooling-off period of at least 7 calendar days has elapsed, and (d) re-authorization is approved by a different authority than the individual who managed the incident. This prevents premature re-escalation without addressing underlying causes.
 
-> **See also:** APTS-AL-018 (immediate incident response and pause behavior during testing), APTS-AL-025 (formal authorization framework that governs both initial authorization and post-downgrade re-authorization).
+> **See also:** APTS-AL-018 (immediate incident response and pause behavior during testing), APTS-AL-025 (formal authorization framework that governs both initial authorization and post-downgrade re-authorization). The [Autonomy Downgrade Matrix Template](../appendix/Autonomy_Downgrade_Matrix_Template.md) provides an informative format for documenting downgrade triggers, temporary autonomy caps, evidence requirements, and re-authorization paths.
 
 ### Verification
 

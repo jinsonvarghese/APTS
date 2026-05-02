@@ -78,7 +78,8 @@ Depending on your role:
 | [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 | [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Informative | Illustrative manifest for finding evidence, provenance, and downstream handoff |
 | [Rules of Engagement Template](appendix/Rules_of_Engagement_Template.md) | Informative | Illustrative machine-readable Rules of Engagement starter template |
-| [Authority Delegation Matrix Template](appendix/Authority_Delegation_Matrix_Template.md) | Informative | Illustrative role-based approval, escalation, and emergency authority matrix |
+| [Authority Delegation Matrix Template](appendix/Authority_Delegation_Matrix_Template.md) | Informative | Illustrative template for documenting role-based approval, escalation, and emergency authority |
+| [Autonomy Downgrade Matrix Template](appendix/Autonomy_Downgrade_Matrix_Template.md) | Informative | Template for documenting downgrade triggers, autonomy caps, re-authorization paths, and evidence preservation |
 | [Threshold Configuration Template](appendix/Threshold_Configuration_Template.md) | Informative | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Advisory Requirements](appendix/Advisory_Requirements.md) | Informative | Best-practice requirements not gated to any compliance tier |
 

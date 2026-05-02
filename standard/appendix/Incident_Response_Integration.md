@@ -303,6 +303,7 @@ This section walks through the complete sequence of incident response and the AP
 - Identify control that should have prevented incident
 - Assess whether autonomy level was appropriate
 - Determine if autonomy level downgrade is required
+- Use the [Autonomy Downgrade Matrix Template](Autonomy_Downgrade_Matrix_Template.md), if adopted, to confirm the temporary autonomy cap, required approver, and re-authorization evidence
 
 **Audit trail analysis (APTS-AR-001 through APTS-AR-012):**
 - Retrieve complete immutable audit logs from incident start to end
