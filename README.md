@@ -5,6 +5,7 @@
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" alt="License: CC BY-SA 4.0"></a>
   <a href="https://github.com/OWASP/APTS"><img src="https://img.shields.io/badge/Version-0.1.0-green" alt="Version: 0.1.0"></a>
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen" alt="Contributions Welcome"></a>
+  <a href="https://owasp.slack.com/archives/C0B1EJMT2GY"><img src="https://img.shields.io/badge/Slack-Join%20Chat-611f69?logo=slack&logoColor=white" alt="Slack"></a>
 </p>
 
 
@@ -65,6 +66,8 @@ The full standard with all requirements, verification procedures, checklists, an
 This standard is open for community contributions. Whether it is improving requirement clarity, adding implementation examples, fixing errors, or translating the standard, all contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started and [GOVERNANCE.md](./GOVERNANCE.md) for project roles and decision-making. Translations are maintained in [`standard/translations/`](./standard/translations/).
 
 Report sensitive content issues (incorrect security guidance, documentation of insecure patterns) via [SECURITY.md](./SECURITY.md).
+
+Join the discussion on [OWASP Slack](https://owasp.slack.com/archives/C0B1EJMT2GY) in the `#project-apts` channel.
 
 ## Project Leads
 
