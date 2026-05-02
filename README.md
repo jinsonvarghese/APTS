@@ -5,6 +5,7 @@
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" alt="License: CC BY-SA 4.0"></a>
   <a href="https://github.com/OWASP/APTS"><img src="https://img.shields.io/badge/Version-0.1.0-green" alt="Version: 0.1.0"></a>
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen" alt="Contributions Welcome"></a>
+  <a href="https://owasp.slack.com/archives/C0B1EJMT2GY"><img src="https://img.shields.io/badge/Slack-Join%20Chat-611f69?logo=slack&logoColor=white" alt="Slack"></a>
 </p>
 
 
