@@ -29,6 +29,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Checklists](./appendix/Checklists.md) | Per-tier compliance checklists |
 | [Compliance Matrix](./appendix/Compliance_Matrix.md) | Mappings to NIST CSF 2.0, ISO 27001:2022, NIST AI RMF, SOC 2, PCI DSS, GDPR |
 | [Cross-Domain Integration](./appendix/Cross_Domain_Integration.md) | How events in one domain trigger requirements in others |
+| [Multi-Agent Coordination](./appendix/Multi_Agent_Coordination.md) | Guidance for multi-agent deployment coordination, safe defaults, and reviewer evidence |
 | [Testing Phase Mapping](./appendix/Testing_Phase_Mapping.md) | Which requirements apply at each pentesting phase |
 | [Customer Acceptance Testing](./appendix/Customer_Acceptance_Testing.md) | Optional hands-on verification procedures for customers |
 | [Vendor Evaluation Guide](./appendix/Vendor_Evaluation_Guide.md) | Guide for evaluating autonomous pentest platform operators |
