@@ -7,13 +7,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FENCE_OPEN_PATTERN = re.compile(r"^[ \t]{0,3}((`{3,})|(~{3,})).*$")
 
-PLACEHOLDER_REQUIREMENT_IDS = frozenset({
-    "APTS-XX-NNN",
-    "APTS-XX-ANN",
-    "APTS-SE-027",
-    "APTS-SE-A01",
-})
-
 LineWithNumber = tuple[int, str]
 
 

@@ -5,7 +5,6 @@ import sys
 from pathlib import Path
 
 from _ci_utils import (
-    PLACEHOLDER_REQUIREMENT_IDS,
     display_path,
     git_ls_files,
     read_text,
@@ -34,15 +33,13 @@ def main() -> int:
         return 1
 
     failed = False
-    for md_file in md_files:
+    for md_file in standard_md_files:
         content = read_text(md_file)
         lines = content.splitlines()
         
         for i, line in enumerate(lines):
             refs = req_pattern.findall(line)
             for ref in refs:
-                if ref in PLACEHOLDER_REQUIREMENT_IDS:
-                    continue
                 if ref not in valid_reqs:
                     print(f"Error in {display_path(md_file)}:{i+1}")
                     print(f"  Invalid cross-reference: {ref} is not a known requirement.")
