@@ -1,6 +1,6 @@
 # OWASP Autonomous Penetration Testing Standard
 
-This is the full OWASP Autonomous Penetration Testing Standard. It defines 173 tier-required requirements across 8 domains (plus 14 advisory practices in the [Advisory Requirements appendix](appendix/Advisory_Requirements.md)) that autonomous penetration testing platforms must meet to operate safely, transparently, and within defined boundaries, whether delivered by vendors, operated as a service, or built in-house by enterprise security teams.
+This is the full OWASP Autonomous Penetration Testing Standard. It defines 173 tier-required requirements across 8 domains (plus 16 advisory practices in the [Advisory Requirements appendix](appendix/Advisory_Requirements.md)) that autonomous penetration testing platforms must meet to operate safely, transparently, and within defined boundaries, whether delivered by vendors, operated as a service, or built in-house by enterprise security teams.
 
 ## Getting Started
 
@@ -35,6 +35,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Quick Vendor Review Checklist](./appendix/Quick_Vendor_Review_Checklist.md) | Short 30-minute and 2-hour screening checklist for vendor or operator reviews |
 | [Rules of Engagement Template](./appendix/Rules_of_Engagement_Template.md) | Illustrative machine-readable RoE starter template |
 | [Authority Delegation Matrix Template](./appendix/Authority_Delegation_Matrix_Template.md) | Illustrative template for documenting role-based approval, escalation, and emergency authority |
+| [Autonomy Downgrade Matrix Template](./appendix/Autonomy_Downgrade_Matrix_Template.md) | Informative template for documenting downgrade triggers, autonomy caps, re-authorization paths, and evidence preservation |
 | [Threshold Configuration Template](./appendix/Threshold_Configuration_Template.md) | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Evidence Package Manifest](./appendix/Evidence_Package_Manifest.md) | Illustrative manifest for finding evidence, provenance, and downstream handoff |
 | [Evidence Package Manifest Example](./appendix/examples/Evidence_Package_Manifest_Example.md) | Fictional completed example showing finding evidence, provenance, redaction, and export handoff |
@@ -43,6 +44,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Conformance Claim Example](./appendix/examples/Conformance_Claim_Example.md) | Fictional completed example showing how an operator might document an APTS conformance claim |
 | [Evidence Request Checklist](./appendix/Evidence_Request_Checklist.md) | Simple artifact checklist for customer and reviewer evidence requests |
 | [Human Review Record Template](./appendix/Human_Review_Record_Template.md) | Illustrative template for documenting reviewer approval of critical findings |
+| [Shift Handoff Template](./appendix/Shift_Handoff_Template.md) | Informative template for documenting operator shift handoffs, pending approvals, safety signals, and authority transfer |
 | [Advisory Requirements](./appendix/Advisory_Requirements.md) | Non-mandatory practices for enhanced assurance |
 | [Incident Response Integration](./appendix/Incident_Response_Integration.md) | Unified incident response workflow across domains |
 

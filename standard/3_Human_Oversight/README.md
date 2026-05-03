@@ -51,7 +51,7 @@ The 19 requirements in this domain fall into six thematic groups:
 
 A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 HO requirement plus every Tier 2 HO requirement, and a Tier 3 platform satisfies all three tiers. Human Oversight has no Tier 3 requirements in this release; a Tier 3 claim therefore requires all Tier 1 and Tier 2 HO requirements. SHOULD-level requirements are interpreted per RFC 2119.
 
-One appendix-only advisory requirement for this domain (APTS-HO-A01 Out-of-Band Kill Switch via Independent Network) is documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). It is not required for conformance at any tier.
+Two appendix-only advisory requirements for this domain (APTS-HO-A01 Out-of-Band Kill Switch via Independent Network and APTS-HO-A02 Disclosure and Mitigation of AI Influence on Operator Decisions) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
 
 Every requirement in this domain includes a Verification subsection listing the verification procedures a reviewer uses to confirm implementation.
 
@@ -263,6 +263,8 @@ Organizations MUST generate periodic reports from decision logs at a cadence app
 7. **Export test**: Generate monthly compliance report; verify data accuracy and format
 8. **Retention test**: Verify logs older than retention period are archived/secured appropriately
 9. **Signature verification test**: Validate cryptographic signatures on sample log entries
+
+> **See also:** [APTS-HO-A02: Disclosure and Mitigation of AI Influence on Operator Decisions](../appendix/Advisory_Requirements.md#apts-ho-a02-disclosure-and-mitigation-of-ai-influence-on-operator-decisions-advisory) — an advisory practice covering audit-trail provenance for AI-shaped operator affordances (option sets, defaults, wording, ordering) and bias mitigation at high-impact gates, so the chain-of-custody distinguishes a typed approval from a default click-through. Candidate for tier-gated inclusion in v0.2.0.
 
 ---
 
@@ -915,6 +917,8 @@ For platforms operating in continuous or always-on mode, the platform SHOULD imp
 4. **Desensitization monitoring**: Tracking of operator response-time trends and alert acknowledgment rates to detect cumulative desensitization
 
 Approval queues SHOULD enforce shift-awareness so that approvals granted by an outgoing operator for future actions are flagged for incoming operator review.
+
+> **Implementation aid:** The [Shift Handoff Template](../appendix/Shift_Handoff_Template.md) provides an informative record format for transferring engagement state, pending approvals, open escalations, suppression-rule status, and kill-switch authority between operators.
 
 ### Verification
 

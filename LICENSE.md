@@ -193,4 +193,4 @@ Original work licensed under CC BY-SA 4.0: https://github.com/OWASP/APTS
 
 ## OWASP Trademark
 
-The OWASP name and logos are trademarks of The OWASP Foundation. You may refer to the standard as "OWASP Autonomous Penetration Testing Standard" for editorial purposes without permission. Commercial use of OWASP trademarks requires approval. Contact [trademarks@owasp.org](mailto:trademarks@owasp.org). See the [OWASP Trademark Policy](https://owasp.org/www-policy/operational/trademark) for details.
+The OWASP name and logos are trademarks of The OWASP Foundation. You may refer to the standard as "OWASP Autonomous Penetration Testing Standard" for editorial purposes without permission. Commercial use of OWASP trademarks requires approval. Contact [trademarks@owasp.org](mailto:trademarks@owasp.org). See the [OWASP Trademark Policy](https://owasp.org/www-policy/operational/mark-usage-guidelines) for details.

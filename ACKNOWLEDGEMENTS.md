@@ -40,7 +40,7 @@ The following standards and frameworks directly informed the development of APTS
 - [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) (Application Security Verification Standard)
 - [OSSTMM](https://www.isecom.org/OSSTMM.3.pdf) (Open Source Security Testing Methodology Manual)
 - [OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) (Agentic AI Security Risks)
-- [NIST AI RMF](https://www.nist.gov/artificial-intelligence/risk-management-framework) (AI Risk Management Framework)
+- [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) (AI Risk Management Framework)
 - [EU AI Act](https://artificialintelligenceact.eu/) (Regulation (EU) 2024/1689)
 
 ## How to Get Listed

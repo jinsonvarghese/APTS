@@ -72,19 +72,21 @@ Depending on your role:
 | [Cross-Domain Integration](appendix/Cross_Domain_Integration.md) | Informative | Cross-domain trigger mappings and dependency analysis |
 | [Testing Phase Mapping](appendix/Testing_Phase_Mapping.md) | Informative | Requirements mapped to pentesting lifecycle phases |
 | [Evidence Request Checklist](appendix/Evidence_Request_Checklist.md) | Informative | Lightweight checklist of artifacts customers and reviewers can request |
-| [Human Review Record Template](appendix/Human_Review_Record_Template.md) | Informative | Illustrative reviewer approval record for critical findings |
+| [Human Review Record Template](appendix/Human_Review_Record_Template.md) | Informative | Illustrative template for documenting reviewer approval of critical findings |
+| [Shift Handoff Template](appendix/Shift_Handoff_Template.md) | Informative | Template for documenting operator shift handoffs, pending approvals, safety signals, and authority transfer |
 | [Conformance Claim Schema](appendix/Conformance_Claim_Schema.md) | Informative | Illustrative machine-readable schema for structured conformance claims |
 | [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 | [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Informative | Illustrative manifest for finding evidence, provenance, and downstream handoff |
 | [Rules of Engagement Template](appendix/Rules_of_Engagement_Template.md) | Informative | Illustrative machine-readable Rules of Engagement starter template |
-| [Authority Delegation Matrix Template](appendix/Authority_Delegation_Matrix_Template.md) | Informative | Illustrative role-based approval, escalation, and emergency authority matrix |
+| [Authority Delegation Matrix Template](appendix/Authority_Delegation_Matrix_Template.md) | Informative | Illustrative template for documenting role-based approval, escalation, and emergency authority |
+| [Autonomy Downgrade Matrix Template](appendix/Autonomy_Downgrade_Matrix_Template.md) | Informative | Template for documenting downgrade triggers, autonomy caps, re-authorization paths, and evidence preservation |
 | [Threshold Configuration Template](appendix/Threshold_Configuration_Template.md) | Informative | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Advisory Requirements](appendix/Advisory_Requirements.md) | Informative | Best-practice requirements not gated to any compliance tier |
 
 ## Common Questions
 
 **Q: Do I need to implement all 173 requirements?**
-No. Start with Tier 1 (72 requirements). Tier 2 and Tier 3 add requirements progressively for cumulative totals of 157 and 173. An additional 14 advisory practices live in the [Advisory Requirements appendix](appendix/Advisory_Requirements.md) under the `APTS-<DOMAIN>-A0x` identifier pattern; advisory practices are not required for conformance at any tier. See [Introduction: Compliance Tiers](Introduction.md#compliance-tiers) for details.
+No. Start with Tier 1 (72 requirements). Tier 2 and Tier 3 add requirements progressively for cumulative totals of 157 and 173. An additional 16 advisory practices live in the [Advisory Requirements appendix](appendix/Advisory_Requirements.md) under the `APTS-<DOMAIN>-A0x` identifier pattern; advisory practices are not required for conformance at any tier. See [Introduction: Compliance Tiers](Introduction.md#compliance-tiers) for details.
 
 **Q: What if my platform meets most but not all Tier 1 requirements?**
 APTS does not award partial credit. A platform must meet 100% of requirements for its claimed tier. Address gaps before claiming a tier.
