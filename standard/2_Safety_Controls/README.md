@@ -52,7 +52,7 @@ The 20 requirements in this domain fall into seven thematic groups:
 
 A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 SC requirement plus every Tier 2 SC requirement, and a Tier 3 platform satisfies all three tiers. SHOULD-level requirements are interpreted per RFC 2119.
 
-Two appendix-only advisory practices for this domain (APTS-SC-A01 Platform Health Monitoring and Anomaly Detection and APTS-SC-A02 Context Window Safety and Constraint Preservation) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
+Three appendix-only advisory practices for this domain (APTS-SC-A01 Platform Health Monitoring and Anomaly Detection, APTS-SC-A02 Context Window Safety and Constraint Preservation, and APTS-SC-A03 Tool Invocation Parameter and Chaining Governance) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
 
 Every requirement in this domain includes a Verification subsection listing the verification procedures a reviewer uses to confirm implementation.
 

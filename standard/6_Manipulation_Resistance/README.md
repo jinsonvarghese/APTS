@@ -62,6 +62,8 @@ The 23 requirements in this domain fall into seven thematic groups:
 
 A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 MR requirement plus every Tier 2 MR requirement, and a Tier 3 platform satisfies all three tiers. SHOULD-level requirements are interpreted per RFC 2119.
 
+Three advisory practices relevant to this domain (APTS-MR-A01 Goal Misgeneralization and Emergent Misalignment Evaluation Suite, APTS-MR-A02 Sandbagging Detection and Behavioral Consistency Validation, and APTS-MR-A03 Multi-Turn Adversarial Conversation Resilience) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
+
 Every requirement in this domain includes a Verification subsection listing the verification procedures a reviewer uses to confirm implementation.
 
 ---
