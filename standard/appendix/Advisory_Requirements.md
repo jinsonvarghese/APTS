@@ -121,6 +121,46 @@ When the platform summarizes, truncates, or otherwise compacts the agent's conte
 
 ---
 
+### APTS-SC-A03: Tool Invocation Parameter and Chaining Governance (Advisory)
+
+**Applicability:** This practice applies to platforms that let an agent or model-driven orchestration layer invoke allowlisted tools with runtime-supplied parameters.
+
+**Rationale:** APTS-SC-020 already does the important architectural work. The allowlist lives outside the model. Entries include allowed parameters or parameter bounds. That is the floor. The unresolved problem appears one layer lower, where a tool is nominally approved but the parameter mix changes what the tool can do in practice. A rate-control tool with a zero-delay setting can still stress a target. A browser connector may be approved for scoped validation, then become an egress path once paired with an export utility. Observations from agentic systems suggest that this is where "allowed" starts to blur into "unsafe." SC-020 defines the enforcement point. This advisory deals with what that enforcement layer should evaluate before dispatch.
+
+**Value:** Parameter-aware enforcement closes a gap that is easy to miss in design review and easy to trigger at runtime. Each call can look acceptable on its own. The sequence is the problem. Mature platforms catch that before the target does.
+
+**Practice Description:**
+
+For each allowlisted tool, document a parameter schema that covers types, bounds, enumerated values, and disallowed combinations for safety-critical fields. Those fields usually include target identifiers, rate limits, payload sizes, recursion depth, credential references, export destinations, authentication modes, and execution windows. Validate them in the external enforcement layer before dispatch, not inside the model prompt and not only in the tool wrapper. Then go one step further. Some requests are syntactically valid and still wrong in context. Check that the referenced target is still in scope, that the credential reference is authorized for that tool and that engagement, and that the requested rate or payload remains inside the approved operating envelope.
+
+Platforms operating with multi-step agents should also define a bounded set of disallowed tool chains. This is not an attempt to solve general action planning through brittle signatures. It is narrower than that. Block the sequences that are already understood to produce disallowed outcomes: reconnaissance that flows directly into unapproved credential use, widened enumeration that turns into unauthorized pivoting, or evidence export routed to a destination outside the approved delivery path. Log parameter rejections and chain-policy rejections with the tool identifier, attempted parameters, and the reason for denial.
+
+**Recommendation:** Start small. Cover the tools that can change scope, traffic intensity, credential usage, or data egress. Build a short catalog of unsafe parameter combinations and unsafe tool chains, run it through change control with the allowlist, and expand from operational evidence rather than taxonomy for its own sake.
+
+**Related normative requirements:** APTS-SC-004, APTS-SC-020, APTS-SE-006, APTS-SE-023, APTS-MR-023.
+
+---
+
+### APTS-MR-A03: Multi-Turn Adversarial Conversation Resilience (Advisory)
+
+**Applicability:** This practice applies to platforms that use LLM-based or agentic runtimes with conversational state spanning multiple turns, tool calls, or planning steps.
+
+**Rationale:** APTS-MR-018 protects the architectural boundary between trusted instructions and untrusted target-derived data. APTS-MR-023 assumes the runtime may still misbehave and requires containment. Those controls remain necessary. They do not fully cover a pattern that shows up repeatedly in agentic systems: no single turn looks decisive, yet the accumulated dialogue erodes the runtime's refusal logic until it attempts something it should never have attempted. Split-message assembly does this. So do paraphrase drift, encoding chains, and target content that slowly reframes itself as operator intent. The distinction from MR-023 matters. MR-023 is containment after deviation. This advisory is about exercising the conversation path that leads to deviation in the first place.
+
+**Value:** Single-turn screening misses a surprising amount of bad behavior because the dangerous instruction is often distributed across harmless-looking fragments. Multi-turn testing exposes that drift. It gives the operator a better signal about whether refusal behavior, scope discipline, and tool-use restrictions survive a long session instead of only surviving a clean lab prompt.
+
+**Practice Description:**
+
+Maintain a compact corpus of multi-turn adversarial sequences that exercises cumulative manipulation patterns relevant to autonomous pentesting. Include staged jailbreak attempts, split-message assembly, paraphrase and synonym variation, encoding or representation shifts, and attempts to reframe untrusted target content as operator intent. Then compare outcomes. If the platform rejects a direct request to widen scope or export sensitive data, it should reject the obfuscated and distributed versions of the same request as well.
+
+Where the platform carries conversational or planning state across long sessions, treat that state as part of the attack surface. Segment or reset state at clear engagement and approval boundaries. Do not let adversarial target content sit in privileged planning context longer than necessary. When the platform summarizes or compacts history, verify that compaction does not turn a previously rejected path into an acceptable one by stripping away context or weakening the refusal signal. Log the test results and classify failures by what actually eroded: refusal drift, scope drift, tool-use drift, or unsafe state carryover.
+
+**Recommendation:** Start with a small recurring corpus focused on the failures that matter operationally: scope override, instruction bypass, credential exfiltration attempts, and unsafe tool requests distributed across several turns. Use the results to tune guardrails and session-boundary handling. A benchmark score by itself is not the point.
+
+**Related normative requirements:** APTS-MR-001, APTS-MR-018, APTS-MR-023, APTS-SC-020.
+
+---
+
 ### APTS-HO-A01: Out-of-Band Kill Switch via Independent Network (Advisory)
 
 **Rationale:** Core kill switch functionality is covered by APTS-HO-008. The requirement for kill switch activation via physically independent communication channels (cellular, management network, physical button) assumes deployment scenarios where the primary network may be compromised or unavailable.
@@ -293,4 +333,3 @@ Implement an automated verification mechanism that screens each reported finding
 | Tier 3 (Comprehensive) | Maximum assurance for high-risk operations | Recommended where operationally feasible |
 
 Advisory practices are independent of the tier system. A platform may claim Tier 3 conformance without implementing any advisory practices, and a Tier 2 platform may implement advisory practices that are relevant to its deployment context.
-
