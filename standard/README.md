@@ -45,6 +45,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Evidence Request Checklist](./appendix/Evidence_Request_Checklist.md) | Simple artifact checklist for customer and reviewer evidence requests |
 | [Human Review Record Template](./appendix/Human_Review_Record_Template.md) | Illustrative template for documenting reviewer approval of critical findings |
 | [Shift Handoff Template](./appendix/Shift_Handoff_Template.md) | Informative template for documenting operator shift handoffs, pending approvals, safety signals, and authority transfer |
+| [Incident Response Drill Record Template](./appendix/Incident_Response_Drill_Record_Template.md) | Informative template for documenting incident response tabletop exercises, simulations, evidence capture, and corrective actions |
 | [Advisory Requirements](./appendix/Advisory_Requirements.md) | Non-mandatory practices for enhanced assurance |
 | [Incident Response Integration](./appendix/Incident_Response_Integration.md) | Unified incident response workflow across domains |
 

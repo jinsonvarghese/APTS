@@ -101,7 +101,7 @@ Platform operators may attach or append supporting evidence to this claim. Evide
 - Adversarial test report summaries
 - Architecture diagrams showing safety control integration
 - Scope enforcement test results
-- Incident response tabletop exercise records
+- [Incident response tabletop exercise records](Incident_Response_Drill_Record_Template.md)
 
 Each evidence page should reference the requirement ID(s) it supports (for example, "Evidence for APTS-SC-009: Kill Switch") so that customers can trace evidence back to specific requirements.
 
