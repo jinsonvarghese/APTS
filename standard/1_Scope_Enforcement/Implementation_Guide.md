@@ -221,6 +221,7 @@ For cloud environments, scope validation must account for:
 **Key Considerations:**
 - Store audit logs separately from main system
 - Implement tamper detection for audit logs
+- Consider using the [Scope Change Decision Record Template](../appendix/Scope_Change_Decision_Record_Template.md) when a scope decision approves, rejects, constrains, or defers a change to authorized targets
 
 **Common Pitfalls:**
 - Logs erasable or modifiable
@@ -235,6 +236,7 @@ For cloud environments, scope validation must account for:
 **Key Considerations:**
 - Pause testing during revalidation windows
 - Document all scope changes in audit trail
+- Consider capturing additions, removals, constraints, and rejected scope-expansion requests in a [Scope Change Decision Record](../appendix/Scope_Change_Decision_Record_Template.md) when human authorization or customer confirmation is needed
 
 **Common Pitfalls:**
 - Not detecting infrastructure migrations mid-engagement
