@@ -74,6 +74,7 @@ Depending on your role:
 | [Evidence Request Checklist](appendix/Evidence_Request_Checklist.md) | Informative | Lightweight checklist of artifacts customers and reviewers can request |
 | [Human Review Record Template](appendix/Human_Review_Record_Template.md) | Informative | Illustrative template for documenting reviewer approval of critical findings |
 | [Shift Handoff Template](appendix/Shift_Handoff_Template.md) | Informative | Template for documenting operator shift handoffs, pending approvals, safety signals, and authority transfer |
+| [Incident Response Drill Record Template](appendix/Incident_Response_Drill_Record_Template.md) | Informative | Template for documenting incident response tabletop exercises, simulations, evidence capture, and corrective actions |
 | [Conformance Claim Schema](appendix/Conformance_Claim_Schema.md) | Informative | Illustrative machine-readable schema for structured conformance claims |
 | [Conformance Claim Template](appendix/Conformance_Claim_Template.md) | Informative | Optional template for platform operators documenting conformance |
 | [Evidence Package Manifest](appendix/Evidence_Package_Manifest.md) | Informative | Illustrative manifest for finding evidence, provenance, and downstream handoff |

@@ -4,6 +4,8 @@ Informative Appendix (non-normative)
 
 This appendix maps APTS requirements to incident response phases without introducing new requirements. For normative requirements, see domain-specific READMEs. See [Cross-Domain Integration Matrix](Cross_Domain_Integration.md) for how events trigger requirements across domains.
 
+For documenting tabletop exercises, simulations, or live drills against this workflow, see the [Incident Response Drill Record Template](Incident_Response_Drill_Record_Template.md).
+
 This appendix unifies incident response requirements across APTS domains. Incident response capabilities are distributed across multiple domains because different aspects of incident handling fall under different governance concerns. It provides a complete workflow for identifying, responding to, and recovering from incidents during autonomous penetration testing.
 
 ---
