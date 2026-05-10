@@ -247,7 +247,7 @@ Findings below 50% confidence SHOULD be flagged as "Unconfirmed" and excluded fr
 
 **Implementation:** Deploy an independent verification step that screens every finding for fabricated evidence, hallucinated vulnerabilities, and severity misclassification before the finding enters the human review pipeline. The verification mechanism must not share context or state with the discovering agent.
 
-**Architecture Pattern — Independent Finding Judge:**
+**Architecture Pattern: Independent Finding Judge**
 
 A proven pattern is to implement the verifier as a separate "Finding Judge" that receives only the finding record, associated evidence artifacts (PoC scripts, HTTP request/response pairs, tool output), and the target context. The judge evaluates each finding against several checks:
 
@@ -271,7 +271,7 @@ For finding types where evidence quality varies, implement calibrated confidence
 **Common Pitfalls:**
 - Running the verifier in the same LLM context as the discovering agent, which allows the agent's reasoning to influence the verification outcome
 - Implementing only a "does the PoC run" check without examining whether the PoC actually contacts the target
-- Treating all REJECTED findings as false positives without logging — some may indicate a genuine vulnerability that the agent described poorly, and the rejection log helps identify patterns for agent improvement
+- Treating all REJECTED findings as false positives without logging, since some may indicate a genuine vulnerability that the agent described poorly, and the rejection log helps identify patterns for agent improvement
 - Over-reliance on the verifier as a replacement for human review; the verifier is a pre-filter, not a substitute for APTS-RP-002
 
 ---
