@@ -35,6 +35,7 @@ The [appendices](./appendix/) provide cross-cutting resources: checklists, compl
 | [Quick Vendor Review Checklist](./appendix/Quick_Vendor_Review_Checklist.md) | Short 30-minute and 2-hour screening checklist for vendor or operator reviews |
 | [Rules of Engagement Template](./appendix/Rules_of_Engagement_Template.md) | Illustrative machine-readable RoE starter template |
 | [Authority Delegation Matrix Template](./appendix/Authority_Delegation_Matrix_Template.md) | Illustrative template for documenting role-based approval, escalation, and emergency authority |
+| [Scope Change Decision Record Template](./appendix/Scope_Change_Decision_Record_Template.md) | Informative template for documenting approved, rejected, constrained, or deferred scope changes during an engagement |
 | [Autonomy Downgrade Matrix Template](./appendix/Autonomy_Downgrade_Matrix_Template.md) | Informative template for documenting downgrade triggers, autonomy caps, re-authorization paths, and evidence preservation |
 | [Threshold Configuration Template](./appendix/Threshold_Configuration_Template.md) | Simple starter table for documenting operational thresholds, escalation points, and stop conditions |
 | [Evidence Package Manifest](./appendix/Evidence_Package_Manifest.md) | Illustrative manifest for finding evidence, provenance, and downstream handoff |
