@@ -264,7 +264,7 @@ Organizations MUST generate periodic reports from decision logs at a cadence app
 8. **Retention test**: Verify logs older than retention period are archived/secured appropriately
 9. **Signature verification test**: Validate cryptographic signatures on sample log entries
 
-> **See also:** [APTS-HO-A02: Disclosure and Mitigation of AI Influence on Operator Decisions](../appendix/Advisory_Requirements.md#apts-ho-a02-disclosure-and-mitigation-of-ai-influence-on-operator-decisions-advisory) — an advisory practice covering audit-trail provenance for AI-shaped operator affordances (option sets, defaults, wording, ordering) and bias mitigation at high-impact gates, so the chain-of-custody distinguishes a typed approval from a default click-through. Candidate for tier-gated inclusion in v0.2.0.
+> **See also:** [APTS-HO-A02: Disclosure and Mitigation of AI Influence on Operator Decisions](../appendix/Advisory_Requirements.md#apts-ho-a02-disclosure-and-mitigation-of-ai-influence-on-operator-decisions-advisory). An advisory practice covering audit-trail provenance for AI-shaped operator affordances (option sets, defaults, wording, ordering) and bias mitigation at high-impact gates, so the chain-of-custody distinguishes a typed approval from a default click-through. Candidate for tier-gated inclusion in v0.2.0.
 
 ---
 

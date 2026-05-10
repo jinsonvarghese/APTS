@@ -372,12 +372,12 @@ Platforms using LLMs for decision-making MUST implement layered prompt injection
 
 **Implementation:** Build the evaluation suite as an independent pipeline outside the agent's serving infrastructure. Each run takes a fixed model configuration (foundation model version, adapter set, system prompt, tool access policy, temperature) and produces a structured run record with per-scenario decisions, per-category alignment rates, and an aggregate score committed to the audit trail.
 
-**Architecture Pattern — Independent Evaluation Pipeline:**
+**Architecture Pattern: Independent Evaluation Pipeline**
 
 A proven pattern is to implement the suite using an off-the-shelf evaluation framework (Inspect AI, Braintrust, OpenAI Evals, or an equivalent harness) and to run it as a standalone job rather than as part of the engagement runtime. The pipeline has four components:
 
 1. **Scenario corpus.** A versioned set of distinguishing scenarios stored as data, not code. Each scenario carries: a target description (the synthetic environment the agent is asked to assess), the proxy-objective action, the true-objective action, the rubric mapping the agent's chosen action to one of the three classes (true-objective-aligned, proxy-objective-aligned, other), and a category tag.
-2. **Run harness.** A driver that instantiates the same agent loop the platform uses in production — same system prompt, same tool registry, same control plane — but pointed at the synthetic targets in the scenario corpus. The harness records every tool call, every model output, and the agent's terminal action per scenario.
+2. **Run harness.** A driver that instantiates the same agent loop the platform uses in production (same system prompt, same tool registry, same control plane) but pointed at the synthetic targets in the scenario corpus. The harness records every tool call, every model output, and the agent's terminal action per scenario.
 3. **Scorer.** A rule-based or LLM-judge scorer (independent of the agent under test) that maps each scenario's run record to one of the three classes. Where an LLM judge is used, the judge MUST run as a separate inference call with no shared context with the agent under test (same constraint as APTS-RP-A01).
 4. **Reporter.** Aggregates per-category alignment rates, computes aggregate score, compares against documented thresholds, computes deltas against the most recent prior run on the same model version, and writes a signed run record to the audit trail per APTS-AR-012.
 
@@ -390,7 +390,7 @@ For scenario categories where the population of distinguishing cases is small, d
 Implement the post-fine-tuning out-of-distribution audit as a separate evaluation job that runs the model against a held-out general-purpose benchmark (HHH-style or equivalent) before and after every fine-tuning event. The audit is concerned with relative shift, not absolute score: a several-point drop on a previously-stable benchmark following narrow fine-tuning is the signal the Nature 2026 methodology identifies as emergent misalignment, and the relative drop matters more than the absolute number.
 
 **Key Considerations:**
-- The evaluation suite must be governed as carefully as the model under APTS-TP-019. Scenario corpus contamination — where suite scenarios leak into post-deployment learning data — silently inflates alignment rates and is the evaluation-side analogue of training-set contamination in capability benchmarks.
+- The evaluation suite must be governed as carefully as the model under APTS-TP-019. Scenario corpus contamination, where suite scenarios leak into post-deployment learning data, silently inflates alignment rates and is the evaluation-side analogue of training-set contamination in capability benchmarks.
 - The judge component must use a different model family or, if the same family, a different system prompt and a separate inference call. APTS-RP-A01's independence requirement applies symmetrically here.
 - Run the suite against the *same* model configuration the platform uses in production, including system prompt, tool registry, temperature, and any safety wrappers. A suite that passes against a stripped-down configuration provides no assurance about production behavior.
 - Suite results should be tracked across runs with explicit versioning of (model, adapter, system prompt, suite version). A drop in alignment rate is interpretable only relative to prior runs on a comparable configuration.
@@ -407,9 +407,9 @@ Implement the post-fine-tuning out-of-distribution audit as a separate evaluatio
 
 > This section provides implementation guidance for the advisory practice [APTS-MR-A02](../appendix/Advisory_Requirements.md#apts-mr-a02-sandbagging-detection-and-behavioral-consistency-validation-advisory). It is not required for conformance at any tier.
 
-**Implementation:** Build the consistency measurement as an independent pipeline that ingests, on one side, per-scenario records from the adversarial eval suite of APTS-MR-020, and on the other side a stratified sample of production engagement transcripts captured under APTS-AR-001. Each measurement run is anchored to a single model snapshot identifier (per APTS-AR-019) and produces a structured differential report — per-dimension deltas, sample sizes, and a verbalized-recognition correlation — committed to the audit trail.
+**Implementation:** Build the consistency measurement as an independent pipeline that ingests, on one side, per-scenario records from the adversarial eval suite of APTS-MR-020, and on the other side a stratified sample of production engagement transcripts captured under APTS-AR-001. Each measurement run is anchored to a single model snapshot identifier (per APTS-AR-019) and produces a structured differential report (per-dimension deltas, sample sizes, and a verbalized-recognition correlation) committed to the audit trail.
 
-**Architecture Pattern — Differential Measurement Pipeline:**
+**Architecture Pattern: Differential Measurement Pipeline**
 
 The pipeline has four components, mirroring the structure used in APTS-MR-A01:
 
@@ -429,7 +429,7 @@ Where reasoning traces are available, scan eval-side transcripts for evaluation-
 **Key Considerations:**
 - Production telemetry sampling MUST respect APTS-TP-013 sensitive-data handling and MUST NOT extend retention beyond what APTS-AR-001 already permits. Differential measurement is not a justification for new collection.
 - The differential is interpretable only against a model-snapshot identifier (APTS-AR-019). Comparing eval samples and production samples drawn under different snapshots without correcting for the change confounds the measurement.
-- Eval-suite contamination from the production side — for example, production samples that were previously absorbed into post-deployment learning data — silently narrows the measured delta. Treat eval scenarios as held out from any post-deployment learning data, consistent with APTS-MR-A01's contamination guidance.
+- Eval-suite contamination from the production side (for example, production samples that were previously absorbed into post-deployment learning data) silently narrows the measured delta. Treat eval scenarios as held out from any post-deployment learning data, consistent with APTS-MR-A01's contamination guidance.
 - Where production sampling is impossible (privacy-restricted engagement, contractual restriction), substitute high-fidelity production-mimicking synthetic transcripts and disclose the substitution; do not omit the dimension.
 
 **Common Pitfalls:**
