@@ -9,8 +9,14 @@ from pathlib import Path
 from _ci_utils import display_path, read_bytes, repo_path, repo_root, write_bytes
 
 EXPORT_SCRIPT = Path("scripts/export_requirements.py")
+SYNC_INDEX_SCRIPT = Path("scripts/sync_index_from_readme.py")
+SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT = Path("scripts/sync_tab_acknowledgements_from_md.py")
 REQUIREMENTS_JSON = Path("standard/apts_requirements.json")
 SCHEMA_JSON = Path("standard/apts_requirements_schema.json")
+README_MD = Path("README.md")
+INDEX_MD = Path("index.md")
+ACKNOWLEDGEMENTS_MD = Path("ACKNOWLEDGEMENTS.md")
+TAB_ACKNOWLEDGEMENTS_MD = Path("tab_acknowledgements.md")
 FIXED_TIMESTAMP = "1970-01-01T00:00:00Z"
 
 
@@ -124,6 +130,152 @@ def main() -> int:
         exit_code = 1
     finally:
         restore_errors = restore_original_files(original_contents)
+        if restore_errors:
+            for message in restore_errors:
+                print(message)
+            exit_code = 1
+
+    index_check_exit_code = check_index_in_sync_with_readme()
+    if index_check_exit_code != 0:
+        exit_code = index_check_exit_code
+
+    tab_check_exit_code = check_tab_acknowledgements_in_sync()
+    if tab_check_exit_code != 0:
+        exit_code = tab_check_exit_code
+
+    return exit_code
+
+
+def check_tab_acknowledgements_in_sync() -> int:
+    """Verify tab_acknowledgements.md matches the ACKNOWLEDGEMENTS.md body
+    after the H1 and the "Influences" / "How to Get Listed" sections are
+    stripped.
+
+    The sync_tab_acknowledgements_from_md.py script regenerates
+    tab_acknowledgements.md from ACKNOWLEDGEMENTS.md. This check fails the
+    build if the two have drifted.
+    """
+
+    if not repo_path(SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT).is_file():
+        print(
+            f"No sync script found at {display_path(SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT)}. "
+            "Skipping tab_acknowledgements.md / ACKNOWLEDGEMENTS.md sync check."
+        )
+        return 0
+
+    if (
+        not repo_path(TAB_ACKNOWLEDGEMENTS_MD).is_file()
+        or not repo_path(ACKNOWLEDGEMENTS_MD).is_file()
+    ):
+        print(
+            "FAILED: Expected ACKNOWLEDGEMENTS.md and tab_acknowledgements.md "
+            "to both exist for the sync check."
+        )
+        return 1
+
+    original_tab_contents = read_bytes(TAB_ACKNOWLEDGEMENTS_MD)
+    exit_code = 0
+
+    try:
+        subprocess.run(
+            [sys.executable, str(repo_path(SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT))],
+            cwd=repo_root(),
+            check=True,
+        )
+
+        regenerated_tab = read_bytes(TAB_ACKNOWLEDGEMENTS_MD)
+        expected_lines = raw_text_lines(original_tab_contents)
+        actual_lines = raw_text_lines(regenerated_tab)
+
+        if expected_lines != actual_lines:
+            print_diff(
+                "FAILED: tab_acknowledgements.md is out of sync with "
+                "ACKNOWLEDGEMENTS.md. Run "
+                "scripts/sync_tab_acknowledgements_from_md.py to regenerate it.",
+                expected_lines=expected_lines,
+                actual_lines=actual_lines,
+                expected_name="committed tab_acknowledgements.md",
+                actual_name="regenerated tab_acknowledgements.md",
+            )
+            exit_code = 1
+    except subprocess.CalledProcessError as exc:
+        print(
+            f"FAILED: sync_tab_acknowledgements_from_md.py exited with status {exc.returncode}."
+        )
+        exit_code = 1
+    except Exception as exc:
+        print(
+            f"FAILED: tab_acknowledgements.md / ACKNOWLEDGEMENTS.md sync check could not complete: {exc}"
+        )
+        exit_code = 1
+    finally:
+        restore_errors = restore_original_files(
+            {TAB_ACKNOWLEDGEMENTS_MD: original_tab_contents}
+        )
+        if restore_errors:
+            for message in restore_errors:
+                print(message)
+            exit_code = 1
+
+    return exit_code
+
+
+def check_index_in_sync_with_readme() -> int:
+    """Verify index.md matches the README.md body under the Jekyll front matter.
+
+    README.md is the canonical source for the project overview; index.md
+    is the Jekyll-rendered version with a YAML front matter block prepended.
+    The sync_index_from_readme.py script regenerates index.md from README.md.
+    This check fails the build if the two have drifted.
+    """
+
+    if not repo_path(SYNC_INDEX_SCRIPT).is_file():
+        print(
+            f"No sync script found at {display_path(SYNC_INDEX_SCRIPT)}. "
+            "Skipping index.md / README.md sync check."
+        )
+        return 0
+
+    if not repo_path(INDEX_MD).is_file() or not repo_path(README_MD).is_file():
+        print(
+            "FAILED: Expected README.md and index.md to both exist for the sync check."
+        )
+        return 1
+
+    original_index_contents = read_bytes(INDEX_MD)
+    exit_code = 0
+
+    try:
+        subprocess.run(
+            [sys.executable, str(repo_path(SYNC_INDEX_SCRIPT))],
+            cwd=repo_root(),
+            check=True,
+        )
+
+        regenerated_index = read_bytes(INDEX_MD)
+        expected_lines = raw_text_lines(original_index_contents)
+        actual_lines = raw_text_lines(regenerated_index)
+
+        if expected_lines != actual_lines:
+            print_diff(
+                "FAILED: index.md is out of sync with README.md. "
+                "Run scripts/sync_index_from_readme.py to regenerate it.",
+                expected_lines=expected_lines,
+                actual_lines=actual_lines,
+                expected_name="committed index.md",
+                actual_name="regenerated index.md",
+            )
+            exit_code = 1
+    except subprocess.CalledProcessError as exc:
+        print(
+            f"FAILED: sync_index_from_readme.py exited with status {exc.returncode}."
+        )
+        exit_code = 1
+    except Exception as exc:
+        print(f"FAILED: index.md / README.md sync check could not complete: {exc}")
+        exit_code = 1
+    finally:
+        restore_errors = restore_original_files({INDEX_MD: original_index_contents})
         if restore_errors:
             for message in restore_errors:
                 print(message)
