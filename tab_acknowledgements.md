@@ -3,9 +3,11 @@ title: Acknowledgements
 displaytext: Acknowledgements
 layout: null
 tab: true
-order: 3
+order: 1
 tags: apts
 ---
+
+Affiliations are provided for contributor identification only. Acknowledgements recognize individual contributions and do not imply organizational representation, sponsorship, approval, or endorsement. Contributions do not necessarily represent the views of any listed affiliation or organization.
 
 ## Project Lead
 
