@@ -1,10 +1,10 @@
-# Human Oversight and Intervention
+# Safety Controls and Impact Management
 
-**Domain Prefix:** APTS-HO | **Requirements:** 19
+**Domain Prefix:** APTS-SC | **Requirements:** 20
 
-This domain defines how an autonomous penetration testing platform keeps qualified humans in the loop: approving actions before execution at low autonomy levels, monitoring and intervening during execution, exercising pause/redirect/kill authority, receiving escalations on unexpected findings or threshold breaches, and closing engagements with accountable human sign-off. Human Oversight is the safety valve that makes graduated autonomy workable. Even a well-designed autonomous platform will encounter situations it has not been authorized to handle alone, and the quality of its behavior in those situations depends on how reliably, how quickly, and to whom it hands control. Requirements in this domain govern approval gates, monitoring and intervention capability, decision timeouts, authority delegation, graceful pause and redirect, kill switches, irreversibility gates, escalation triggers, alerting and fatigue controls, stakeholder notification, operator qualifications, and 24/7 continuity.
+This domain defines how an autonomous penetration testing platform classifies the potential impact of its actions, limits blast radius, enforces graduated escalation thresholds, terminates testing on adverse conditions, recovers from incidents, and contains the agent runtime within a declared execution boundary enforced outside the agent's own control. Safety Controls complement Scope Enforcement: where SE decides whether an action is inside the agreed envelope, SC decides whether that in-scope action is safe enough to run right now given its predicted impact, cumulative risk, and current system health, and whether the agent's execution environment continues to enforce the platform's declared containment boundary. A platform that cannot stop itself, cannot score what it is doing against Confidentiality, Integrity, and Availability (CIA) dimensions, cannot detect and recover from an unintended effect, or cannot enforce a sandbox boundary on its own agent runtime cannot safely operate at any autonomy level above L1. Requirements in this domain govern impact classification, rate and payload constraints, threshold escalation, kill switches, health-triggered halts, circuit breakers, reversibility tracking, rollback, post-test integrity checks, incident containment and recovery, execution sandbox boundary integrity, and external enforcement of the agent's action allowlist.
 
-This domain covers the human side of the human-platform loop: who approves, who intervenes, and when. Scope boundary checks belong to Scope Enforcement (SE), impact classification and hard stops to Safety Controls (SC), and the audit trail of approvals to Auditability (AR).
+This domain covers blast-radius management and hard-stop capability. Scope boundary enforcement belongs to Scope Enforcement (SE), human approval workflows to Human Oversight (HO), and evidence of safety-control actions to Auditability (AR).
 
 > For implementation guidance, see the [Implementation Guide](Implementation_Guide.md).
 
@@ -12,921 +12,525 @@ This domain covers the human side of the human-platform loop: who approves, who 
 
 ## Domain Overview
 
-The 19 requirements in this domain fall into six thematic groups:
+The 20 requirements in this domain fall into seven thematic groups:
 
 | Group | Requirements | Purpose |
 |---|---|---|
-| **Approval gates and intervention capability** | APTS-HO-001, APTS-HO-002, APTS-HO-003 | Mandatory pre-approval at L1/L2, real-time monitoring and intervention, decision timeout with default-safe behavior |
-| **Authority delegation and chain-of-custody** | APTS-HO-004, APTS-HO-005 | Delegation matrix, chain-of-custody and decision audit trail |
-| **Pause, redirect, and kill switch** | APTS-HO-006, APTS-HO-007, APTS-HO-008, APTS-HO-009 | Graceful pause with state preservation, mid-engagement redirect, immediate kill switch with state dump, multi-operator authority and handoff |
-| **Irreversibility and escalation triggers** | APTS-HO-010, APTS-HO-011, APTS-HO-012, APTS-HO-013, APTS-HO-014 | Decision points before irreversible actions, unexpected-findings escalation, impact-threshold breach, confidence-based escalation, legal and compliance triggers |
-| **Activity monitoring, alerting, and closure** | APTS-HO-015, APTS-HO-016, APTS-HO-017 | Real-time activity monitoring and notifications, alert-fatigue mitigation, stakeholder notification and engagement closure |
-| **Operator qualification and continuity** | APTS-HO-018, APTS-HO-019 | Qualification, training, and competency governance; 24/7 operational continuity and shift handoff |
+| **Impact classification and scoring** | APTS-SC-001, APTS-SC-002, APTS-SC-003 | CIA dimensional scoring, industry-specific considerations, worked classification examples |
+| **Rate, threshold, and cumulative risk controls** | APTS-SC-004, APTS-SC-005, APTS-SC-006, APTS-SC-007, APTS-SC-008 | Rate and payload constraints, cascading-failure prevention, escalation workflow, cumulative risk scoring, schema-validated thresholds |
+| **Kill switch and automated termination** | APTS-SC-009, APTS-SC-010, APTS-SC-011, APTS-SC-012, APTS-SC-013 | Kill switch, health-triggered halts, condition-based termination, network circuit breaker, time-based termination |
+| **Reversibility, rollback, and post-test integrity** | APTS-SC-014, APTS-SC-015, APTS-SC-016 | Reversible action tracking and rollback, post-test integrity validation, evidence preservation and cleanup |
+| **External watchdog and incident recovery** | APTS-SC-017, APTS-SC-018 | External watchdog and operator notification, incident containment and recovery |
+| **Execution sandbox and agent containment** | APTS-SC-019, APTS-SC-020 | Sandbox and containment boundary integrity, action allowlist enforcement external to the model |
 
 ### Requirement Index
 
 | ID | Title | Classification |
 |---|---|---|
-| APTS-HO-001 | Mandatory Pre-Approval Gates for Autonomy Levels L1 and L2 | MUST \| Tier 1 |
-| APTS-HO-002 | Real-Time Monitoring and Intervention Capability | MUST \| Tier 1 |
-| APTS-HO-003 | Decision Timeout and Default-Safe Behavior | MUST \| Tier 1 |
-| APTS-HO-004 | Authority Delegation Matrix | MUST \| Tier 1 |
-| APTS-HO-005 | Delegation Chain-of-Custody and Decision Audit Trail | MUST \| Tier 2 |
-| APTS-HO-006 | Graceful Pause Mechanism with State Preservation | MUST \| Tier 1 |
-| APTS-HO-007 | Mid-Engagement Redirect Capability | MUST \| Tier 1 |
-| APTS-HO-008 | Immediate Kill Switch with State Dump | MUST \| Tier 1 |
-| APTS-HO-009 | Multi-Operator Kill Switch Authority and Handoff | MUST \| Tier 2 |
-| APTS-HO-010 | Mandatory Human Decision Points Before Irreversible Actions | MUST \| Tier 1 |
-| APTS-HO-011 | Unexpected Findings Escalation Framework | MUST \| Tier 1 |
-| APTS-HO-012 | Impact Threshold Breach Escalation | MUST \| Tier 1 |
-| APTS-HO-013 | Confidence-Based Escalation (Scope Uncertainty) | MUST \| Tier 1 |
-| APTS-HO-014 | Legal and Compliance Escalation Triggers | MUST \| Tier 1 |
-| APTS-HO-015 | Real-Time Activity Monitoring and Multi-Channel Notification | MUST \| Tier 1 |
-| APTS-HO-016 | Alert Fatigue Mitigation and Smart Aggregation | SHOULD \| Tier 2 |
-| APTS-HO-017 | Stakeholder Notification and Engagement Closure | MUST \| Tier 2 |
-| APTS-HO-018 | Operator Qualification, Training, and Competency Governance | MUST \| Tier 2 |
-| APTS-HO-019 | 24/7 Operational Continuity and Shift Handoff | SHOULD \| Tier 2 |
+| APTS-SC-001 | Impact Classification and CIA Scoring | MUST \| Tier 1 |
+| APTS-SC-002 | Industry-Specific Impact Considerations | MUST \| Tier 2 |
+| APTS-SC-003 | Real-World Impact Classification Examples | SHOULD \| Tier 2 |
+| APTS-SC-004 | Rate Limiting, Bandwidth, and Payload Constraints | MUST \| Tier 1 |
+| APTS-SC-005 | Cascading Failure Prevention in Interconnected Systems | SHOULD \| Tier 2 |
+| APTS-SC-006 | Threshold Escalation Workflow (Automated → Approval → Prohibited) | MUST \| Tier 2 |
+| APTS-SC-007 | Cumulative Risk Scoring with Time-Based Decay | MUST \| Tier 2 |
+| APTS-SC-008 | Threshold Configuration with Schema Validation | SHOULD \| Tier 3 |
+| APTS-SC-009 | Kill Switch | MUST \| Tier 1 |
+| APTS-SC-010 | Health Check Monitoring, Threshold Adjustment, and Automatic Halt | MUST \| Tier 1 |
+| APTS-SC-011 | Condition-Based Automated Termination | MUST \| Tier 2 |
+| APTS-SC-012 | Network-Level Circuit Breaker | MUST \| Tier 2 |
+| APTS-SC-013 | Time-Based Automatic Termination with Operator Override | SHOULD \| Tier 3 |
+| APTS-SC-014 | Reversible Action Tracking and Rollback | MUST \| Tier 2 |
+| APTS-SC-015 | Post-Test System Integrity Validation | MUST \| Tier 1 |
+| APTS-SC-016 | Evidence Preservation and Automated Cleanup | MUST \| Tier 2 |
+| APTS-SC-017 | External Watchdog and Operator Notification | MUST \| Tier 2 |
+| APTS-SC-018 | Incident Containment and Recovery | MUST \| Tier 2 |
+| APTS-SC-019 | Execution Sandbox and Containment Boundary Integrity | MUST \| Tier 2 |
+| APTS-SC-020 | Action Allowlist Enforcement External to the Model | MUST \| Tier 1 |
 
 ### Conformance
 
-A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 HO requirement plus every Tier 2 HO requirement, and a Tier 3 platform satisfies all three tiers. Human Oversight has no Tier 3 requirements in this release; a Tier 3 claim therefore requires all Tier 1 and Tier 2 HO requirements. SHOULD-level requirements are interpreted per RFC 2119.
+A platform claims conformance with this domain by satisfying all MUST requirements at the compliance tier it targets. APTS defines three cumulative compliance tiers (Tier 1 Foundation, Tier 2 Verified, Tier 3 Comprehensive) in the [Introduction](../Introduction.md); a Tier 2 platform satisfies every Tier 1 SC requirement plus every Tier 2 SC requirement, and a Tier 3 platform satisfies all three tiers. SHOULD-level requirements are interpreted per RFC 2119.
 
-Two appendix-only advisory requirements for this domain (APTS-HO-A01 Out-of-Band Kill Switch via Independent Network and APTS-HO-A02 Disclosure and Mitigation of AI Influence on Operator Decisions) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
+Three appendix-only advisory practices for this domain (APTS-SC-A01 Platform Health Monitoring and Anomaly Detection, APTS-SC-A02 Context Window Safety and Constraint Preservation, and APTS-SC-A03 Tool Invocation Parameter and Chaining Governance) are documented in the [Advisory Requirements appendix](../appendix/Advisory_Requirements.md). They are not required for conformance at any tier.
 
 Every requirement in this domain includes a Verification subsection listing the verification procedures a reviewer uses to confirm implementation.
 
 ---
 
-## APTS-HO-001: Mandatory Pre-Approval Gates for Autonomy Levels L1 and L2
+## APTS-SC-001: Impact Classification and CIA Scoring
 
 **Classification:** MUST | Tier 1
 
 ### Requirement
 
-For autonomy levels L1 Assisted (fully supervised) and L2 Supervised (pre-approved with monitoring), the autonomous testing system MUST implement mandatory approval gates that prevent execution of the following action categories without explicit human authorization:
-
-**L1 Assisted (All Significant Actions - Default Supervision):**
-- Any vulnerability exploitation attempt
-- Lateral movement between systems
-- Data access or exfiltration actions
-- Installation of persistence mechanisms
-- Configuration changes to target systems
-- Social engineering exercises
-
-**L2 Supervised (Pre-Approved + Escalation Triggers):**
-- Exploitation of vulnerabilities with Common Vulnerability Scoring System (CVSS) >= 7.0
-- Lateral movement beyond initial compromise
-- Access to sensitive data repositories (databases, file shares with classified labels)
-- Deployment of monitoring or callback agents
-- Modifications to authentication/authorization controls
-- Any action with confidence score < 75% on scope determination
-
-Approval gates MUST:
-1. Present actionable information (affected system, action type, estimated risk, prerequisites met)
-2. Provide deny/approve/defer decision options
-3. Include reasoning prompts (operator MUST document why they're approving)
-4. Support escalation to higher authority if approver lacks delegation for this action type
-5. Create immutable approval records with timestamp, approver identity, and rationale
-
-> **See also:** APTS-SC-006 (threshold escalation workflow).
-
-**Rationale for CVSS >= 7.0 threshold:** CVSS 7.0 represents the boundary between "Medium" (informational, low likelihood of immediate impact) and "High" severity (significant potential for system compromise or data exposure). Exploitations at or above this threshold carry meaningful risk of unintended production impact, data loss, or service disruption. Requiring human approval at this boundary ensures that an operator evaluates the risk/reward trade-off before the platform attempts high-impact exploitation. Organizations MAY lower this threshold (for example, to 4.0 for critical infrastructure) but MUST NOT raise it above 7.0.
+MUST implement a multi-tier impact classification system that categorizes every pentest action before execution, with discrete impact levels (Critical, High, Medium, Low) providing graduated escalation thresholds. Every pentest action MUST be scored against Confidentiality, Integrity, and Availability dimensions with a weighted impact calculation, where the minimum dimension score determines escalation level. Organizations MUST maintain an authoritative mapping document categorizing all supported pentest techniques and exploits with pre-classified impact levels, CIA scores, and reversibility status. This mapping MUST be reviewed and updated quarterly or when new techniques are added. Unclassified techniques MUST NOT execute.
 
 ### Verification
 
-1. **Configuration audit**: Verify approval gate rules are implemented for all action categories listed above
-2. **Approval record audit**: For last 30 days, confirm:
-   - 100% of L1 actions have pre-approval records
-   - 100% of L2 exploitation actions >= CVSS 7.0 have approvals
-   - All approvals include timestamp, approver identity, and rationale
-3. **Timeline verification**: Confirm approval grants show operator actually reviewed (not auto-generated)
-4. **Escape testing**: Attempt to execute gated action without approval; verify the system blocks the action and escalates
-5. **Authority verification**: Confirm approver held delegation for approved action type
-
-> **See also:** APTS-HO-010 (mandatory gates before irreversible actions regardless of autonomy level), APTS-HO-005 (delegation chain-of-custody and decision audit trail).
-
----
-
-## APTS-HO-002: Real-Time Monitoring and Intervention Capability
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous testing systems operating at L2 and above MUST provide operators with real-time visibility into autonomous system operations and the ability to intervene at any time. The core capability MUST include:
-
-**Mandatory Real-Time Visibility:**
-- Current active tests and their status (running, paused, waiting for approval, blocked, completed, failed)
-- Testing scope boundaries and current testing location relative to those boundaries
-- Safety control status (approval gates active, confidence scores, escalations pending)
-- Incident or anomaly detection (out-of-scope access attempts, unexpected findings, legal/compliance triggers, detected intrusions)
-
-**Mandatory Intervention Capability:**
-- Operators can immediately pause all autonomous actions from the dashboard
-- Operators can immediately terminate all autonomous actions
-- Operators can view pending approval queue and respond to escalations from the dashboard
-- System logs all operator interventions with timestamp, operator identity, and action taken
-
-**Recommended Enhancements (SHOULD):**
-- Current activity feed with filtering by action type, target system, risk level, or time range
-- System health visualization (tool status, target system status, resource utilization, alert queue)
-- Color-coded risk indicators for active tests
-- Service Level Agreement (SLA) tracking for pending approvals (time elapsed, thresholds)
-- Confidence score displays (scope boundary, target legitimacy, exploitation prerequisites)
-- Mobile-responsive interface for field operators
-- Keyboard-navigable controls and screen reader compatibility
-
-**Accessibility and Usability:**
-- Dashboard SHOULD be accessible in accordance with WCAG 2.1 Level AA guidelines
-- Implementations SHOULD provide keyboard navigation and screen reader support
-- SHOULD support offline caching for continued visibility during connectivity loss
-
-**Audit and Logging:**
-- All operator dashboard access MUST be logged (timestamp, operator identity, IP address, duration)
-- All operator interventions (pause, terminate, approval decisions) MUST be logged
-- Dashboard access logs MUST be retained for a minimum of 90 days
-
-### Verification
-
-1. **Real-time visibility test**: Verify operators can view current active tests, scope boundaries, and safety control status in less than 5 seconds
-2. **Intervention capability test**: Verify operators can pause and terminate all autonomous actions from the dashboard within 2 seconds
-3. **Escalation access test**: Verify operators can view pending approval queue and respond to escalations from the dashboard
-4. **Intervention logging test**: Execute operator pause and terminate actions; verify each is logged with timestamp, operator identity, and action taken
-5. **Access logging test**: Verify all operator dashboard accesses logged with timestamp, operator identity, IP address, and session duration
-6. **Log retention audit**: Verify dashboard logs retained for minimum 90 days
-
-> **See also:** APTS-HO-015 (real-time activity monitoring and multi-channel notification delivery)
+1. **Action catalog audit**: Sample 50 actions from methodology library (DNS, web, exploitation, lateral); verify each has explicit impact level assigned (Critical/High/Medium/Low) and CIA dimension scoring
+2. **Pre-execution classification**: Execute 20 test runs; review execution logs for timestamp showing classification assigned before action execution timestamp
+3. **CIA scoring validation**: Select 20 diverse pentest actions; have independent security reviewer score each action's CIA impact; verify impact vectors calculated correctly; confirm minimum dimension drives escalation
+4. **Approval pathway enforcement**: For 10 high-impact actions, verify classification directly determined approval requirement (high=escalation, medium=standard, low=autonomous); confirm in audit log
+5. **Impact level distribution**: Verify library includes balanced distribution (not all critical); confirm at least 30% low-impact, 40% medium, 20% high, 10% critical
+6. **Classification consistency**: Two independent reviewers classify 10 random actions; verify >90% agreement on assigned impact level
+7. **Mapping completeness**: Audit all supported techniques have impact classification; verify no unclassified techniques can execute
+8. **Lookup performance**: Test classification lookup performance (must return without observable delay to test execution)
+9. **Quarterly review**: Confirm quarterly review occurred with documented changes
 
 ---
 
-## APTS-HO-003: Decision Timeout and Default-Safe Behavior
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-When autonomous testing systems escalate decisions to human operators, they MUST implement maximum response time windows (Service Level Agreements (SLAs)) and define explicit default-safe behavior if human operators fail to respond within these timeframes.
-
-**SLA Requirements by Action Category:**
-
-| Decision Type | Autonomy Level | Max Response Time | Default Behavior if Timeout |
-|---------------|-----------------|-------------------|---------------------------|
-| Exploitation attempt | L2 | 15 minutes | DENY - do not exploit; skip to next target |
-| Lateral movement | L2 | 15 minutes | DENY - halt movement; stay on current system |
-| Data access | L2 | 10 minutes | DENY - do not access data; escalate to manager |
-| Scope boundary decision (confidence <75%) | L3 | 30 minutes | PAUSE - halt all actions; wait for human decision |
-| Unexpected finding escalation | All | 5 minutes | PAUSE + ISOLATE - halt all actions; preserve state |
-| Legal/compliance trigger | All | Immediate | KILL + PRESERVE - terminate all actions; preserve evidence |
-
-**Priority Rule:** When multiple timeout requirements apply to the same action (for example, both APTS-HO-003 and APTS-SC-006), the most restrictive timeout governs.
-
-1. **Conservative assumption**: If human doesn't respond, assume "no" / "don't approve" unless pre-escalation approval was explicitly obtained
-2. **No momentum continuation**: If approval timeout expires, do NOT auto-approve the queued action; instead, halt the action and move to next planned test
-3. **Escalation progression**: If first approver doesn't respond within 50% of SLA, automatically escalate to secondary approver
-4. **State preservation**: All timeout scenarios MUST preserve system state to allow resumption after human decision
-5. **Client notification threshold**: If approval timeout exceeds 30 minutes, automatically notify engagement client of delay
-6. **Recovery procedures**: Document exact procedures for resuming work after timeout (don't just auto-continue)
-
-### Verification
-
-1. **SLA configuration audit**: Verify timeout values match requirements for each decision type
-2. **Timeout test**: Create approval scenario, do not respond; observe system behavior at timeout
-3. **Escalation progression test**: Create approval, verify automatic escalation at 50% SLA mark
-4. **Default action test**: After timeout, confirm default action executed (DENY/PAUSE/KILL)
-5. **State preservation test**: Verify system state preserved after timeout (can resume cleanly)
-6. **Client notification test**: Trigger timeout exceeding 30 minutes; confirm client notification sent
-7. **Incident logging test**: Verify timeout event logged with full context (escalation ID, timestamp, reason)
-8. **Multi-approver test**: First approver unavailable; confirm automatic escalation to secondary approver
-9. **Verification of timeout enforcement**: Request the platform's timeout configuration (via API, configuration export, or dashboard). Confirm that the configured values match or are stricter than the SLA table above. Then trigger a test action requiring approval, do not respond, and measure wall-clock time to confirm the platform enters default-safe behavior within the configured timeout.
-
----
-
-## APTS-HO-004: Authority Delegation Matrix
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Organizations operating autonomous penetration testing systems MUST establish and maintain a documented Authority Delegation Matrix (ADM) that specifies which personnel can approve which testing actions at which autonomy levels. This matrix MUST be:
-
-1. **Formally documented** in writing (not implied or assumed)
-2. **Maintained with access controls** (not publicly available; protected as sensitive information)
-3. **Cascading authority**: Approvers at higher autonomy levels can approve on behalf of lower levels
-4. **No delegation of authority**: Approvers cannot delegate their authority to others (no "I approve you to approve")
-5. **Role-based, not person-based**: Authority is tied to role; changes in personnel require new matrix
-6. **Dual control for high-risk**: CVSS >= 9.0 requires second independent approver
-7. **Escalation not optional**: If approver lacks authority for action type, MUST escalate (no workarounds)
-
-**Rationale:** Distributed approval authority without formal structure creates audit risk, privilege escalation paths, and ambiguous accountability. An Authority Delegation Matrix ensures that only qualified personnel with documented authorization make high-risk decisions, prevents unapproved escalation of privileges, and creates an auditable chain of authority. During incidents, a clear ADM eliminates confusion about who has authority to activate kill switches, approve scope changes, or authorize continued testing.
-
-### Verification
-
-1. **Matrix documentation audit**: Verify written ADM exists, signed by CISO/VP Security.
-   The [Authority Delegation Matrix Template](../appendix/Authority_Delegation_Matrix_Template.md) provides an illustrative format for recording role-based approval, escalation, and emergency authority.
-2. **Operator role audit**: For each active operator, confirm ADM lists their role and autonomy level
-3. **Approval authority test**: Operator attempts approval outside their authority; verify the system rejects the action and escalates
-4. **Authority renewal audit**: Verify all ADM entries renewed within required periods
-5. **Escalation chain test**: For CVSS >= 9.0 action, verify escalation follows defined chain in ADM
-6. **Dual control test**: For dual-control actions, verify two independent approvers required
-7. **Historical audit**: Last 30 days of approvals; verify all approvers held documented authority
-
----
-
-## APTS-HO-005: Delegation Chain-of-Custody and Decision Audit Trail
+## APTS-SC-002: Industry-Specific Impact Considerations
 
 **Classification:** MUST | Tier 2
 
-### Requirement
-
-All human approval decisions, escalations, and delegations MUST be recorded in an immutable, auditable decision log with the following mandatory fields:
-
-1. **Immutability**: Logs MUST be cryptographically signed and stored in append-only format (cannot be modified/deleted after creation)
-2. **Completeness**: Every approval, denial, escalation, and timeout MUST be logged with all fields above
-3. **Traceability**: Log entries MUST track full chain-of-custody from initial request through final execution
-4. **Searchability**: Logs MUST be queryable by decision_id, decision_type, operator, timestamp, action, target_system
-5. **Long-term retention**: Minimum 90 days; SHOULD retain for 6 years for high-risk decisions or per applicable regulatory requirement
-6. **Access control**: Read access restricted to authorized personnel; write access only via system (no manual edits)
-7. **Export capability**: Security teams MUST be able to export logs for incident investigation, audits, compliance reviews
-
-**Reporting Requirements:**
-
-Organizations MUST generate periodic reports from decision logs at a cadence appropriate to engagement duration and operational tempo. At minimum, organizations MUST produce a summary report at engagement completion and a statistical analysis report at least monthly for ongoing operations. For long-running or continuous engagements, organizations SHOULD also produce interim reports (for example, weekly escalation summaries, quarterly audit reports).
-
-### Verification
-
-1. **Log existence audit**: Verify decision logs exist and contain entries for all approvals made
-2. **Immutability test**: Attempt to modify historical log entry; verify the system prevents modification
-3. **Completeness test**: Random sample 10 recent approvals; verify all required fields present in logs
-4. **Traceability test**: Pick escalation scenario; verify full chain-of-custody from initial request through execution
-5. **Access control test**: Non-authorized user attempts to access/modify logs; verify the system denies access
-6. **Search functionality test**: Search for approvals by operator, action type, timestamp; verify results accurate
-7. **Export test**: Generate monthly compliance report; verify data accuracy and format
-8. **Retention test**: Verify logs older than retention period are archived/secured appropriately
-9. **Signature verification test**: Validate cryptographic signatures on sample log entries
-
-> **See also:** [APTS-HO-A02: Disclosure and Mitigation of AI Influence on Operator Decisions](../appendix/Advisory_Requirements.md#apts-ho-a02-disclosure-and-mitigation-of-ai-influence-on-operator-decisions-advisory). An advisory practice covering audit-trail provenance for AI-shaped operator affordances (option sets, defaults, wording, ordering) and bias mitigation at high-impact gates, so the chain-of-custody distinguishes a typed approval from a default click-through. Candidate for tier-gated inclusion in v0.2.0.
-
----
-
-## APTS-HO-006: Graceful Pause Mechanism with State Preservation
-
-**Classification:** MUST | Tier 1
+**Applicability:** This requirement applies to platforms targeting regulated industries (healthcare, financial services, critical infrastructure). Platforms exclusively testing non-regulated environments MAY document a justified exemption.
 
 ### Requirement
 
-Autonomous penetration testing systems MUST implement a graceful pause mechanism that allows human operators to suspend all active testing activities while preserving complete system state for later resumption.
-
-1. **Pause Types and Trigger Methods:**
-   - Manual pause: Operator clicks "Pause" button on dashboard
-   - Automatic pause: System escalation triggers automatic pause (for example, unexpected finding)
-   - Time-based pause: Scheduled pause at specific time (for example, 5pm daily to avoid after-hours disruption)
-   - SLA-based pause: Automatic pause if approval SLA approaching expiration without response
-   - Scope boundary pause: Automatic pause when approaching scope limits with confidence < 90%
-
-2. **State Preservation Specifics:**
-   - **Session tokens/cookies**: Preserve all authentication sessions (tools can resume as authenticated user)
-   - **Compromised systems state**: Document what access was achieved (reverse shells, credentials, permissions)
-   - **Partial exploitation state**: If mid-way through multi-step exploitation, preserve exact step and prerequisites met
-   - **Target queue state**: Document which targets have been tested, which are queued, testing order
-   - **Reconnaissance results**: Preserve all enumeration findings (open ports, services, vulnerabilities discovered)
-   - **Configuration snapshots**: Record target system state at pause time (running processes, network connections)
-
-3. **Pause Confirmation Requirements:**
-   - System MUST confirm pause is complete before reporting "PAUSED" status
-   - Operator dashboard shows: "Pause confirmed at [timestamp]; [X] connections preserved; [Y] sessions active"
-   - Health check: Verify paused tool not consuming CPU/memory (confirm truly halted)
-   - State verification: Attempt light ping to preserved connections; confirm still alive
-
-4. **Session Timeout During Extended Pause:**
-   - If a pause exceeds the session timeout threshold (default: 4 hours, configurable per engagement), the platform MUST terminate all active sessions and connections to target systems
-   - On resume, the platform MUST re-establish connections and re-validate scope before continuing operations
-   - The operator MUST be warned when pause duration approaches 75% of the session timeout threshold
-   - Warning notification MUST include: current pause duration, session timeout threshold, time remaining before auto-termination
-   - Pre-termination alert (when reaching 95% of threshold) MUST be logged with action plan for operator
-   - Session termination and reconnection events MUST be logged separately with timestamps and success/failure status
+Platforms MUST adjust impact classifications for industry-specific regulatory requirements. Healthcare systems MUST treat all direct patient data access as Critical. Financial systems MUST treat all cardholder data access as Critical. Critical infrastructure (utilities, transportation, communications) MUST treat availability impacts as one tier higher than calculated.
 
 ### Verification
 
-1. **Pause trigger test**: Click "Pause" button; observe tool transitions to PAUSED status
-2. **State preservation test**: Before pause, exploit a system; pause tool; examine checkpoint file to verify credentials/sessions preserved
-3. **Connection persistence test**: Pause with active SSH/RDP session; attempt to reconnect to same session after resumption
-4. **Memory dump test**: Verify paused state contains all variables, pending actions, configuration
-5. **Checkpoint integrity test**: Corrupt checkpoint file; verify the system detects corruption and uses backup
-6. **Resumption test**: After pause, resume and verify tool uses preserved state (no re-exploitation needed)
-7. **Dashboard confirmation test**: Verify dashboard shows PAUSED status with preserved connection count
-8. **CPU/memory test**: Confirm paused tool has no active test threads, generates no outbound test traffic, and CPU/memory usage does not exceed the platform's documented idle-state baseline
+1. Build a seeded test set containing at least one healthcare target (PHI present), one PCI target (cardholder data present), and one critical-infrastructure target (utility/transportation/communications)
+2. Submit each target to the platform's classification engine; verify healthcare target classifies all direct patient data access as Critical, PCI target classifies all cardholder data access as Critical, and critical-infrastructure target elevates availability impacts by one tier above the baseline calculation
+3. For each reclassified action, verify the approval chain matches the regulatory requirement documented for that industry (healthcare, PCI, critical infrastructure)
+4. Test that PHI/PCI data access is always escalated to Critical regardless of other CIA factors
+5. Confirm critical infrastructure availability impacts are elevated by one tier in the classification output
+
+> **See also:** APTS-SC-001 (baseline impact classification framework this extends for regulated industries), APTS-SE-011 (multi-tenant and regulated environment awareness).
 
 ---
 
-## APTS-HO-007: Mid-Engagement Redirect Capability
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous penetration testing systems MUST allow human operators to redirect testing scope, targets, and techniques mid-engagement without requiring full tool restart or loss of state.
-
-1. **Scope Redirect**: Change authorized testing boundaries
-   - Add new target system to scope (for example, "Add 10.0.1.50 to testing scope")
-   - Remove target from scope (for example, "Skip prod-app-03; test prod-app-04 instead")
-   - Expand scope subnet (for example, "Expand from 192.168.1.0/25 to 192.168.1.0/24")
-   - Shrink scope subnet (for example, "Limit testing to critical systems only; exclude development VMs")
-
-2. **Technique Redirect**: Change testing methodology mid-engagement
-   - Switch from aggressive fuzzing to careful exploitation (if target system degrading)
-   - Switch from passive reconnaissance to active scanning (if passive insufficient)
-   - Focus on specific vulnerability class (for example, "Focus on web vulnerabilities; skip network services")
-   - Pause specific test module (for example, "Stop SSL/TLS scanning; continue port scanning")
-
-3. **Priority Redirect**: Change target prioritization
-   - Move high-value target from end of queue to beginning
-   - Defer testing of non-critical system
-   - Focus on discovered vulnerabilities (exploit high-CVSS findings first)
-
-4. **Intensity Redirect**: Adjust testing aggressiveness
-   - Reduce scanning intensity if target system showing degradation
-   - Increase scanning intensity for difficult-to-enumerate services
-   - Switch from stealth-focused to quick-impact testing
-
-**Redirect Implementation Requirements:**
-
-- Redirect MUST NOT lose active sessions or compromised system access
-- Redirect MUST NOT lose reconnaissance findings collected so far
-- Redirect MUST update approval queue (if new targets added, require new approvals)
-- Redirect MUST be logged with explicit operator authorization
-- Redirect MUST NOT auto-approve previously denied targets (MUST re-approve)
-- Redirect MUST support conditional logic (for example, "If found vulnerabilities, focus on exploiting; else continue recon")
-
-### Verification
-
-1. **Scope redirect test**: Add new target to scope; verify tool queues it without restart
-2. **Technique redirect test**: Switch scanning intensity; verify active sessions preserved
-3. **Priority redirect test**: Move target from position 5 to position 1 in queue; verify queue reordered
-4. **Approval requirement test**: Add new target; verify new approval required (old approvals don't transfer)
-5. **Session preservation test**: Before redirect, gain shell access; after redirect, verify shell still active
-6. **Logging test**: Verify redirect operation logged with operator authorization and timestamp
-7. **Conditional logic test**: Configure "if high-risk found, focus on exploitation"; verify tool follows condition
-
----
-
-## APTS-HO-008: Immediate Kill Switch with State Dump
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous penetration testing systems MUST implement an immediate kill switch mechanism that terminates all testing activities and preserves complete system state for forensic investigation. This requirement is satisfied in conjunction with APTS-SC-009. The state dump MUST complete within the Phase 2 window defined in APTS-SC-009 (within 60 seconds of kill switch activation).
-
-> **See also:** APTS-SC-009 (kill switch architecture and process tree termination), APTS-AL-012 (kill switch and pause capability).
-
-1. **Manual Kill Switch** (Operator-initiated)
-   - One-click emergency termination from dashboard
-   - Physical kill button (if applicable for critical engagements)
-   - Voice-activated kill (if testing includes speech interface)
-   - Requires no confirmation (instant termination)
-
-2. **Automatic Kill Switches** (System-triggered)
-   - **Legal/Compliance Trigger**: Automatic kill if PII accessed outside scope, regulated system accessed without authorization, evidence of illegal activity detected
-   - **Scope Violation**: Automatic kill if testing exceeds authorized scope boundaries by >5% AND confidence in legitimacy < 80%
-   - **System Failure**: Automatic kill if target system fails (unplanned reboot, filesystem corruption, memory exhaustion) with potential impact
-   - **Detection Threshold**: Automatic kill if security monitoring detects [X] alerts in [Y] timeframe (potential adversarial response)
-
-3. **Escalation Kill** (Indirect termination)
-   - Kill triggered by highest escalation (legal, compliance, out-of-scope)
-   - Different from manual kill; has automatic notification/logging
-
-**State Dump Requirements:**
-
-- Dump MUST include all authenticated sessions (can identify what systems were compromised)
-- Dump MUST include all credentials/tokens harvested (can determine scope of breach if tool itself compromised)
-- Dump MUST include all reconnaissance findings (for post-mortem analysis)
-- Dump MUST include all log entries (full chronology of actions before kill)
-- Dump MUST be compressed and encrypted
-- Dump MUST be stored separately from operational logs
-
-**Evidence Preservation Requirements:**
-
-- Evidence stored in read-only, forensically-sealed location
-- Evidence hash published to immutable log (blockchain, Write Once Read Many (WORM) storage, or equivalent tamper-evident log)
-- Evidence integrity checksum verified at preservation time and periodically after
-- Evidence retention: Minimum 1 year (or per engagement contract, whichever longer)
-
-### Verification
-
-1. **Kill activation test**: Click kill switch; observe immediate tool termination
-2. **State dump test**: Trigger kill switch; verify state dump file created and encrypted
-3. **Evidence preservation test**: Verify state dump moved to forensic storage and hashed
-4. **No grace period test**: Verify the tool stops immediately (TCP connections not in ESTABLISHED state after kill)
-5. **Log flush test**: Verify logs written to disk and finalized at kill time
-6. **Forensic recovery test**: From state dump, reconstruct tool state and verify accuracy
-7. **Automatic kill test**: Trigger automatic kill condition (for example, PII access outside scope); observe automatic termination
-8. **State preservation test**: Verify complete system state at time of kill activation is preserved and available for forensic investigation
-
----
-
-## APTS-HO-009: Multi-Operator Kill Switch Authority and Handoff
-
-**Classification:** MUST | Tier 2
-
-### Requirement
-
-In engagement scenarios with multiple autonomous testing operators, the kill switch mechanism MUST clearly define who has authority to activate it and handle handoffs between operators working in shifts.
-
-1. **Primary Operator**: Has kill switch authority for their scheduled shift
-2. **Secondary Operator**: If primary unavailable, secondary operator approved for that shift has kill switch authority
-3. **Manager On-Call**: Security manager can activate kill switch for any operator's shift if critical incident detected
-4. **CISO Emergency Authority**: CISO can activate kill switch for any engagement at any time
-
-### Verification
-
-1. **Handoff procedure test**: Two operators perform handoff; verify kill switch authority transfers
-2. **Authority verification test**: After handoff, confirm old operator cannot activate kill switch
-3. **Incapacity test**: Mark operator unavailable; verify manager can take emergency authority
-4. **Out-of-band kill test**: Verify out-of-band kill switch works with valid authorization code
-5. **Secondary verification test**: Verify secondary verification method (if configured) functions correctly
-6. **Audit trail test**: Verify all authority transfers logged with timestamp and reason
-7. **Out-of-band activation test**: Verify kill switch activates via configured out-of-band channel when in-band unavailable
-
----
-
-## APTS-HO-010: Mandatory Human Decision Points Before Irreversible Actions
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous penetration testing systems MUST identify and enforce mandatory human decision points before executing any action that cannot be cleanly reversed without evidence of the action occurring.
-
-1. **Data Access Actions** (Cannot be hidden; data access leaves traces)
-   - Reading sensitive files (logs, config files, databases)
-   - Exfiltrating data (downloading PII, credentials, source code)
-   - Accessing email accounts or message systems
-   - Reading user files or personal data
-
-2. **Persistence Mechanisms** (Difficult to remove without evidence)
-   - Installing backdoors, reverse shells, web shells
-   - Creating new user accounts
-   - Installing rootkits or kernel modules
-   - Adding SSH keys or authorized keys
-   - Modifying system startup scripts
-
-3. **Configuration Changes** (Can trigger incidents or break systems)
-   - Modifying authentication/authorization policies
-   - Changing firewall rules or network routing
-   - Installing or modifying services
-   - Changing system settings or registry
-
-4. **Evidence Destruction/Modification** (Cannot be undone)
-   - Clearing logs
-   - Deleting evidence of compromise
-   - Modifying file timestamps
-   - Removing indicators of compromise
-
-5. **Lateral Movement** (Enters new compromise scope)
-   - Moving from one system to another
-   - Creating new network connections
-   - Accessing systems that were not previously compromised
-
-**Decision Point Implementation:**
-
-For each irreversible action category, system MUST:
-
-1. **Halt before execution**: Stop and wait for human decision
-2. **Present decision context**: Include the current autonomy level, the action's impact classification, relevant scope constraints, and any recent escalation history.
-3. **Require explicit approval**: Decision MUST be logged with operator identity and rationale
-4. **No timeout escalation without additional approval**: If waiting for approval, timeout does NOT auto-approve
-5. **Document refusal**: If operator denies action, log denial and proceed to next target
-
-### Verification
-
-1. **Irreversible action test**: Attempt to read sensitive file; verify the system halts and requires approval
-2. **Persistence test**: Attempt to install reverse shell; verify the system halts and requires approval
-3. **Lateral movement test**: Attempt to move to new system; verify the system halts and requires approval
-4. **Confidence gate test**: Lower confidence scores below 75%; verify system escalates to manager
-5. **Approval logging test**: Verify all decisions logged with operator identity and explicit rationale
-6. **Timeout behavior test**: Approval times out; verify action NOT auto-approved despite timeout
-7. **Denial handling test**: Operator denies action; verify system documents denial and moves to next target
-
-> **See also:** APTS-HO-001 (mandatory approval gates based on autonomy level and action category)
-
----
-
-## APTS-HO-011: Unexpected Findings Escalation Framework
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-When autonomous testing systems discover findings outside normal operational expectations, they MUST immediately escalate to human operators with context, analysis, and recommended actions.
-
-1. **Indicators of Compromise (IoCs) from External Breach**
-   - Evidence of malware on target system (unrelated to pentest tool)
-   - Unauthorized admin accounts with unexpected creation dates
-   - Unusual outbound connections to known malicious C2 servers
-   - Evidence of data exfiltration by external actors
-   - Rootkits, backdoors, or persistence mechanisms (not installed by pentest tool)
-
-2. **Illegal or Highly Sensitive Content**
-   - Intellectual property that appears to be stolen (comparing to public sources)
-   - Illegal content (child exploitation material, stolen credit card databases, or other prohibited content)
-   - Classified government information (marked CONFIDENTIAL/SECRET/TOP SECRET)
-   - Regulated content without proper protections (HIPAA medical records, PCI customer data)
-
-3. **Critical Zero-Day Discoveries**
-   - Vulnerability affecting core infrastructure with no known patch
-   - Vulnerability allowing complete system compromise with pre-existing exploits
-   - Vulnerability affecting software the vendor hasn't yet acknowledged
-   - Vulnerability affecting systems that don't have security update mechanism
-
-4. **Out-of-Scope System Access**
-   - Tool accidentally gaining access to system not in authorized scope
-   - Lateral movement reaching systems beyond scope boundaries
-   - Access to network segments marked explicitly out-of-scope
-   - Access to systems belonging to different company/organization
-
-5. **Compliance or Legal Violations**
-   - Accessing regulated data without explicit authorization
-   - Evidence of tool crossing into legal/regulatory prohibited territory
-   - Potential data privacy violations (accessing PII outside scope)
-   - Potential evidence destruction or tampering by prior bad actors
-
-6. **System Stability Threats**
-   - Tool causing unexpected service degradation (not intentional DoS)
-   - Tool action causing system crash or reboot
-   - Tool discovering cascading failure scenario if tool continues
-   - Resource exhaustion that could cause system unavailability
-
-> **See also:** APTS-AL-011 (escalation triggers at L2), APTS-AL-018 (incident response procedure during autonomous testing), Incident Response Integration appendix (unified escalation workflow).
-
-### Verification
-
-1. **Indicator of Compromise (IoC) detection test**: Plant malware signature on test system; verify tool escalates
-2. **Illegal content test**: Simulate discovery of illegal content; verify immediate escalation to human operators with context, analysis, and recommended actions
-3. **Out-of-scope access test**: Tool gains access to system outside scope; verify escalation includes context and recommended actions
-4. **Compliance violation test**: Simulate PII access outside authorization; verify immediate escalation
-5. **System degradation test**: Simulate service degradation; verify pause and escalation
-6. **Notification test**: Trigger escalation; verify escalation notification is delivered to designated human operators
-
-> **See also:** APTS-SC-011 (condition-based automated termination for overlapping trigger conditions)
-
----
-
-## APTS-HO-012: Impact Threshold Breach Escalation
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous penetration testing systems MUST continuously monitor the actual impact of their testing activities and escalate to human operators when impact exceeds pre-defined thresholds.
-
-1. **Service Availability**
-   - System response time degradation
-   - Error rate increase
-   - Request timeout frequency
-   - Service unavailability events
-
-2. **Resource Consumption**
-   - CPU utilization increase
-   - Memory exhaustion
-   - Disk I/O saturation
-   - Network bandwidth consumption
-
-3. **Data Integrity**
-   - Database query failures or locks
-   - File corruption or access errors
-   - Transaction rollbacks
-   - Data inconsistency events
-
-4. **Security Events Triggered**
-   - IDS/IPS alert volume
-   - Firewall block rate
-   - Endpoint Detection & Response alerts
-   - Web Application Firewall blocks
-
-### Verification
-
-1. **Warning alert test**: Gradually increase resource usage to the platform's documented warning threshold; verify alert is raised and testing continues
-2. **Critical alert test**: Increase resource usage to the platform's documented critical threshold; verify tool pauses and escalates
-3. **Response time degradation test**: Simulate service slow-down; verify tool detects and escalates
-4. **Error rate escalation test**: Increase error rate to the platform's documented error threshold; verify alert and pause
-5. **IDS alert flooding test**: Trigger IDS alerts above threshold; verify pause
-6. **State checkpoint test**: Before pause due to impact, verify state preserved
-7. **Recovery test**: After impact threshold breach, reduce test intensity; verify tool resumes
-
-> **See also:** APTS-SC-010 (health check monitoring and automatic halt based on target responsiveness).
-
----
-
-## APTS-HO-013: Confidence-Based Escalation (Scope Uncertainty)
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-When autonomous testing systems lack confidence in scope boundary determination or target legitimacy (confidence < threshold), they MUST automatically escalate the decision to human operators rather than proceeding.
-
-Confidence scores MUST be expressed on a 0-100% scale. Escalation MUST be triggered when the confidence score falls below 75% for any scope boundary determination, target legitimacy assessment, or asset classification decision. Organizations MAY configure a stricter (higher) threshold but MUST NOT set it below 75%.
-
-### Verification
-
-1. **Decision point identification**: Identify 20 test decision points where human input required (risky pivots, new attack vectors, credential reuse); document in test plan
-2. **Human approval mechanism**: For each decision point, verify human approver notified with decision context (what's being tested, why, risk level); confirm approval/rejection logged
-3. **Approval window**: Set 30-minute approval window; verify system halts and awaits decision within window; after window, testing pauses pending escalation
-4. **Approval logging**: Sample 10 human decisions; verify each logged with: approver ID, timestamp, decision (approved/rejected/modified), and rationale
-5. **Audit trail completeness**: Verify every approval linked to the test action it authorized; confirm bi-directional traceability (approval->action and action->approval)
-6. **Decision override prevention**: Verify no system mechanism allows test continuation without documented human approval
-
----
-
-## APTS-HO-014: Legal and Compliance Escalation Triggers
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous testing systems MUST identify and immediately escalate potential legal, compliance, and regulatory violations to human decision-makers who can determine appropriate response.
-
-1. **Regulatory Data Access Violations**
-   - GDPR: Accessing personal data of EU residents without explicit authorization
-   - CCPA: Accessing California resident personal information outside authorized scope
-   - HIPAA: Accessing protected health information without proper authorization
-   - PCI-DSS: Accessing payment card information outside authorized testing
-
-2. **Intellectual Property Exposure**
-   - Trade secrets discovered during testing
-   - Proprietary source code or algorithms
-   - Customer lists or business intelligence
-   - Unreleased product information
-
-3. **Breach Notification Obligations**
-   - Accessing PII in quantity that would require breach notification if exposed
-   - Discovering systems where breach notification threshold already exceeded
-   - Accessing data regulated under breach notification laws
-
-4. **Evidence Destruction Concerns**
-   - Logs that might be required for legal proceedings
-   - Data that might be under litigation hold
-   - Audit trails that might be needed for investigations
-
-5. **Third-Party or Partner Systems**
-   - Testing system that belongs to or connects to third-party organization
-   - Potential unauthorized access to partner data
-   - Data processing agreements that might be violated
-
-6. **Government or Classified Systems**
-   - Access to government systems without proper authorization
-   - Classified information (CONFIDENTIAL, SECRET, TOP SECRET)
-   - Systems that might trigger national security concerns
-
-> **See also:** APTS-HO-010 (irreversible-action escalation triggered by legal concerns), APTS-TP-012 (classification and handling of regulated data that triggers this escalation), APTS-AL-011 (autonomous escalation triggers that invoke this requirement).
-
-### Verification
-
-1. **GDPR data detection test**: Place test data marked as EU resident PII; verify escalation
-2. **CCPA data detection test**: Place California resident data; verify escalation
-3. **HIPAA data detection test**: Place medical information; verify escalation
-4. **Breach notification test**: Create record count threshold (>500 records); verify escalation
-5. **Third-party system test**: Simulate access to non-authorized organization system; verify escalation
-6. **Classified data test**: Discover marked CONFIDENTIAL information; verify kill switch activation
-7. **Notification test**: Verify legal team and client notified within SLA
-8. **Evidence preservation test**: Verify state dump securely preserved for legal investigation
-
----
-
-## APTS-HO-015: Real-Time Activity Monitoring and Multi-Channel Notification
-
-**Classification:** MUST | Tier 1
-
-### Requirement
-
-Autonomous testing systems MUST maintain a real-time activity feed of all testing actions and route notifications and alerts to appropriate recipients via multiple communication channels, with delivery confirmation and retry mechanisms.
-
-**Real-Time Activity Monitoring:**
-- Timestamp (UTC) for every action
-- Event type (reconnaissance, exploitation, lateral movement, and other phases)
-- Severity (informational, low, medium, high, critical)
-- Affected system(s)
-- Current status (pending, in progress, completed, failed, escalated)
-- Confidence score (if applicable)
-- Impact assessment (if available)
-- Required approvals (if applicable)
-- Action links (if user action required)
-- Real-time display: Last 100 activities (scrollable)
-- Searchable history: All activities in engagement (searchable by date, type, host, status)
-- Export capability: CSV/JSON export of activity feed
-- Archival: Activities older than 30 days moved to archive storage
-
-**Multi-Channel Notification Routing:**
-
-The platform MUST support at least two independent notification channels for alerts. At minimum, dashboard and email notifications MUST be implemented. Additional channels (SMS, phone calls, messaging integrations) SHOULD be supported for CRITICAL alerts.
-
-**Dashboard Notifications (MUST):**
-- Banner alerts at top of screen (color-coded by severity)
-- Persistent until dismissed by operator
-- Click to view full context (details, evidence, required actions)
-- Notification center shows alert history
-
-**Email Notifications (MUST):**
-- Formatted with context, evidence, required actions
-- Subject line includes severity and action required
-- Includes decision links (if applicable)
-- Delivery confirmation requested for CRITICAL/HIGH alerts
-
-**Additional Channels (SHOULD):**
-Platforms SHOULD support additional notification channels appropriate to operational context (for example, SMS, automated phone calls, messaging integrations such as Slack, Teams, or PagerDuty). When additional channels are implemented, they SHOULD include delivery confirmation and retry mechanisms.
-
-### Verification
-
-1. **Feed display test**: Observe dashboard activity feed; verify updated in real-time (within 5 seconds)
-2. **Severity classification test**: Trigger different severity events; verify correctly classified
-3. **Filtering test**: Filter by severity; verify only selected severities displayed
-4. **Search test**: Search by hostname or action type; verify accurate results
-5. **Retention test**: Verify feeds older than 30 days archived but accessible
-6. **Export test**: Export activity feed to CSV; verify data completeness and format
-7. **Dashboard notification test**: Trigger alert; verify appears immediately in dashboard
-8. **Email routing test**: Trigger HIGH alert; verify email sent to correct recipients
-9. **Channel independence test**: Block primary channel; verify alerts route to secondary channel
-10. **Delivery confirmation test**: Verify system confirms receipt for CRITICAL/HIGH alerts
-11. **Role-based routing test**: Trigger alert; verify routed to correct roles only
-
-> **See also:** APTS-HO-002 (real-time monitoring dashboard with intervention capability)
-
----
-
-## APTS-HO-016: Alert Fatigue Mitigation and Smart Aggregation
+## APTS-SC-003: Real-World Impact Classification Examples
 
 **Classification:** SHOULD | Tier 2
 
 ### Requirement
 
-To prevent operator alert fatigue (ignoring alerts due to volume), autonomous testing systems SHOULD implement intelligent aggregation, suppression rules, and escalation thresholds that reduce noise while preserving critical signal.
-
-For high-frequency, low-impact actions that generate repeated approval requests (for example, port scans on non-critical targets, banner grabbing), the platform SHOULD support blanket pre-approval rules that allow an operator to authorize a category of actions for a defined time window, reducing individual approval volume while maintaining audit trail coverage. Pre-approval rules MUST be logged, time-bounded, and revocable.
+SHOULD document at least 10 representative pentest scenarios with calculated impact classifications, CIA scores, and approval workflows. Examples SHOULD include password spraying, directory traversal, buffer overflow exploitation, and data exfiltration attempts. Scenarios may be drawn from past engagements, lab environments, or industry-documented attack patterns.
 
 ### Verification
 
-1. **Aggregation test**: Trigger 10 port scan alerts; verify aggregated into single alert
-2. **Threshold suppression test**: Trigger 15 LOW alerts; verify aggregated after 10th
-3. **Context filtering test**: Trigger expected IDS alerts during scanning; verify suppressed
-4. **Severity recalculation test**: Find same vulnerability on multiple systems; verify escalated to HIGH
-5. **Fatigue measurement test**: Monitor alert response time; verify operators respond faster with aggregation
+1. Review the platform's documented scenario corpus; verify it contains at least 10 representative pentest scenarios with named techniques (password spraying, directory traversal, buffer overflow, data exfiltration, and others)
+2. For each scenario, verify the documentation includes the expected CIA score, impact tier, and approval workflow
+3. For each documented scenario, compare the recorded classification and approval workflow against the platform's documented scoring model; fail any scenario whose recorded classification deviates from the model without a documented exception
+4. Verify scenarios cover at least 4 distinct technique types (reconnaissance, exploitation, post-exploitation, data handling)
+
+> **See also:** APTS-SC-001 (impact classification model scenarios illustrate), APTS-SC-002 (industry-specific impact rules applied in worked examples).
 
 ---
 
-## APTS-HO-017: Stakeholder Notification and Engagement Closure
+## APTS-SC-004: Rate Limiting, Bandwidth, and Payload Constraints
 
-**Classification:** MUST | Tier 2
+**Classification:** MUST | Tier 1
 
 ### Requirement
 
-Autonomous testing systems MUST define clear workflows for notifying engagement clients and stakeholders of significant findings, unexpected events, and engagement status changes, and provide complete closure procedures.
+MUST implement hierarchical rate limiting and payload constraints for all active pentest operations:
 
-**Client and Stakeholder Notification Workflows:**
+**Per-host rate limiting:** MUST implement per-host connection limits and rate limiting. Rate limits MUST be configurable per impact tier, with lower-impact actions permitted higher rates and higher-impact actions restricted to lower rates.
 
-1. **Periodic Engagement Status** (for example, daily at a fixed time)
-   - Testing activities: Number of targets tested, findings discovered
-   - Scope status: Progress on authorized scope
-   - No issues: "Testing proceeding normally"
+**Cascading rate limits:** MUST implement cascading rate limits at subnet, datacenter, and engagement-wide levels. If aggregate traffic to a subnet approaches configured limits, the system MUST proactively reduce per-host rate limits to prevent subnet-level overload. If engagement-wide limits are reached, automatically halt all new actions across all targets.
 
-2. **Periodic Finding Summary** (for example, weekly)
-   - Vulnerabilities discovered by severity range
-   - Scope coverage progress
-   - Comparison to industry benchmarks (if applicable)
-   - Recommendation summary
+**Payload and bandwidth constraints:** MUST enforce maximum payload sizes configurable per impact tier. Default limits that MUST be applied unless the Rules of Engagement specifies alternative values: Informational/Low actions limited to 100KB payloads, Medium actions to 10MB, High actions to 100MB, Critical actions to 500MB with engagement-wide bandwidth cap of 5 Gbps. Organizations MUST document their configured limits and any deviations from default values. Any action exceeding size limit MUST be automatically rejected before transmission.
 
-3. **Immediate Critical Notifications** (per documented SLA):
-   - External compromise indicators detected
-   - Unexpected findings (malware, illegal content)
-   - Out-of-scope testing detected
-   - Engagement suspended/terminated
-   - Legal/compliance violations
-
-4. **Escalation Notifications** (per documented SLA):
-   - High-risk vulnerabilities
-   - Critical systems compromised
-   - Scope boundary decisions required
-
-Specific notification frequencies, send times, and escalation windows MUST be documented in the engagement's communication plan.
-
-**Post-Engagement Notification and Closure:**
-
-1. **Engagement Completion Notification** (per documented timeline):
-   - All testing activities have been completed
-   - Final findings count (by severity range)
-   - Overall risk assessment
-   - Scope validation: Were all authorized targets tested
-   - Schedule for final report delivery
-
-2. **Final Report Delivery Notification** (per documented timeline):
-   - Report is ready for client review
-   - Executive summary of findings
-   - Detailed vulnerability findings with remediation
-   - Evidence preservation location and access
-   - Questions for clarification contact
-
-3. **Follow-Up Assessment Windows** (per engagement agreement):
-   - Client remediation status check-in
-   - Verification testing (optional) to confirm fixes
-   - Lessons learned session invitation
-   - Next engagement planning
-
-Specific post-engagement timelines and follow-up intervals MUST be documented in the engagement agreement.
-
-**Post-Engagement Evidence Retention:**
-
-- Evidence storage: Per the platform's documented retention policy; retention period SHOULD reflect engagement risk level and applicable regulatory requirements
-- Evidence protection: Encrypted, access-controlled, secure location
-- Evidence availability: Client can request evidence export for analysis/audit
-- Audit trail: All evidence access logged
+> **See also:** APTS-SE-019 (adaptive backoff, DoS prevention, and continuous-mode production impact controls). SC-004 governs per-host, per-subnet, and engagement-wide rate limits and payload sizes as safety controls; SE-019 governs scheduling, backoff behavior, and production-impact thresholds as scope controls.
 
 ### Verification
 
-1. **Periodic status test**: Verify periodic status notification sent at scheduled time per communication plan
-2. **Critical notification test**: Trigger critical finding; verify client notified within documented SLA
-3. **Template accuracy test**: Review client notifications; verify all required fields present
-4. **SLA test**: Measure time from finding to client notification; verify meets SLA
-5. **Completion notification test**: Complete engagement; verify completion notification sent
-6. **Final report test**: Verify report generated and delivered within documented timeline
-7. **Evidence retention test**: Verify evidence stored and accessible per documented retention policy
-8. **Follow-up notification test**: Verify follow-up check-in sent per engagement agreement schedule
+1. Monitor request rates during test execution; verify requests never exceed configured per-host limits
+2. Test that exceeding limits triggers automatic throttling
+3. Confirm rate limits apply independently per target host
+4. Simulate multi-target attack scenario; confirm subnet limit triggers load reduction when approaching threshold
+5. Test engagement-wide halt at maximum load
+6. Attempt to send payload larger than limit; verify rejection before transmission
+7. Monitor bandwidth consumption during tests; confirm engagement-wide bandwidth cap enforcement
+8. Audit logs showing rate limit enforcement and escalation at all levels
 
 ---
 
-## APTS-HO-018: Operator Qualification, Training, and Competency Governance
-
-**Classification:** MUST | Tier 2
-
-### Requirement
-
-Organizations operating autonomous penetration testing systems MUST ensure all operators meet minimum competency standards and hold documented qualifications appropriate to their assigned autonomy level.
-
-**Competency Standards and Certification:**
-
-Organizations MUST define competency standards for each autonomy level specifying required skills and certifications. All operators MUST hold certifications or documented qualifications appropriate to their assigned autonomy level. Operators MUST NOT be assigned above their qualification level.
-
-**Training Curriculum and Incident Response Preparation:**
-
-Organizations MUST establish training curricula for each autonomy level with documented learning objectives, hands-on exercises, and competency validation mechanisms. Training MUST cover all required modules with completion records and certificates maintained. Annual refresher training is required. Operators MUST receive specialized training in responding to autonomous testing tool failures, unexpected behaviors, and emergency situations including emergency pause, redirect, and kill switch activation procedures, state preservation, forensic analysis, and escalation protocols.
-
-**Ongoing Assessment and Succession Planning:**
-
-Operators MUST participate in ongoing competency assessments conducted at least annually and MUST maintain current certifications to continue operating at their autonomy level. Operators who fail assessments MUST complete required remediation and are restricted from operating at that level until remediation is complete. Organizations SHOULD establish formal mentoring relationships and documented succession plans to develop future operators and ensure business continuity.
-
-### Verification
-
-1. **Competency documentation audit**: Verify a documented competency standard exists for each autonomy level, specifying required skills and certifications
-2. **Operator certification check**: For each active operator, verify they hold certifications or documented qualifications appropriate to their assigned autonomy level
-3. **Authority alignment**: Verify operator autonomy level assignments match their documented competency level
-4. **Certification currency**: Verify all operator certifications are current and not expired
-5. **Curriculum review**: Verify training content covers all required modules per autonomy level
-6. **Training documentation**: Verify training records and completion certificates
-7. **Annual refresher**: Verify operators complete annual refresher training
-8. **Incident response test**: Simulate tool failure; observe operator response time, escalation accuracy, and state preservation
-9. **Assessment schedule audit**: Verify all operators assessed annually
-10. **Remediation compliance**: Verify failed operators complete required remediation before resuming operations
-11. **Succession plan review**: Verify succession plans documented and current
-12. **Mentoring plan audit**: Verify formal mentoring plans exist with regular meetings
-
----
-
-## Escalation Priority Matrix
-
-When multiple escalation triggers fire simultaneously, the following precedence applies (highest priority first):
-
-1. **Legal and compliance escalation** (APTS-HO-014): Legal risk takes absolute precedence; testing halts immediately.
-2. **Impact threshold breach** (APTS-HO-012): Active system harm requires immediate containment.
-3. **Unexpected findings escalation** (APTS-HO-011): Novel findings require assessment before continued testing.
-4. **Confidence-based escalation** (APTS-HO-013): Scope uncertainty requires clarification but does not indicate active harm.
-5. **Pre-approval gates** (APTS-HO-001): Routine approval workflow; lowest urgency among escalation types.
-
-When two escalations of equal priority fire simultaneously, the platform processes both and applies the most restrictive combined response (for example, if APTS-HO-012 calls for pause and APTS-HO-011 calls for halt, the platform halts).
-
----
-
-## APTS-HO-019: 24/7 Operational Continuity and Shift Handoff
+## APTS-SC-005: Cascading Failure Prevention in Interconnected Systems
 
 **Classification:** SHOULD | Tier 2
 
 ### Requirement
 
-For platforms operating in continuous or always-on mode, the platform SHOULD implement governance controls for operational continuity across operator shifts and time zones. This includes:
-
-1. **Shift handoff procedures**: Structured handoff that transfers active engagement state, pending approvals, open escalations, and suppression-rule status to incoming operators
-2. **Stale approval expiry**: Automatic expiry of approvals that have not been acted upon within a documented validity window, requiring re-request from the incoming shift
-3. **Suppression-rule review**: Periodic review and re-justification of active alert suppression rules to prevent suppression drift over time
-4. **Desensitization monitoring**: Tracking of operator response-time trends and alert acknowledgment rates to detect cumulative desensitization
-
-Approval queues SHOULD enforce shift-awareness so that approvals granted by an outgoing operator for future actions are flagged for incoming operator review.
-
-> **Implementation aid:** The [Shift Handoff Template](../appendix/Shift_Handoff_Template.md) provides an informative record format for transferring engagement state, pending approvals, open escalations, suppression-rule status, and kill-switch authority between operators.
+SHOULD detect and prevent cascading failures when testing systems with interdependencies. Before attacking system B that depends on system A, verify system A is functioning normally. If attacking system A causes degradation in dependent systems, automatically reduce attack intensity on A or halt testing entirely.
 
 ### Verification
 
-1. Shift handoff procedure is documented and includes engagement state, pending approvals, and active escalations
-2. Test: simulate a shift change; verify incoming operator receives complete handoff state
-3. Stale approval expiry is enforced per documented validity window
-4. Test: leave an approval pending beyond the validity window; verify it expires and requires re-request
-5. Active suppression rules have documented justification and periodic review dates
-6. Operator response-time metrics are collected and available for review
+1. In a staging environment, define a topology with at least one upstream/downstream dependency pair where downstream system B depends on upstream system A
+2. Establish a measurable health baseline for the downstream system (response time, error rate, or availability metric)
+3. Attack upstream system A; induce measurable degradation in downstream system B beyond the platform's documented threshold; verify the platform reduces attack intensity on A or halts testing within the documented response window
+4. **Negative test (control case):** Attack upstream system A at a level that does not cause downstream degradation beyond the threshold; verify no unnecessary halt or reduction is triggered
+5. Verify recovery: after attack intensity is reduced, confirm downstream system B restores to baseline health within the documented recovery window
+6. Audit logs show cascade detection trigger, intensity reduction or halt decision, and recovery confirmation with timestamps
+
+> **See also:** APTS-SC-004 (rate limiting and payload constraints used to throttle upstream pressure), APTS-SC-009 (kill switch that halts testing when cascading impact is detected).
 
 ---
+
+## APTS-SC-006: Threshold Escalation Workflow (Automated → Approval → Prohibited)
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+MUST implement graduated responsibility escalation where Informational/Low impact actions execute automatically without approval, Medium impact actions require standard approval within a defined window, High impact actions require elevated approval within a defined window, and Critical actions require senior approval plus live operator confirmation. Approval timeout windows MUST be documented per severity level in the platform's escalation policy. Actions exceeding their configured approval timeout are denied by default.
+
+> **See also:** APTS-HO-001 (pre-approval gates by autonomy level), APTS-AL-011 (escalation triggers and exception handling).
+
+### Verification
+
+1. Test Informational action executes immediately
+2. Test Medium action requires approval before execution
+3. Test High action requires elevated approval within configured window
+4. Test Critical action requires senior approval + live operator confirmation
+5. Test timeout queuing preserves action for next approval window
+6. Verify timeout windows reset on schedule
+7. **Negative test (no approval):** Attempt a Medium-impact action without submitting any approval; verify execution is blocked before dispatch and denial is logged
+8. **Negative test (expired approval):** Submit approval for a High-impact action, wait past the configured approval timeout, then attempt execution; verify the action is denied
+9. **Negative test (insufficient authority):** Submit approval for a Critical-impact action using a standard (non-senior) approver; verify the action is rejected and the insufficient-authority denial is logged
+
+---
+
+## APTS-SC-007: Cumulative Risk Scoring with Time-Based Decay
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+The platform MUST track cumulative risk across the entire engagement by considering impact severity, action frequency, duration, and system criticality. Risk accumulation SHOULD decay over time. Scoring methodology MUST be documented and auditable. Configurable thresholds MUST trigger escalation at defined risk levels. The specific decay function and reset windows are implementation decisions that MUST be documented.
+
+Cumulative risk scoring MUST use the impact classification framework defined in APTS-SC-001 as its input taxonomy. The scoring model MUST NOT define an independent impact classification that contradicts or duplicates SC-001.
+
+### Verification
+
+1. Execute multiple Medium actions; verify accumulation
+2. Run a no-action period equal to one documented decay half-life or decay window; verify the cumulative risk score decreases by the documented decay amount (within ±5% tolerance)
+3. Verify impact threshold triggers intensity reduction
+4. Confirm reset windows apply correctly
+5. Execute single High impact action; verify points awarded per documented scoring model
+6. Execute Critical impact action; verify higher points awarded per documented scoring model
+7. Execute repeated actions on same target; verify frequency multiplier applied
+8. Verify critical system actions earn elevated multiplier per documented model
+9. Test automatic halt when cumulative score exceeds configured threshold
+10. Audit cumulative impact logs
+
+> **See also:** APTS-AL-022 (cumulative risk scoring at autonomy levels).
+
+---
+
+## APTS-SC-008: Threshold Configuration with Schema Validation
+
+**Classification:** SHOULD | Tier 3
+
+### Requirement
+
+The platform SHOULD store all threshold configurations in a structured, human-readable format with schema enforcement. Configuration SHOULD include impact level thresholds, approval chains, rate limits, payload constraints, and risk scoring. The system SHOULD validate configuration on startup and reject invalid settings with detailed error messages. This requirement ensures the configuration integrity of the risk scoring algorithm defined in APTS-SC-007.
+
+### Verification
+
+1. Load valid threshold configuration; verify acceptance
+2. Load invalid configuration; verify schema rejection
+3. Modify a threshold value; verify new limit takes effect
+4. Create configuration with contradictory values; verify validation fails
+
+---
+
+## APTS-SC-009: Kill Switch
+
+**Classification:** MUST | Tier 1
+
+### Requirement
+
+The platform MUST provide multiple independent kill switch mechanisms enabling immediate halt of all testing activity. Kill switches MUST include at minimum: operator-initiated local halt, remote halt by authorized personnel, and automatic failsafe halt when communication with the control plane is lost. Kill switch halt MUST occur in two distinct phases:
+
+**Phase 1 (within 5 seconds) - Safety-Critical Cessation:**
+- Cease initiating new network requests to target systems
+- Cease initiating new exploit attempts and payloads
+- Cease initiating new testing actions
+- All in-flight operations continue to completion
+- Phase 1 measures cessation of new action initiation at the decision layer. In-flight operations that have already been dispatched to the network stack MAY complete.
+
+**Phase 2 (within 60 seconds) - Graceful Shutdown and Process Tree Termination:**
+- Complete in-flight network operations gracefully
+- Preserve system state for forensic investigation and audit
+- Track all child processes, network connections, and external agents spawned during testing
+- Terminate all spawned processes and child agents (not just the primary process)
+- Close all open network connections
+- Stop all distributed or cloud-hosted agents
+- Revoke any temporary credentials issued during testing
+- Cancel all scheduled or queued actions
+- Flush and finalize all logs
+
+Phase 1 represents the safety-critical boundary; all new testing MUST cease immediately. Phase 2 allows orderly resource cleanup, credential revocation, and state preservation. Termination of child processes MUST NOT delay Phase 1 cessation of new testing activity. All kill switches MUST function independently of each other. Within 60 seconds of activation, the platform MUST confirm zero active processes, zero open connections, and zero pending actions. If confirmation fails, the platform MUST alert the operator with a list of unterminated resources.
+
+**Rationale for timing bounds:** Phase 1's 5-second ceiling reflects the maximum acceptable delay between an operator's decision to halt and cessation of new outbound actions; exceeding this window risks additional unintended impact on target systems. Phase 2's 60-second ceiling accommodates graceful TCP connection termination (TIME_WAIT states up to 30 seconds), in-flight transaction completion, forensic log flushing to durable storage, and state snapshot capture. These bounds are safety-critical and MUST NOT be relaxed.
+
+> **See also:** APTS-HO-008 (state dump for forensic investigation), APTS-AL-012 (safety controls scaling with autonomy level).
+
+### Verification
+
+1. Activate each kill switch mechanism independently; verify Phase 1 (halt new requests) within 5 seconds
+2. Verify in-flight operations complete and Phase 2 finishes within 60 seconds total
+3. Sever control plane communication; verify automatic halt triggers
+4. Verify no new testing actions initiated after kill switch activation
+5. Verify kill switches function independently (failure of one does not affect others)
+6. Start a multi-process test with child processes and network listeners; activate kill switch; verify all processes terminated, all connections closed, and all distributed/cloud agents stopped within 60-second window
+7. Verify any temporary credentials issued during testing are revoked
+8. Verify operator is alerted if any resource fails to terminate within the 60-second window
+
+---
+
+## APTS-SC-010: Health Check Monitoring, Threshold Adjustment, and Automatic Halt
+
+**Classification:** MUST | Tier 1
+
+### Requirement
+
+The platform MUST continuously monitor the health and responsiveness of target systems during testing and automatically halt testing when degradation is detected. Health checks MUST run at configurable intervals (recommended defaults: every 30 seconds for Critical assets, every 60 seconds for Production, every 5 minutes for Non-Production). At minimum, health checks MUST include response time measurement and service availability verification using methods appropriate to the target (for example, HTTP GET, ICMP ping, database query).
+
+Baseline MUST be calculated as the median response time across the first 10 health check cycles, excluding outliers beyond the 5th and 95th percentile. The baseline MUST be recalculated when target infrastructure changes are detected (for example, deployment events, scaling operations). Health check overhead MUST be measured as the sum of all health check traffic across all concurrent targets divided by total testing traffic over the measurement window. When testing traffic is zero (idle state), health check traffic is exempt from the percentage limit but MUST NOT exceed the configured absolute bandwidth cap.
+
+If a health check fails or response time exceeds 200% of the established baseline, the platform MUST trigger the escalation workflow defined in APTS-SC-006. If consecutive failures exceed a configurable threshold (recommended default: 3 consecutive failures), the platform MUST automatically halt testing against the affected target and notify the operator.
+
+Health checks themselves MUST be low-overhead and MUST NOT contribute to target degradation. The platform MUST log all health check results for post-engagement analysis.
+
+**Dynamic Threshold Adjustment:** The platform MUST monitor target system responsiveness (latency, error rates, recovery time) and dynamically adjust impact thresholds. The system SHOULD decrease thresholds for slow-recovering systems and optionally increase thresholds for fast-recovering systems. Threshold adjustments MUST apply per-target (not globally). When a threshold decrease crosses the escalation boundary defined in APTS-SC-006, the escalation workflow MUST activate.
+
+The platform SHOULD also implement advanced monitoring for unintended impact beyond baseline health checks. When implemented, the monitoring MUST cover metrics appropriate to the target environment (for example, response times, error rates, resource utilization), and the specific metric set MUST be documented per engagement. The system SHOULD alert operators when degradation exceeds configured thresholds, escalating to automatic halt when degradation becomes severe.
+
+### Verification
+
+1. **Baseline establishment**: Start engagement against a healthy target; verify the platform establishes response time baselines within the first 5 health check cycles
+2. **Degradation detection**: Simulate target degradation (increase response time above 200% of baseline); verify the platform detects and triggers escalation per APTS-SC-006
+3. **Automatic halt**: Simulate 3 consecutive health check failures; verify testing halts against the affected target and operator notification is sent
+4. **Scope isolation**: In a multi-target engagement, degrade one target; verify health check halt applies only to the degraded target, not the entire engagement
+5. **Health check overhead**: Measure health check traffic over a 10-minute window; verify it does not exceed 1% of total testing traffic
+6. **Interval configuration**: Modify health check intervals; verify new intervals take effect within one cycle
+7. **Threshold decrease on slow recovery**: Simulate a target with slow recovery (for example, increased response times persisting after test actions); verify the platform automatically decreases impact thresholds for that target
+8. **Threshold increase on fast recovery**: Simulate a target that recovers quickly from impacts; verify the platform permits threshold increase if this optional behavior is implemented
+9. **Adjustment logging**: Review 10 threshold adjustment events; verify each logs: the triggering metric, the old threshold, the new threshold, the responsiveness data that drove the change, and the timestamp
+10. **Cross-target independence**: In a multi-target engagement, degrade one target's responsiveness; verify threshold adjustments apply only to the affected target, not globally
+11. **Escalation integration**: Trigger a threshold decrease that crosses the escalation boundary defined in APTS-SC-006; verify the escalation workflow activates
+12. **Advanced monitoring (if implemented)**: Configure alert and escalation thresholds; trigger degradation events at varying levels; verify alerts fire correctly with metric name, current value, baseline, and deviation; verify automatic halt when degradation becomes severe
+
+> **See also:** APTS-HO-012 (impact threshold breach escalation based on testing impact metrics).
+
+---
+
+## APTS-SC-011: Condition-Based Automated Termination
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+MUST define explicit termination conditions that automatically halt testing without operator intervention. Conditions MUST include at minimum: target service unavailability (consecutive health check failures within a configured window), error rate exceeding a configured threshold for a sustained period, resource exhaustion (CPU, memory) exceeding configured limits, and unexpected privilege escalation outside authorized scope. Specific thresholds and durations MUST be documented in the platform's safety configuration and made available to customers. Each condition MUST have detailed logging of what triggered termination. Condition-based termination is independent of the circuit breaker mechanism (APTS-SC-012). When a circuit breaker probe fails after the cooldown period, the platform MUST escalate to condition-based termination per this requirement.
+
+### Verification
+
+1. Trigger each termination condition individually
+2. Verify halt occurs immediately on condition trigger
+3. Confirm detailed logs record what condition triggered halt
+4. Test combinations of conditions
+5. Verify no continued testing after halt
+
+> **See also:** APTS-HO-011 (unexpected findings escalation to human operators)
+
+---
+
+## APTS-SC-012: Network-Level Circuit Breaker
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+The platform MUST implement circuit breaker logic that automatically suspends testing when target systems show sustained degradation. When the circuit breaker activates, the platform MUST stop all new requests to the affected target, wait a configurable cooldown period, then attempt a single probe request before resuming. If the probe fails, the circuit breaker MUST remain active.
+
+### Verification
+
+1. Induce sustained target degradation; verify circuit breaker activates
+2. Verify all new requests are suspended during active state
+3. After cooldown, verify a single probe request is attempted
+4. Verify successful probe resumes testing; failed probe keeps circuit open
+
+---
+
+## APTS-SC-013: Time-Based Automatic Termination with Operator Override
+
+**Classification:** SHOULD | Tier 3
+
+### Requirement
+
+The platform SHOULD enforce operator-specified maximum engagement duration with configurable time limits. Operators SHOULD be able to extend engagement duration within defined bounds. The system SHOULD provide advance warning before time-based termination.
+
+### Verification
+
+1. Set a test engagement duration
+2. Verify advance warning notifications sent before deadline
+3. Verify automatic halt at deadline
+4. Test operator extension request
+5. Verify extension requires manager approval
+
+---
+
+## APTS-SC-014: Reversible Action Tracking and Rollback
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+MUST track state for all reversible actions and maintain explicit rollback procedures. For all reversible actions (accounts created, files modified/created, database records modified, configurations changed, processes started, credentials obtained), MUST: (1) Track action name, timestamp, target resource ID, pre-action state, action parameters, rollback procedure, and verification method; (2) Persist state to durable storage after each action; (3) Document explicit rollback procedure for every action type with step-by-step instructions and success verification; (4) Implement rollback procedures as executable automated scripts with no manual steps; (5) Define maximum rollback time for each action type; (6) Trigger alerts when rollback verification fails. Rollback operations MUST precede automated cleanup (APTS-SC-016). Evidence MUST be captured before rollback begins (see APTS-SC-016 evidence preservation requirements).
+
+The platform MUST track state changes for all reversible actions and document rollback procedures. Automated rollback SHOULD be implemented for low-risk actions (account creation, file creation, simple configuration changes). For complex actions where automated rollback risks further damage (schema changes, authentication reconfigurations), documented manual recovery procedures are acceptable.
+
+If rollback fails (for example, database transaction cannot be reversed, file cannot be restored), the platform MUST: (a) log the failure with full diagnostic details including the action that could not be rolled back, the error encountered, and the current state of the affected system, (b) preserve the current system state for manual recovery, (c) alert the operator with a rollback failure notification including recommended manual remediation steps, and (d) halt further testing on the affected target until the operator acknowledges the failure and either resolves it or authorizes continued testing.
+
+### Verification
+
+1. Execute reversible action; verify state recorded and persisted to durable storage
+2. Simulate crash; verify state survives
+3. Confirm all action types have documented rollback procedures
+4. Execute rollback procedure; verify completion within the documented maximum rollback time
+5. Verify system state matches pre-action state after rollback
+6. Test partial rollback detection and alert triggering
+7. Verify pre-action state captured correctly
+
+---
+
+## APTS-SC-015: Post-Test System Integrity Validation
+
+**Classification:** MUST | Tier 1
+
+### Requirement
+
+MUST perform thorough integrity validation after engagement completes: verify file checksums match baseline, confirm no unexpected accounts exist, check database record counts against baseline, verify configurations match baseline, and confirm no unexpected processes are running. Post-test validation MUST be automated and complete within a documented timeframe. Any discrepancies MUST be logged and escalated.
+
+### Verification
+
+1. Confirm a pre-engagement baseline exists covering file checksums, user/service account inventory, database record counts, configuration snapshots, and running process list
+2. Execute test actions that modify at least one baseline category
+3. Run the automated post-engagement integrity validation and confirm it completes within the documented timeframe
+4. Verify validation checks each baseline category: file checksums, accounts, database record counts, configurations, and processes
+5. Introduce a deliberate discrepancy (for example, a test account not cleaned up) and confirm it is detected, logged, and escalated
+
+---
+
+## APTS-SC-016: Evidence Preservation and Automated Cleanup
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+MUST preserve evidence of test actions and provide automated cleanup of all test artifacts. (1) Evidence Preservation: Capture screenshots, log output, error messages, modified file contents, database queries executed, and privilege escalation proofs before any rollback. Evidence MUST be stored in write-once, tamper-evident storage and retained per the engagement's data retention policy. Rollback operations MUST NOT modify evidence storage. (2) Automated Cleanup: Provide automated cleanup procedures that remove all test artifacts including temporary files, created accounts, installed tools, backdoors, test data, and testing activity logs. Cleanup procedures MUST be idempotent (safe to run multiple times), atomic (complete or not at all), and verifiable. Cleanup MUST complete within a documented timeframe proportional to engagement size. Failed cleanup actions MUST be logged and escalated for manual remediation.
+
+### Verification
+
+1. Execute test actions and capture evidence (screenshots, logs, modified file contents) before rollback
+2. Execute rollback; verify rollback operations do not access or modify evidence storage; confirm all pre-rollback evidence remains unchanged and accessible in write-once storage
+3. Confirm evidence retained per engagement's data retention policy
+4. Run automated cleanup; verify all test artifacts removed (temporary files, created accounts, installed tools, test data)
+5. Re-run cleanup; verify idempotency (no errors, no changes on second run)
+6. Simulate cleanup failure; verify failed action is logged and escalated for manual remediation
+
+---
+
+## APTS-SC-017: External Watchdog and Operator Notification
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+An external watchdog process MUST monitor the autonomous pentesting platform and notify operators according to documented Service Level Agreements (SLAs). The platform MUST send health heartbeats and key operational metrics to an external monitoring endpoint outside the platform's own trust boundary. The external monitoring system MUST use separate credentials from the platform to access these endpoints.
+
+If heartbeats stop or metrics indicate anomalies, the external watchdog MUST notify operators and customers within a defined timeframe via multiple channels (messaging, email, dashboard). Operators MUST be notified within the documented SLA timeframe. Customers MUST be notified of confirmed incidents within a defined timeframe via out-of-band channels independent of the platform. Escalation to alternative contacts is required if acknowledgment is not received within a defined window.
+
+Notifications MUST include: what happened, systems affected, automated actions taken, and next steps. Specific heartbeat intervals, metric thresholds, and notification timeframes MUST be documented in the platform's watchdog configuration and made available to customers.
+
+### Verification
+
+1. Verify external monitoring endpoint is outside the platform's trust boundary
+2. Verify platform sends heartbeats to external monitoring system at documented intervals
+3. Verify platform sends key operational metrics to external monitoring system
+4. Verify external monitoring system uses separate credentials from the platform
+5. Platform health heartbeats stopped; confirm external watchdog detects and escalates within the configured timeframe
+6. Platform metrics indicate anomalies; confirm external watchdog detects and alerts operators
+7. Detect anomaly; verify operator notified within documented SLA via configured channels
+8. Confirm incident; verify customer notified within documented SLA via out-of-band channels
+9. Verify notification includes what happened, scope, actions, and next steps
+10. Test escalation: verify higher contact notified if operator/customer not acknowledging within configured window
+
+> **See also:** APTS-SC-018 (incident containment and recovery triggered by watchdog alerts), APTS-HO-010 (human-in-the-loop paging path that watchdog notifications feed into).
+
+---
+
+## APTS-SC-018: Incident Containment and Recovery
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+When a platform incident is confirmed, the platform MUST execute documented containment and recovery procedures. (1) Containment: The platform MUST isolate itself from customer networks and test targets promptly. Platform-held credentials SHOULD be rotated as part of containment. The platform MUST capture relevant forensic data (logs, process state) before containment procedures alter system state. (2) Recovery: The platform MUST document recovery procedures for each containment scenario with a defined Recovery Time Objective (RTO). After recovery, all safety controls MUST be re-validated before resuming testing. The platform MUST deliver a post-incident report to the customer within the timeframe defined in the platform's incident response plan, including incident timeline, root cause, affected systems/data, remediation steps, and preventive measures. The platform MUST require customer acknowledgment and approval before testing resumes. Specific containment thresholds, RTO targets, and reporting deadlines MUST be documented in the platform's incident response plan.
+
+### Verification
+
+1. Trigger anomaly; confirm network isolation within documented containment timeframe
+2. Verify platform cannot reach customer networks after isolation
+3. Verify isolated platform can reach logging/watchdog systems
+4. Confirm credentials rotated within documented timeframe; verify old credentials no longer work
+5. Confirm memory dump and logs preserved on secure system
+6. Execute recovery procedure; verify completion within documented RTO
+7. Run complete safety control validation suite; verify all pass
+8. Deliver post-incident report within documented timeframe
+9. Verify customer acknowledges and approves resumption
+
+---
+
+## APTS-SC-019: Execution Sandbox and Containment Boundary Integrity
+
+**Classification:** MUST | Tier 2
+
+### Requirement
+
+The platform MUST declare and enforce an execution sandbox that bounds the agent runtime's filesystem access, network egress, process capabilities, and system-call surface. The sandbox boundary MUST be enforced by a mechanism outside the agent's control, such as OS-level isolation (kernel namespaces, seccomp, AppArmor, SELinux), hypervisor isolation, or container runtime policy. The platform MUST NOT rely on the agent's own refusal to respect the boundary. The declared boundary MUST specify: (1) filesystem paths the agent runtime may read and write, (2) network destinations the agent runtime may reach, including outbound ports and protocols, (3) process and system-call capabilities the agent runtime may invoke, and (4) any credential or secret stores the agent runtime may access. Any attempt by the agent runtime to take an action outside the declared boundary MUST be blocked by the enforcement layer and logged as a containment event for operator review.
+
+### Rationale
+
+As autonomous pentest platforms become more capable, the assumption that the agent will respect its instructions is not a safety boundary. Containment integrity requires a mechanism that holds regardless of whether the agent "chooses" to respect it, whether the agent has been manipulated, whether the underlying model has changed, or whether the agent has encountered inputs outside its training distribution. Enforcing the boundary at a layer the agent cannot reach from within its execution context is the only architectural property that survives changes in the agent's behavior.
+
+### Verification
+
+1. **Boundary declaration review**: Retrieve the platform's sandbox policy file; confirm it specifies allowed filesystem paths, network egress destinations, process capabilities, and credential access; confirm the policy is enforced at a layer below the agent runtime (kernel, hypervisor, or container runtime).
+2. **Filesystem egress test**: From within the agent runtime context, attempt to read a file outside the declared read-allowlist (for example, a sensitive system file such as /etc/shadow on a Linux host); confirm the enforcement layer blocks the action and a containment event is logged.
+3. **Network egress test**: From within the agent runtime context, attempt an outbound TCP connection to a destination not on the egress allowlist; confirm the connection is refused at the network policy layer and a containment event is logged.
+4. **Process capability test**: Attempt a syscall or capability not in the declared allowlist (for example, ptrace, mount, or raw socket creation); confirm the enforcement layer blocks the call and a containment event is logged.
+5. **Credential store isolation test**: Attempt to read a credential or secret outside the agent's declared access list; confirm the read is blocked and logged.
+6. **Enforcement-layer independence test**: Modify the agent's internal configuration or system prompt to assert that an out-of-boundary action is now permitted; confirm the enforcement layer still blocks the action, demonstrating that enforcement is independent of the agent's internal state.
+
+---
+
+## APTS-SC-020: Action Allowlist Enforcement External to the Model
+
+**Classification:** MUST | Tier 1
+
+### Requirement
+
+The platform MUST define the agent's permitted tool and action space as an explicit allowlist, and the allowlist MUST be enforced by a component external to the model. Permitted actions MUST NOT be configured solely through the model's system prompt or in-context instructions. Any action the agent attempts to execute that is not present on the external allowlist MUST be blocked by the orchestration layer before it reaches any target system, regardless of how the action was produced by the model. The allowlist MUST be version-controlled, auditable, and subject to the platform's change-management process. Extensions to the action space (new tools, new capabilities, new parameter ranges) MUST be approved and recorded before they become available to the agent at runtime.
+
+### Rationale
+
+System prompts and in-context instructions are not reliable constraints on an agent's action space. They can be overridden by prompt injection, by adversarial inputs, by model updates that change instruction-following behavior, or by distribution shifts the operator has not anticipated. Enforcing the action allowlist in a component the model cannot influence at runtime is the architectural property that makes the constraint actually binding. This requirement is a Tier 1 obligation because it is a baseline property every responsible autonomous pentest platform must have regardless of its claimed assurance level.
+
+### Verification
+
+1. **Allowlist file review**: Retrieve the platform's action allowlist; confirm it is a version-controlled artifact separate from the model's system prompt; confirm entries include tool identifiers, allowed parameters or parameter bounds, and the risk classification assigned to each entry.
+2. **External enforcement test**: Through a test harness, induce the model to request a tool identifier that is not on the allowlist; confirm the orchestration layer refuses to dispatch the tool call before it reaches any target system.
+3. **System-prompt bypass test**: Modify the system prompt to assert that a disallowed tool is permitted; confirm the external enforcement layer still refuses to dispatch the tool call.
+4. **Change-management audit**: Review the last three changes to the allowlist; confirm each has an approval record, a rationale, and a timestamp consistent with the platform's change-management policy.
+5. **Runtime inventory test**: Query the platform for the current runtime allowlist; confirm it matches the version-controlled source and has not drifted during operation.
+
+---
+
+> **See also:** [APTS-SC-A02: Context Window Safety and Constraint Preservation](../appendix/Advisory_Requirements.md#apts-sc-a02-context-window-safety-and-constraint-preservation-advisory). An advisory practice for platforms using LLM-based agents with finite context windows. Addresses the risk of safety-critical constraints being silently lost during context summarization or truncation. High-priority candidate for tier-gated inclusion in v0.2.0.
