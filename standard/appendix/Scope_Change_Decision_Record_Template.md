@@ -233,7 +233,7 @@ Before testing continues under the updated scope, verify:
 - APTS-SE-020: Deployment-Triggered Testing Governance
 - APTS-SE-021: Scope Conflict Resolution for Overlapping Engagements
 - APTS-HO-004: Authority Delegation Matrix
-- APTS-HO-005: Escalation Decision Audit Trail
+- APTS-HO-005: Delegation Chain-of-Custody and Decision Audit Trail
 - APTS-AL-025: Autonomy Level Authorization, Transition, and Reauthorization
 - APTS-MR-010: Scope Expansion Social Engineering Prevention
 - APTS-MR-012: Immutable Scope Enforcement Architecture
