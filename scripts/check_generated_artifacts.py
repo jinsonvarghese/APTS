@@ -10,7 +10,7 @@ from _ci_utils import display_path, read_bytes, repo_path, repo_root, write_byte
 
 EXPORT_SCRIPT = Path("scripts/export_requirements.py")
 SYNC_INDEX_SCRIPT = Path("scripts/sync_index_from_readme.py")
-SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT = Path("scripts/sync_tab_acknowledgements_from_md.py")
+SYNC_TAB_ACKNOWLEDGEMENTS_SCRIPT = Path("scripts/sync_tab_acknowledgements_from_acknowledgements.py")
 REQUIREMENTS_JSON = Path("standard/apts_requirements.json")
 SCHEMA_JSON = Path("standard/apts_requirements_schema.json")
 README_MD = Path("README.md")
@@ -151,7 +151,7 @@ def check_tab_acknowledgements_in_sync() -> int:
     after the H1 and the "Influences" / "How to Get Listed" sections are
     stripped.
 
-    The sync_tab_acknowledgements_from_md.py script regenerates
+    The sync_tab_acknowledgements_from_acknowledgements.py script regenerates
     tab_acknowledgements.md from ACKNOWLEDGEMENTS.md. This check fails the
     build if the two have drifted.
     """
@@ -191,7 +191,7 @@ def check_tab_acknowledgements_in_sync() -> int:
             print_diff(
                 "FAILED: tab_acknowledgements.md is out of sync with "
                 "ACKNOWLEDGEMENTS.md. Run "
-                "scripts/sync_tab_acknowledgements_from_md.py to regenerate it.",
+                "scripts/sync_tab_acknowledgements_from_acknowledgements.py to regenerate it.",
                 expected_lines=expected_lines,
                 actual_lines=actual_lines,
                 expected_name="committed tab_acknowledgements.md",
@@ -200,7 +200,7 @@ def check_tab_acknowledgements_in_sync() -> int:
             exit_code = 1
     except subprocess.CalledProcessError as exc:
         print(
-            f"FAILED: sync_tab_acknowledgements_from_md.py exited with status {exc.returncode}."
+            f"FAILED: sync_tab_acknowledgements_from_acknowledgements.py exited with status {exc.returncode}."
         )
         exit_code = 1
     except Exception as exc:
