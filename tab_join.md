@@ -3,7 +3,7 @@ title: Join
 displaytext: Join
 layout: null
 tab: true
-order: 3
+order: 2
 tags: apts
 ---
 
